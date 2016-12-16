@@ -1,0 +1,42 @@
+<div>
+    <md-dialog class="dialog">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add Supplier</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content layout-padding>
+            <form layout="column">
+                <div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Supplier Name</label>
+                            <input ng-model="vm.supplier.Name" type="text">
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Supplier Primary Contact No</label>
+                            <input ng-model="vm.supplier.ContactNo" type="text">
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Supplier Secondary Contact No</label>
+                            <input ng-model="vm.supplier.SecondaryNo" type="text">
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div layout="column" layout-align="end end">
+                    <md-button class="md-primary md-raised" ng-click="vm.addSupplier(vm.supplier)">Add Supplier</md-button>
+                </div>
+            </form>
+        </md-dialog-content>
+    </md-dialog>
+</div>

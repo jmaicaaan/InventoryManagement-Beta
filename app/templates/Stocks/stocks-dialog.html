@@ -1,0 +1,52 @@
+<div>
+    <md-dialog class="dialog">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add Stock</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content layout-padding>
+            <form layout="column">
+                <div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Item</label>
+                            <md-select ng-model="vm.stock.Item">
+                                <md-option>
+                                    One
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Quantity</label>
+                            <md-select ng-model="vm.stock.Quantity">
+                                <md-option>
+                                    One
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-radio-group ng-model="vm.stock.IsStockIn">
+
+                            <md-radio-button value="true">Stock In</md-radio-button>
+                            <md-radio-button value="false">Stock Out</md-radio-button>
+
+                        </md-radio-group>
+                    </div>
+                </div>
+
+                <div layout="column" layout-align="end end">
+                    <md-button class="md-primary md-raised">Add Stock</md-button>
+                </div>
+            </form>
+        </md-dialog-content>
+    </md-dialog>
+</div>

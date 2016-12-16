@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "target": "es5",
+        "sourceMap": true,
+        "removeComments": false,
+        "rootDir": "app",
+        "outFile": "app/bundle.js",
+        "watch": true
+    }
+}

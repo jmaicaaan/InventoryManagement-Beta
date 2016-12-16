@@ -1,0 +1,29 @@
+<div>
+  <md-content>
+     <md-toolbar class="md-hue-2">
+      <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" aria-label="Settings" ng-disabled="true">
+          <!--<md-icon md-svg-icon="img/icons/menu.svg"></md-icon>-->
+        </md-button>
+        <h2>
+          <a href="#" ui-sref="dashboard"><span>Inventory Management</span></a>
+        </h2>
+        <span flex></span>
+        <div layout="row">
+            <div class="menu">
+              <a href="#" ui-sref="dashboard.items">Items</a>
+            </div>
+            <div class="menu">
+                <a href="#" ui-sref="dashboard.suppliers">Suppliers</a>
+            </div>
+            <div class="menu">
+                <a href="#" ui-sref="dashboard.stocks">Stocks</a>
+            </div>
+        </div>
+      </div>
+    </md-toolbar>
+  </md-content>
+
+  <div ui-view> Hello, this is your dashboard. </div> 
+  
+</div>

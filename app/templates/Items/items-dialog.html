@@ -1,0 +1,92 @@
+<div>
+    <md-dialog class="dialog">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add Item</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content layout-padding>
+            <form layout="column">
+                <div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Item Name</label>
+                            <input ng-model="vm.item.Name" type="text">
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Item Description</label>
+                            <input ng-model="vm.item.Description" type="text">
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Item Code</label>
+                            <input ng-model="vm.item.Code" type="text">
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Item Location</label>
+                            <input ng-model="vm.item.Location" type="text">
+                        </md-input-container>
+                    </div>
+
+                    <div>
+                         <md-contact-chips
+                            ng-model="vm.item.Supplier"
+                            md-contacts="vm.SearchSupplier($query)"
+                            md-contact-name="name",
+                            md-contact-email="email"
+                            md-contact-image="image"
+                            md-require-match="true"
+                            md-highlight-flags="i"
+                            placeholder="Supplier">
+                        </md-contact-chips>
+                    </div>
+
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Brand</label>
+                            <md-select ng-model="vm.item.Brand">
+                                <md-option>
+                                    One
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Category</label>
+                            <md-select ng-model="vm.item.Category">
+                                <md-option>
+                                    One
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Unit</label>
+                            <md-select ng-model="vm.item.Unit">
+                                <md-option>
+                                    One
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div layout="column" layout-align="end end">
+                    <md-button class="md-primary md-raised">Add Item</md-button>
+                </div>
+            </form>
+        </md-dialog-content>
+    </md-dialog>
+</div>
