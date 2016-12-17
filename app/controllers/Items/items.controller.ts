@@ -3,8 +3,9 @@ namespace app{
 
     class ItemsController extends BaseController<IItem> implements IDialogController{
 
-        constructor(private $mdDialog : angular.material.IDialogService){
-            super();
+        constructor(private $mdDialog: angular.material.IDialogService,
+                protected ItemsService: IItemsService, BaseService: IBaseService){
+            super(BaseService);
         }
 
         /**
@@ -12,7 +13,9 @@ namespace app{
          */
         public showDialog() {
             this.$mdDialog.show({
-                templateUrl: 'app/templates/Items/items-dialog.html'
+                templateUrl: 'app/templates/Items/items-dialog.html',
+                controller: ItemsDialogController, 
+                controllerAs: 'vm'
             });
         }
 
@@ -26,13 +29,21 @@ namespace app{
 
     class ItemsDialogController extends ItemsController{
 
+        constructor($mdDialog: angular.material.IDialogService, ItemsService: IItemsService, BaseService: IBaseService){
+            super($mdDialog, ItemsService, BaseService);
+        }
+
+
         /**
-         * addItems
+         * addItem
          */
-        public addItems(item: IItem) {
+        public addItem(item: IItem) {
             this.add("Sample URL", item);
         }
     }
+
+    ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService'];
 
     angular 
         .module('inventory-management')

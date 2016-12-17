@@ -1,29 +1,78 @@
 <div>
   <md-content>
-     <md-toolbar class="md-hue-2">
+    <md-toolbar class="md-hue-2">
       <div class="md-toolbar-tools">
-        <md-button class="md-icon-button" aria-label="Settings" ng-disabled="true">
-          <!--<md-icon md-svg-icon="img/icons/menu.svg"></md-icon>-->
+        <md-button class="md-icon-button" aria-label="Settings" ng-click="vm.toggleSideNav();">
+          <md-icon md-svg-icon="bower_components\material-design-icons\navigation\svg\design\ic_menu_24px.svg"></md-icon>
         </md-button>
         <h2>
-          <a href="#" ui-sref="dashboard"><span>Inventory Management</span></a>
+          <span>{{vm.DashboardService.state.name}}</span>
         </h2>
         <span flex></span>
         <div layout="row">
-            <div class="menu">
-              <a href="#" ui-sref="dashboard.items">Items</a>
-            </div>
-            <div class="menu">
-                <a href="#" ui-sref="dashboard.suppliers">Suppliers</a>
-            </div>
-            <div class="menu">
-                <a href="#" ui-sref="dashboard.stocks">Stocks</a>
-            </div>
+          <div>
+            <md-button class="md-icon-button" aria-label="Settings" ng-click="vm.toggleSideNav();">
+              <md-icon md-svg-icon="bower_components\material-design-icons\social\svg\design\ic_notifications_24px.svg"></md-icon>
+            </md-button>
+          </div>
         </div>
       </div>
     </md-toolbar>
   </md-content>
+  <div sidenav-Watcher-Directive>
+    <md-sidenav class="md-sidenav-left" md-component-id="sidenav" md-whiteframe="4">
+      <md-toolbar class="md-hue-2">
+        <div class="md-toolbar-tools">
+          <h2>
+            <span>Menus</span>
+          </h2>
+          <span flex></span>
+          <md-button class="md-icon-button" aria-label="Settings" ng-click="vm.toggleSideNav();">
+            <md-icon md-svg-icon="bower_components\material-design-icons\navigation\svg\design\ic_arrow_back_24px.svg"></md-icon>
+          </md-button>
+        </div>
+      </md-toolbar>
+      <div>
+        <md-list>
+          <md-list-item ui-sref="dashboard">
+            <p> Home </p>
+          </md-list-item>
+          <md-list-item ui-sref="dashboard.items">
+            <p> Items </p>
+          </md-list-item>
+          <md-list-item ui-sref="dashboard.brands">
+            <p> Brands </p>
+          </md-list-item>
+          <md-list-item ui-sref="dashboard.categories">
+            <p> Categories </p>
+          </md-list-item>
+          <md-list-item ui-sref="dashboard.units">
+            <p> Units </p>
+          </md-list-item>
 
-  <div ui-view> Hello, this is your dashboard. </div> 
-  
+          <md-divider></md-divider>
+
+          <md-list-item ui-sref="dashboard.suppliers">
+            <p> Suppliers </p>
+          </md-list-item>
+          <md-list-item ui-sref="dashboard.stocks">
+            <p> Stocks </p>
+          </md-list-item>
+
+          <md-divider></md-divider>
+
+          <md-list-item ui-sref="dashboard.suppliers">
+            <p> Settings </p>
+          </md-list-item>
+          <md-list-item ui-sref="dashboard.suppliers">
+            <p> About </p>
+          </md-list-item>
+
+        </md-list>
+      </div>
+    </md-sidenav>
+  </div>
+
+  <div ui-view> Hello, this is your dashboard. </div>
+
 </div>

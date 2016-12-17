@@ -3,8 +3,9 @@ namespace app{
 
     class SuppliersController extends BaseController<ISupplier> implements IDialogController{
 
-        constructor(private $mdDialog: angular.material.IDialogService){
-            super();
+        constructor(private $mdDialog: angular.material.IDialogService,
+                 protected SuppliersService: ISupplierService, BaseService: IBaseService){
+            super(BaseService);
         }
 
         /**
@@ -29,6 +30,10 @@ namespace app{
 
     class SupplierDialogController extends SuppliersController{
        
+        constructor($mdDialog: angular.material.IDialogService, SuppliersService: ISupplierService, BaseService: IBaseService){
+            super($mdDialog, SuppliersService, BaseService);
+        }
+
         /**
          * add
          */
@@ -36,6 +41,9 @@ namespace app{
             this.add("Sample URL", supplier);
         }
     }
+
+    SuppliersController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService'];
+    SupplierDialogController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService'];
 
     angular
         .module('inventory-management')

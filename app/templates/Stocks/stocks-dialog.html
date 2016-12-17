@@ -27,8 +27,8 @@
                         <md-input-container class="md-block">
                             <label>Quantity</label>
                             <md-select ng-model="vm.stock.Quantity">
-                                <md-option>
-                                    One
+                                <md-option ng-repeat="q in [1,2,3,4,5,6,7,8,9,10]" ng-value="q">
+                                    {{q}}
                                 </md-option>
                             </md-select>
                         </md-input-container>
@@ -36,14 +36,14 @@
                     <div>
                         <md-radio-group ng-model="vm.stock.IsStockIn">
 
-                            <md-radio-button value="true">Stock In</md-radio-button>
-                            <md-radio-button value="false">Stock Out</md-radio-button>
+                            <md-radio-button ng-value="{{true}}">Stock In</md-radio-button>
+                            <md-radio-button ng-value="{{false}}">Stock Out</md-radio-button>
 
                         </md-radio-group>
                     </div>
                 </div>
 
-                <div layout="column" layout-align="end end">
+                <div layout="column" layout-align="end end" ng-click="vm.addStock(vm.stock);">
                     <md-button class="md-primary md-raised">Add Stock</md-button>
                 </div>
             </form>
