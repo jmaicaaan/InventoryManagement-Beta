@@ -5,6 +5,7 @@ namespace app{
         .module('inventory-management', [
             'ngMaterial',
             'ui.router',
-            'md.data.table'
+            'md.data.table',
+            'material.components.autocomplete'
         ])
 }

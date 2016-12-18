@@ -39,16 +39,14 @@
                     </div>
 
                     <div>
-                         <md-contact-chips
-                            ng-model="vm.item.Supplier"
-                            md-contacts="vm.SearchSupplier($query)"
-                            md-contact-name="name",
-                            md-contact-email="email"
-                            md-contact-image="image"
-                            md-require-match="true"
-                            md-highlight-flags="i"
-                            placeholder="Supplier">
-                        </md-contact-chips>
+                        <md-chips ng-model="vm.item.Suppliers" md-autocomplete-snap md-autocomplete-wrap-override>
+                            <md-autocomplete md-items="supplier in vm.suppliers" placeholder="Enter Supplier Name">
+                                <span><strong>{{supplier.name}}</strong>: {{supplier.email}}</span>
+                            </md-autocomplete>
+                            <md-chip-template>
+                                {{$chip.name}}
+                            </md-chip-template>
+                        </md-chips>
                     </div>
 
                     <div>

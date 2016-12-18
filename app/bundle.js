@@ -10,7 +10,8 @@ var app;
         .module('inventory-management', [
         'ngMaterial',
         'ui.router',
-        'md.data.table'
+        'md.data.table',
+        'material.components.autocomplete'
     ]);
 })(app || (app = {}));
 var app;
@@ -327,13 +328,34 @@ var app;
     var ItemsDialogController = (function (_super) {
         __extends(ItemsDialogController, _super);
         function ItemsDialogController($mdDialog, ItemsService, BaseService) {
-            return _super.call(this, $mdDialog, ItemsService, BaseService) || this;
+            var _this = _super.call(this, $mdDialog, ItemsService, BaseService) || this;
+            _this.suppliers = [
+                {
+                    name: 'Supplier 1',
+                    email: 'test@example.com'
+                },
+                {
+                    name: 'Supplier 2',
+                    email: 'test@example.com'
+                },
+                {
+                    name: 'Supplier 3',
+                    email: 'test@example.com'
+                }
+            ];
+            /**
+             * The Supplier variable needs to be initialized for the chips to work.
+             */
+            _this.item = {
+                Suppliers: []
+            };
+            return _this;
         }
         /**
          * addItem
          */
         ItemsDialogController.prototype.addItem = function (item) {
-            this.add("Sample URL", item);
+            this.add('Sample URL', item);
         };
         return ItemsDialogController;
     }(ItemsController));

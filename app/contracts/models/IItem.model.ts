@@ -10,7 +10,7 @@ namespace app{
         TotalStocks: number;
         Brand: IBrand;
         Category: ICategory;
-        Supplier: ISupplier;
+        Suppliers: Array<ISupplier>;
         Unit: IUnit;
     }
 }

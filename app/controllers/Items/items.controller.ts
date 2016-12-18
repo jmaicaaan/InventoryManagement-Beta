@@ -33,12 +33,35 @@ namespace app{
             super($mdDialog, ItemsService, BaseService);
         }
 
+   
+        public suppliers = [
+            {
+                name: 'Supplier 1',
+                email: 'test@example.com'
+            },
+            {
+                name: 'Supplier 2',
+                email: 'test@example.com'
+            },
+            {
+                name: 'Supplier 3',
+                email: 'test@example.com'
+            }
+        ];
+        
+        /**
+         * The Supplier variable needs to be initialized for the chips to work.
+         */
+
+        public item = {
+            Suppliers: []
+        };
 
         /**
          * addItem
          */
         public addItem(item: IItem) {
-            this.add("Sample URL", item);
+            this.add('Sample URL', item);
         }
     }
 
