@@ -12,11 +12,15 @@ namespace app{
          * showDialog
          */
         public showDialog() {
-            this.$mdDialog.show({
-                templateUrl: 'app/templates/Categories/categories-dialog.html',
+           
+            let config: angular.material.IDialogOptions = {
+                templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: CategoriesDialogController,
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                fullscreen: true
+            };
+
+            this.$mdDialog.show(config);
         }
 
         /**

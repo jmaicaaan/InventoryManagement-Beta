@@ -217,11 +217,13 @@ var app;
          * showDialog
          */
         BrandsController.prototype.showDialog = function () {
-            this.$mdDialog.show({
+            var config = {
                 templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: BrandsDialogController,
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                fullscreen: true
+            };
+            this.$mdDialog.show(config);
         };
         /**
          * hideDialog
@@ -266,11 +268,13 @@ var app;
          * showDialog
          */
         CategoriesController.prototype.showDialog = function () {
-            this.$mdDialog.show({
-                templateUrl: 'app/templates/Categories/categories-dialog.html',
+            var config = {
+                templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: CategoriesDialogController,
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                fullscreen: true
+            };
+            this.$mdDialog.show(config);
         };
         /**
          * hideDialog
@@ -337,11 +341,13 @@ var app;
          * ShowDialog
          */
         ItemsController.prototype.showDialog = function () {
-            this.$mdDialog.show({
-                templateUrl: 'app/templates/Items/items-dialog.html',
+            var config = {
+                templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: ItemsDialogController,
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                fullscreen: true
+            };
+            this.$mdDialog.show(config);
         };
         /**
          * HideDialog
@@ -407,11 +413,13 @@ var app;
          * ShowDialog
          */
         StocksController.prototype.showDialog = function () {
-            this.$mdDialog.show({
-                templateUrl: 'app/templates/Stocks/stocks-dialog.html',
+            var config = {
+                templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: StocksDialogController,
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                fullscreen: true
+            };
+            this.$mdDialog.show(config);
         };
         /**
          * HideDialog
@@ -456,11 +464,13 @@ var app;
          * ShowDialog
          */
         SuppliersController.prototype.showDialog = function () {
-            this.$mdDialog.show({
-                templateUrl: 'app/templates/Suppliers/suppliers-dialog.html',
+            var config = {
+                templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: SupplierDialogController,
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                fullscreen: true
+            };
+            this.$mdDialog.show(config);
         };
         /**
          * HideDialog
@@ -505,11 +515,13 @@ var app;
          * showDialog
          */
         UnitsController.prototype.showDialog = function () {
-            this.$mdDialog.show({
-                templateUrl: 'app/templates/Units/units-dialog.html',
+            var config = {
+                templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: UnitsDialogController,
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                fullscreen: true
+            };
+            this.$mdDialog.show(config);
         };
         /**
          * hideDialog

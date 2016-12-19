@@ -13,11 +13,14 @@ namespace app{
          */
         public showDialog() {
 
-            this.$mdDialog.show({
-                templateUrl: 'app/templates/Suppliers/suppliers-dialog.html',
+            let config: angular.material.IDialogOptions = {
+                templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: SupplierDialogController,
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                fullscreen: true
+            };
+
+            this.$mdDialog.show(config);
         }
 
         /**
