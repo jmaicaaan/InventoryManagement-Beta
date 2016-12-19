@@ -4,8 +4,8 @@
             <div class="md-toolbar-tools">
                 <h2>Add Stock</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="cancel()">
-                    <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                <md-button class="md-icon-button" ng-click="vm.hideDialog()">
+                    <md-icon md-svg-src="bower_components\material-design-icons\navigation\svg\design\ic_close_24px.svg" aria-label="Close dialog"></md-icon>
                 </md-button>
             </div>
         </md-toolbar>
@@ -43,8 +43,8 @@
                     </div>
                 </div>
 
-                <div layout="column" layout-align="end end" ng-click="vm.addStock(vm.stock);">
-                    <md-button class="md-primary md-raised">Add Stock</md-button>
+                <div layout="column" layout-align="end end">
+                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-click="vm.addStock(vm.stock)">Add Stock</md-button>
                 </div>
             </form>
         </md-dialog-content>

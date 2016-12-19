@@ -24,7 +24,7 @@ namespace app{
          * HideDialog
          */
         public hideDialog() {
-            
+            this.$mdDialog.hide();
         }
     }
 

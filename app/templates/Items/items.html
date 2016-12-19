@@ -2,8 +2,8 @@
     <div layout-margin>
         <md-input-container class="md-icon-float md-block">
             <label>Search</label>
-            <md-icon md-svg-src="img/icons/ic_person_24px.svg" class="name"></md-icon>
-            <input ng-model="user.name" type="text">
+            <md-icon md-svg-src="bower_components\material-design-icons\action\svg\design\ic_search_24px.svg" class="name"></md-icon>
+            <input ng-model="vm.query" type="text">
         </md-input-container>
     </div>
     <table md-table>
@@ -41,7 +41,7 @@
     
 </md-content>
 <div>
-    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Eat cake" ng-click="vm.showDialog();">
+    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showDialog();">
         <md-icon md-svg-src="bower_components\material-design-icons\content\svg\design\ic_add_24px.svg"></md-icon>
     </md-button>
 </div>

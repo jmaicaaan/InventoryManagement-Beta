@@ -3,6 +3,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -14,6 +15,7 @@ var app;
         'material.components.autocomplete'
     ]);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -76,70 +78,87 @@ var app;
         .module('inventory-management')
         .config(config);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -182,6 +201,7 @@ var app;
     app.BaseController = BaseController;
     BaseController.$inject = ['BaseService'];
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -207,6 +227,7 @@ var app;
          * hideDialog
          */
         BrandsController.prototype.hideDialog = function () {
+            this.$mdDialog.hide();
         };
         return BrandsController;
     }(app.BaseController));
@@ -229,6 +250,7 @@ var app;
         .module('inventory-management')
         .controller('BrandsController', BrandsController);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -254,6 +276,7 @@ var app;
          * hideDialog
          */
         CategoriesController.prototype.hideDialog = function () {
+            this.$mdDialog.hide();
         };
         return CategoriesController;
     }(app.BaseController));
@@ -276,6 +299,7 @@ var app;
         .module('inventory-management')
         .controller('CategoriesController', CategoriesController);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -297,6 +321,7 @@ var app;
         .module('inventory-management')
         .controller('DashboardController', DashboardController);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -322,6 +347,7 @@ var app;
          * HideDialog
          */
         ItemsController.prototype.hideDialog = function () {
+            this.$mdDialog.hide();
         };
         return ItemsController;
     }(app.BaseController));
@@ -365,6 +391,7 @@ var app;
         .module('inventory-management')
         .controller('ItemsController', ItemsController);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -390,6 +417,7 @@ var app;
          * HideDialog
          */
         StocksController.prototype.hideDialog = function () {
+            this.$mdDialog.hide();
         };
         return StocksController;
     }(app.BaseController));
@@ -412,6 +440,7 @@ var app;
         .module('inventory-management')
         .controller('StocksController', StocksController);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -437,6 +466,7 @@ var app;
          * HideDialog
          */
         SuppliersController.prototype.hideDialog = function () {
+            this.$mdDialog.hide();
         };
         return SuppliersController;
     }(app.BaseController));
@@ -459,6 +489,7 @@ var app;
         .module('inventory-management')
         .controller('SuppliersController', SuppliersController);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -484,6 +515,7 @@ var app;
          * hideDialog
          */
         UnitsController.prototype.hideDialog = function () {
+            this.$mdDialog.hide();
         };
         return UnitsController;
     }(app.BaseController));
@@ -506,6 +538,7 @@ var app;
         .module('inventory-management')
         .controller('UnitsController', UnitsController);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -536,6 +569,7 @@ var app;
         .module('inventory-management')
         .directive('sidenavWatcherDirective', sidenavWatcherDirective);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -550,6 +584,7 @@ var app;
         .module('inventory-management')
         .run(run);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -610,6 +645,7 @@ var app;
         .module('inventory-management')
         .service('BaseService', BaseService);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -625,6 +661,7 @@ var app;
         .module('inventory-management')
         .service('BrandsService', BrandsService);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -640,6 +677,7 @@ var app;
         .module('inventory-management')
         .service('CategoriesService', CategoriesService);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -657,6 +695,7 @@ var app;
         .module('inventory-management')
         .service('DashboardService', DashboardService);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -672,6 +711,7 @@ var app;
         .module('inventory-management')
         .service('ItemsService', ItemsService);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -687,6 +727,7 @@ var app;
         .module('inventory-management')
         .service('StocksService', StocksService);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
@@ -702,6 +743,7 @@ var app;
         .module('inventory-management')
         .service('SuppliersService', SuppliersService);
 })(app || (app = {}));
+"use strict";
 var app;
 (function (app) {
     'use strict';
