@@ -539,64 +539,195 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.ItemsService = ItemsService;
+            _this.viewItems();
             return _this;
         }
         /**
          * ShowDialog
          */
-        ItemsController.prototype.showDialog = function () {
+        ItemsController.prototype.showDialog = function (templateUrl, item) {
             var config = {
-                templateUrl: 'app/templates/Items/items-dialog.html',
+                templateUrl: templateUrl,
                 controller: ItemsDialogController,
                 controllerAs: 'vm',
-                fullscreen: true
+                fullscreen: true,
+                locals: {
+                    selectedItem: item
+                }
             };
-            this.$mdDialog.show(config);
+            return this.ItemsService.showDialog(config);
         };
         /**
-         * HideDialog
+         * showConfirmDialog
          */
-        ItemsController.prototype.hideDialog = function () {
-            this.$mdDialog.hide();
+        ItemsController.prototype.showConfirmDialog = function (confirmConfig) {
+            return this.ItemsService.showDialog(confirmConfig);
+        };
+        /**
+         * showAddDialog
+         */
+        ItemsController.prototype.showAddDialog = function () {
+            var templateUrl = 'app/templates/Items/items-dialog.html', item = {};
+            this.showDialog(templateUrl, item);
+        };
+        /**
+         * showEditDialog
+         */
+        ItemsController.prototype.showEditDialog = function (item) {
+            var templateUrl = 'app/templates/Items/items-edit-dialog.html';
+            this.showDialog(templateUrl, item);
+        };
+        /**
+         * viewItems
+         */
+        ItemsController.prototype.viewItems = function () {
+            var _this = this;
+            this.view_without_data('/viewItems')
+                .then(function (items) {
+                _this.ItemsService.listItems = items.data.listItems;
+            })
+                .catch(function (err) {
+                _this.ItemsService.showToast(err);
+            });
+        };
+        /**
+         * editItem
+         */
+        ItemsController.prototype.editItem = function (item) {
+            this.showEditDialog(item);
+        };
+        /**
+         * deleteitem
+         */
+        ItemsController.prototype.deleteitem = function (item) {
+            var _this = this;
+            var confirmConfig = this.$mdDialog.confirm()
+                .title('Would you like to delete this item?')
+                .textContent('Item Name: ' + item.name)
+                .ok('Delete')
+                .cancel('Cancel');
+            this.ItemsService.showDialog(confirmConfig)
+                .then(function () {
+                var itemModel = {
+                    item: item
+                };
+                _this.remove('/deleteitem', itemModel)
+                    .then(function (resp) {
+                    _this.viewItems();
+                })
+                    .catch(function (err) {
+                    _this.ItemsService.showToast(err);
+                });
+            })
+                .catch(function (err) {
+                console.log('Confirm Dialog cancelled.');
+            });
         };
         return ItemsController;
     }(app.BaseController));
     var ItemsDialogController = (function (_super) {
         __extends(ItemsDialogController, _super);
-        function ItemsDialogController($mdDialog, ItemsService, BaseService) {
+        function ItemsDialogController($mdDialog, ItemsService, BaseService, selectedItem) {
             var _this = _super.call(this, $mdDialog, ItemsService, BaseService) || this;
-            _this.suppliers = [
-                {
-                    name: 'Supplier 1',
-                    email: 'test@example.com'
-                },
-                {
-                    name: 'Supplier 2',
-                    email: 'test@example.com'
-                },
-                {
-                    name: 'Supplier 3',
-                    email: 'test@example.com'
-                }
-            ];
-            /**
-             * The Supplier variable needs to be initialized for the chips to work.
-             */
-            _this.item = {
-                Suppliers: []
-            };
+            _this.selectedItem = selectedItem;
+            _this.selectedSuppliers = [];
+            _this.loadBrands();
+            _this.loadCategories();
+            _this.loadUnits();
+            _this.loadSuppliers();
             return _this;
         }
+        /**
+         * loadBrands
+         */
+        ItemsDialogController.prototype.loadBrands = function () {
+            var _this = this;
+            this.view_without_data('/viewBrands')
+                .then(function (brands) {
+                _this.ItemsService.listBrands = brands.data.listBrands;
+            })
+                .catch(function (err) {
+                console.log(err);
+            });
+        };
+        /**
+         * loadUnits
+         */
+        ItemsDialogController.prototype.loadUnits = function () {
+            var _this = this;
+            this.view_without_data('/viewUnits')
+                .then(function (units) {
+                _this.ItemsService.listUnits = units.data.listUnits;
+            })
+                .catch(function (err) {
+                console.log(err);
+            });
+        };
+        /**
+         * loadCategories
+         */
+        ItemsDialogController.prototype.loadCategories = function () {
+            var _this = this;
+            this.view_without_data('/viewCategories')
+                .then(function (categories) {
+                _this.ItemsService.listCategories = categories.data.listCategories;
+            })
+                .catch(function (err) {
+                console.log(err);
+            });
+        };
+        /**
+        * loadSuppliers
+        */
+        ItemsDialogController.prototype.loadSuppliers = function () {
+            var _this = this;
+            this.view_without_data('/viewSuppliers')
+                .then(function (suppliers) {
+                _this.ItemsService.listSuppliers = suppliers.data.listSuppliers;
+            })
+                .catch(function (err) {
+                console.log(err);
+            });
+        };
         /**
          * addItem
          */
         ItemsDialogController.prototype.addItem = function (item) {
-            this.add('Sample URL', item);
+            var _this = this;
+            var itemModel = {
+                item: item,
+                listSuppliers: this.selectedSuppliers
+            };
+            this.add('/addItem', itemModel)
+                .then(function (response) {
+                _this.ItemsService.hideDialog();
+                _this.viewItems();
+            })
+                .catch(function (err) {
+                _this.ItemsService.showToast(err);
+            });
+        };
+        /**
+         * editItem
+         */
+        ItemsDialogController.prototype.editItem = function () {
+            var _this = this;
+            var itemModel = {
+                item: this.selectedItem
+            };
+            this.update('/editItem', itemModel)
+                .then(function (resp) {
+                _this.ItemsService.hideDialog();
+                _this.viewItems();
+            })
+                .catch(function (err) {
+                _this.ItemsService.showToast(err);
+            });
         };
         return ItemsDialogController;
     }(ItemsController));
     ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem'];
     angular
         .module('inventory-management')
         .controller('ItemsController', ItemsController);
@@ -1182,14 +1313,37 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var ItemsService = (function (_super) {
-        __extends(ItemsService, _super);
-        function ItemsService($http) {
-            return _super.call(this, $http) || this;
+    var ItemsService = (function () {
+        function ItemsService(ToastService, DialogService) {
+            this.ToastService = ToastService;
+            this.DialogService = DialogService;
+            this.listItems = [];
+            this.listBrands = [];
+            this.listUnits = [];
+            this.listCategories = [];
+            this.listSuppliers = [];
         }
+        /**
+         * showToast
+         */
+        ItemsService.prototype.showToast = function (message) {
+            this.ToastService.showToast(message);
+        };
+        /**
+         * showDialog
+         */
+        ItemsService.prototype.showDialog = function (config) {
+            return this.DialogService.showDialog(config);
+        };
+        /**
+         * hideDialog
+         */
+        ItemsService.prototype.hideDialog = function () {
+            this.DialogService.hideDialog();
+        };
         return ItemsService;
-    }(app.BaseService));
-    ItemsService.$inject = ['$http'];
+    }());
+    ItemsService.$inject = ['ToastService', 'DialogService'];
     angular
         .module('inventory-management')
         .service('ItemsService', ItemsService);

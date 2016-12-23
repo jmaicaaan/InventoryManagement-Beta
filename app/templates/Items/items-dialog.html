@@ -4,7 +4,7 @@
             <div class="md-toolbar-tools">
                 <h2>Add Item</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="vm.hideDialog()">
+                <md-button class="md-icon-button" ng-click="vm.ItemsService.hideDialog()">
                     <md-icon md-svg-src="app/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
                 </md-button>
             </div>
@@ -16,32 +16,32 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Item Name</label>
-                            <input ng-model="vm.item.Name" type="text">
+                            <input ng-model="vm.item.name" type="text">
                         </md-input-container>
                     </div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Item Description</label>
-                            <input ng-model="vm.item.Description" type="text">
+                            <input ng-model="vm.item.description" type="text">
                         </md-input-container>
                     </div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Item Code</label>
-                            <input ng-model="vm.item.Code" type="text">
+                            <input ng-model="vm.item.code" type="text">
                         </md-input-container>
                     </div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Item Location</label>
-                            <input ng-model="vm.item.Location" type="text">
+                            <input ng-model="vm.item.location" type="text">
                         </md-input-container>
                     </div>
 
                     <div>
-                        <md-chips ng-model="vm.item.Suppliers" md-autocomplete-snap md-autocomplete-wrap-override>
-                            <md-autocomplete md-items="supplier in vm.suppliers" placeholder="Enter Supplier Name">
-                                <span><strong>{{supplier.name}}</strong>: {{supplier.email}}</span>
+                        <md-chips ng-model="vm.selectedSuppliers" md-autocomplete-snap md-autocomplete-wrap-override>
+                            <md-autocomplete md-items="supplier in vm.ItemsService.listSuppliers" placeholder="Enter Supplier Name">
+                                <span><strong>{{supplier.name}}</strong></span>
                             </md-autocomplete>
                             <md-chip-template>
                                 {{$chip.name}}
@@ -52,9 +52,9 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Brand</label>
-                            <md-select ng-model="vm.item.Brand">
-                                <md-option>
-                                    One
+                            <md-select ng-model="vm.item.brand.id">
+                                <md-option ng-repeat="brand in vm.ItemsService.listBrands" ng-value="brand.id">
+                                    {{brand.name}} 
                                 </md-option>
                             </md-select>
                         </md-input-container>
@@ -62,9 +62,9 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Category</label>
-                            <md-select ng-model="vm.item.Category">
-                                <md-option>
-                                    One
+                            <md-select ng-model="vm.item.category.id">
+                                <md-option ng-repeat="category in vm.ItemsService.listCategories" ng-value="category.id">
+                                    {{category.name}}
                                 </md-option>
                             </md-select>
                         </md-input-container>
@@ -72,9 +72,9 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Unit</label>
-                            <md-select ng-model="vm.item.Unit">
-                                <md-option>
-                                    One
+                            <md-select ng-model="vm.item.unit.id">
+                                <md-option ng-repeat="unit in vm.ItemsService.listUnits" ng-value="unit.id">
+                                    {{unit.name}}
                                 </md-option>
                             </md-select>
                         </md-input-container>

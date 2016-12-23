@@ -3,7 +3,7 @@
         <md-input-container class="md-icon-float md-block">
             <label>Search</label>
             <md-icon md-svg-src="app/icons/ic_search_24px.svg" class="name"></md-icon>
-            <input ng-model="vm.query" type="text">
+            <input ng-model="vm.queryText" type="text">
         </md-input-container>
     </div>
     <div layout-fill>
@@ -13,12 +13,8 @@
                 <tr md-row>
                     <th md-column md-order-by="nameToLower"><span>No.</span></th>
                     <th md-column md-order-by="nameToLower"><span>Item Name</span></th>
-                    <!--<th md-column md-order-by="nameToLower"><span>Item Description</span></th>-->
                     <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm ><span>Supplier Name</span></th>
                     <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Brand</span></th>
-                    <!--<th md-column md-order-by="nameToLower"><span>Category</span></th>-->
-                    <!--<th md-column md-order-by="nameToLower"><span>Item Code</span></th>
-                    <th md-column md-order-by="nameToLower"><span>Item Location</span></th>-->
                     <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Units</span></th>
                     <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Quantity</span></th>
                     <th md-column md-order-by="nameToLower"><span>Total Stocks</span></th>
@@ -27,16 +23,18 @@
                 </thead>
             <tbody md-body>
                 <!-- Implement on-hold for mobile -->
-                <tr md-row md-select="dessert" md-select-id="name" md-auto-select>
-                    <td md-cell>1</td>
-                    <td md-cell>Hello</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm>Hello</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm>Hello</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm>Hello</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm>Hello</td>
-                    <td md-cell>Hello</td>
+                <tr md-row ng-repeat="item in vm.ItemsService.listItems | filter: vm.queryText" md-auto-select>
+                    <td md-cell>{{$index + 1}}</td>
+                    <td md-cell>{{item.name}}</td>
+                    <td md-cell hide-xs hide-ms show-gt-sm>{{item.supplier.name}}</td>
+                    <td md-cell hide-xs hide-ms show-gt-sm>{{item.brand.name}}</td>
+                    <td md-cell hide-xs hide-ms show-gt-sm>{{item.unit.name}}</td>
+                    <td md-cell hide-xs hide-ms show-gt-sm>{{item.quantity}}</td>
+                    <td md-cell>{{item.totalStocks}}</td>
                     <td md-cell hide-xs hide-ms show-gt-sm> 
                         <md-button class="md-primary md-raised">View Details</md-button>
+                        <md-button class="md-primary md-raised">Edit</md-button>
+                        <md-button class="md-primary md-raised">Delete</md-button>
                     </td>
                 </tr>
             </tbody>
@@ -46,7 +44,7 @@
     
 </md-content>
 <div>
-    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showDialog();">
+    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
         <md-icon md-svg-src="app/icons/ic_add_24px.svg"></md-icon>
     </md-button>
 </div>

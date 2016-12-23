@@ -1,7 +1,12 @@
 namespace app{
     'use strict';
 
-    export interface IItemsService extends IBaseService{
+    export interface IItemsService extends IDialogService, IToastService{
 
+        listItems: Array<IItem>;
+        listBrands: Array<IBrand>;
+        listUnits: Array<IUnit>;
+        listCategories: Array<ICategory>;
+        listSuppliers: Array<ISupplier>;
     }
 }
