@@ -1,10 +1,10 @@
 namespace app {
     'use strict';
 
-    class BrandsController extends BaseController{
+    class BrandsController extends BaseController {
 
         constructor(public $mdDialog: angular.material.IDialogService,
-                protected BrandsService: IBrandService, BaseService: IBaseService) {
+            protected BrandsService: IBrandService, BaseService: IBaseService) {
             super(BaseService);
             this.viewBrands();
         }

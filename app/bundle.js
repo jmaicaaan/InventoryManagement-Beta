@@ -713,43 +713,137 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.UnitsService = UnitsService;
+            _this.viewUnits();
             return _this;
         }
         /**
          * showDialog
          */
-        UnitsController.prototype.showDialog = function () {
+        UnitsController.prototype.showDialog = function (templateUrl, unit) {
             var config = {
-                templateUrl: 'app/templates/Units/units-dialog.html',
+                templateUrl: templateUrl,
                 controller: UnitsDialogController,
                 controllerAs: 'vm',
-                fullscreen: true
+                fullscreen: true,
+                locals: {
+                    unit: unit
+                }
             };
-            this.$mdDialog.show(config);
+            return this.UnitsService.showDialog(config);
         };
         /**
-         * hideDialog
+        * showConfirmDialog
+        */
+        UnitsController.prototype.showConfirmDialog = function (confirmConfig) {
+            return this.UnitsService.showDialog(confirmConfig);
+        };
+        /**
+         * showAddDialog
          */
-        UnitsController.prototype.hideDialog = function () {
-            this.$mdDialog.hide();
+        UnitsController.prototype.showAddDialog = function () {
+            var templateUrl = 'app/templates/Units/units-dialog.html', unit = {};
+            this.showDialog(templateUrl, unit);
+        };
+        /**
+         * showEditDialog
+         */
+        UnitsController.prototype.showEditDialog = function (unit) {
+            var templateUrl = 'app/templates/Units/units-edit-dialog.html';
+            this.showDialog(templateUrl, unit);
+        };
+        /**
+         * viewUnits
+         */
+        UnitsController.prototype.viewUnits = function () {
+            var _this = this;
+            this.view_without_data('/viewUnits')
+                .then(function (units) {
+                _this.UnitsService.listUnits = units.data.listUnits;
+            })
+                .catch(function (err) {
+                _this.UnitsService.showToast(err);
+            });
+        };
+        /**
+         * editUnit
+         */
+        UnitsController.prototype.editUnit = function (unit) {
+            this.showEditDialog(unit);
+        };
+        /**
+         * deleteUnit
+         */
+        UnitsController.prototype.deleteUnit = function (unit) {
+            var _this = this;
+            var confirmConfig = this.$mdDialog.confirm()
+                .title('Would you like to delete this unit?')
+                .textContent('Unit Name: ' + unit.name)
+                .ok('Delete')
+                .cancel('Cancel');
+            this.UnitsService.showDialog(confirmConfig)
+                .then(function () {
+                var unitModel = {
+                    unit: unit
+                };
+                _this.remove('/deleteUnit', unitModel)
+                    .then(function (resp) {
+                    _this.viewUnits();
+                })
+                    .catch(function (err) {
+                    _this.UnitsService.showToast(err);
+                });
+            })
+                .catch(function (err) {
+                console.log('Confirm Dialog cancelled.');
+            });
         };
         return UnitsController;
     }(app.BaseController));
     var UnitsDialogController = (function (_super) {
         __extends(UnitsDialogController, _super);
-        function UnitsDialogController($mdDialog, UnitsService, BaseService) {
-            return _super.call(this, $mdDialog, UnitsService, BaseService) || this;
+        function UnitsDialogController($mdDialog, UnitsService, BaseService, unit) {
+            var _this = _super.call(this, $mdDialog, UnitsService, BaseService) || this;
+            _this.unit = unit;
+            return _this;
         }
         /**
-         * addUnit
-         */
+          * addUnit
+          */
         UnitsDialogController.prototype.addUnit = function (unit) {
-            this.add('Sample Url', unit);
+            var _this = this;
+            var unitModel = {
+                unit: unit
+            };
+            this.add('/addUnit', unitModel)
+                .then(function (response) {
+                _this.UnitsService.hideDialog();
+                _this.viewUnits();
+            })
+                .catch(function (err) {
+                _this.UnitsService.showToast(err);
+            });
+        };
+        /**
+         * editUnit
+         */
+        UnitsDialogController.prototype.editUnit = function () {
+            var _this = this;
+            var unitModel = {
+                unit: this.unit
+            };
+            this.update('/editUnit', unitModel)
+                .then(function (resp) {
+                _this.UnitsService.hideDialog();
+                _this.viewUnits();
+            })
+                .catch(function (err) {
+                _this.UnitsService.showToast(err);
+            });
         };
         return UnitsDialogController;
     }(UnitsController));
     UnitsController.$inject = ['$mdDialog', 'UnitsService', 'BaseService'];
-    UnitsDialogController.$inject = ['$mdDialog', 'UnitsService', 'BaseService'];
+    UnitsDialogController.$inject = ['$mdDialog', 'UnitsService', 'BaseService', 'unit'];
     angular
         .module('inventory-management')
         .controller('UnitsController', UnitsController);
@@ -1112,14 +1206,33 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var UnitsService = (function (_super) {
-        __extends(UnitsService, _super);
-        function UnitsService($http) {
-            return _super.call(this, $http) || this;
+    var UnitsService = (function () {
+        function UnitsService(ToastService, DialogService) {
+            this.ToastService = ToastService;
+            this.DialogService = DialogService;
+            this.listUnits = [];
         }
+        /**
+         * showToast
+         */
+        UnitsService.prototype.showToast = function (message) {
+            this.ToastService.showToast(message);
+        };
+        /**
+         * showDialog
+         */
+        UnitsService.prototype.showDialog = function (config) {
+            return this.DialogService.showDialog(config);
+        };
+        /**
+         * hideDialog
+         */
+        UnitsService.prototype.hideDialog = function () {
+            this.DialogService.hideDialog();
+        };
         return UnitsService;
-    }(app.BaseService));
-    UnitsService.$inject = ['$http'];
+    }());
+    UnitsService.$inject = ['ToastService', 'DialogService'];
     angular
         .module('inventory-management')
         .service('UnitsService', UnitsService);
