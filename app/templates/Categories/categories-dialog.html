@@ -4,7 +4,7 @@
             <div class="md-toolbar-tools">
                 <h2>Add Category</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="vm.hideDialog()">
+                <md-button class="md-icon-button" ng-click="vm.CategoriesService.hideDialog()">
                     <md-icon md-svg-src="app/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
                 </md-button>
             </div>
@@ -16,7 +16,7 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Category Name</label>
-                            <input ng-model="vm.category.Name" type="text">
+                            <input ng-model="vm.category.name" type="text">
                         </md-input-container>
                     </div>
                 </div>

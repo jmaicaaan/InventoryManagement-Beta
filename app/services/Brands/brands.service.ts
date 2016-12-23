@@ -1,7 +1,7 @@
 namespace app{
     'use strict';
 
-    class BrandsService implements IBrandService, IDialogService{
+    class BrandsService implements IBrandService{
         constructor(private ToastService: IToastService, private DialogService: IDialogService){
         }
 

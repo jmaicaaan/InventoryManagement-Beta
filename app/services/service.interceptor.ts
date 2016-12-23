@@ -18,9 +18,12 @@ namespace app {
                 return config;
             },
             responseError: function(response){
+                
+                if(response.status === -1)
+                    throw 'API is dead.';
+
                 if(response.status === 500)
                     throw response.data.errorMessage;
-                    // throw 'response';
                 return response;
             }
         }

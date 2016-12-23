@@ -3,11 +3,14 @@ namespace app{
 
     function run($rootScope: angular.IRootScopeService, DashboardService: IDashboardService){
 
-
         $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) => {
             let name = toState.title;
-            DashboardService.stateNameModifier(name);
+            stateNameModifier(name);
         });
+
+        function stateNameModifier(name){
+            DashboardService.stateNameModifier(name);
+        }
     }
 
     run.$inject = ['$rootScope', 'DashboardService'];

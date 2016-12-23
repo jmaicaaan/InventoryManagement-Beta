@@ -2,9 +2,9 @@
     <md-dialog class="dialog">
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>Edit Brand</h2>
+                <h2>Edit Category</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="vm.BrandsService.hideDialog();">
+                <md-button class="md-icon-button" ng-click="vm.CategoriesService.hideDialog()">
                     <md-icon md-svg-src="app/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
                 </md-button>
             </div>
@@ -15,14 +15,14 @@
                 <div>
                     <div>
                         <md-input-container class="md-block">
-                            <label>Brand Name</label>
-                            <input ng-model="vm.brand.name" type="text">
+                            <label>Category Name</label>
+                            <input ng-model="vm.category.name" type="text">
                         </md-input-container>
                     </div>
                 </div>
 
                 <div layout="column" layout-align="end end">
-                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-click="vm.editBrand(vm.brand)">Edit Brand</md-button>
+                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-click="vm.editCategory(vm.category)">Add Category</md-button>
                 </div>
             </form>
         </md-dialog-content>

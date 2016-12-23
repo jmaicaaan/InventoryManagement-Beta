@@ -2,15 +2,15 @@ namespace app{
     'use strict';
 
     export interface IItem{
-        Name: string;
-        Description: string;
-        Code: string;
-        Location: string;
-        Quantity: number;
-        TotalStocks: number;
-        Brand: IBrand;
-        Category: ICategory;
-        Suppliers: Array<ISupplier>;
-        Unit: IUnit;
+        name: string;
+        description: string;
+        code: string;
+        location: string;
+        quantity: number;
+        totalStocks: number;
+        brand: IBrand;
+        category: ICategory;
+        suppliers: Array<ISupplier>;
+        unit: IUnit;
     }
 }

@@ -1,28 +1,30 @@
 namespace app {
     'use strict';
 
-    class BrandsController extends BaseController {
+    class BrandsController extends BaseController{
 
         constructor(public $mdDialog: angular.material.IDialogService,
-            protected BrandsService: IBrandService, BaseService: IBaseService) {
-
+                protected BrandsService: IBrandService, BaseService: IBaseService) {
             super(BaseService);
-
             this.viewBrands();
         }
 
         /**
          * showDialog
          */
-        public showDialog(config: angular.material.IDialogOptions) {
-            return this.BrandsService.showDialog(config);
-        }
+        public showDialog(templateUrl, brand) {
 
-        /**
-         * hideDialog
-         */
-        public hideDialog() {
-            this.BrandsService.hideDialog();
+            let config: angular.material.IDialogOptions = {
+                controller: BrandsDialogController,
+                templateUrl: templateUrl,
+                controllerAs: 'vm',
+                fullscreen: true,
+                locals: {
+                    brand: brand
+                }
+            };
+
+            return this.BrandsService.showDialog(config);
         }
 
         /**
@@ -36,14 +38,11 @@ namespace app {
          * showAddDialog
          */
         public showAddDialog() {
-            let config: angular.material.IDialogOptions = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
-                controller: BrandsDialogController,
-                controllerAs: 'vm',
-                fullscreen: true
-            };
 
-            this.showDialog(config);
+            let templateUrl = 'app/templates/Brands/brands-dialog.html',
+                brand = {};
+
+            this.showDialog(templateUrl, brand);
         }
 
         /**
@@ -51,17 +50,9 @@ namespace app {
          */
         public showEditDialog(brand) {
 
-            let config: angular.material.IDialogOptions = {
-                templateUrl: 'app/templates/Brands/brands-edit-dialog.html',
-                controller: BrandsDialogController,
-                controllerAs: 'vm',
-                fullscreen: true,
-                locals: {
-                    brand: brand
-                }
-            };
+            let templateUrl = 'app/templates/Brands/brands-edit-dialog.html';
 
-            this.showDialog(config);
+            this.showDialog(templateUrl, brand);
         }
 
 
@@ -72,6 +63,9 @@ namespace app {
             this.view_without_data('/viewBrands')
                 .then((brands) => {
                     this.BrandsService.listBrands = brands.data.listBrands;
+                })
+                .catch((err) => {
+                    this.BrandsService.showToast(err);
                 });
         }
 
@@ -107,6 +101,9 @@ namespace app {
                         .catch((err) => {
                             this.BrandsService.showToast(err);
                         });
+                })
+                .catch((err) => {
+                    console.log('Confirm Dialog cancelled.');
                 });
         }
     }
@@ -129,19 +126,12 @@ namespace app {
 
             this.add('/addBrand', brandModel)
                 .then((response) => {
-                    this.hideDialog();
+                    this.BrandsService.hideDialog();
                     this.viewBrands();
                 })
                 .catch((err) => {
                     this.BrandsService.showToast(err);
                 });
-        }
-
-        /**
-         * hideDialog
-         */
-        public hideDialog() {
-            this.BrandsService.hideDialog();
         }
 
         /**
@@ -155,7 +145,7 @@ namespace app {
 
             this.update('/editBrand', brandModel)
                 .then((resp) => {
-                    this.hideDialog();
+                    this.BrandsService.hideDialog();
                     this.viewBrands();
                 })
                 .catch((err) => {

@@ -233,14 +233,17 @@ var app;
         /**
          * showDialog
          */
-        BrandsController.prototype.showDialog = function (config) {
+        BrandsController.prototype.showDialog = function (templateUrl, brand) {
+            var config = {
+                controller: BrandsDialogController,
+                templateUrl: templateUrl,
+                controllerAs: 'vm',
+                fullscreen: true,
+                locals: {
+                    brand: brand
+                }
+            };
             return this.BrandsService.showDialog(config);
-        };
-        /**
-         * hideDialog
-         */
-        BrandsController.prototype.hideDialog = function () {
-            this.BrandsService.hideDialog();
         };
         /**
          * showConfirmDialog
@@ -252,28 +255,15 @@ var app;
          * showAddDialog
          */
         BrandsController.prototype.showAddDialog = function () {
-            var config = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
-                controller: BrandsDialogController,
-                controllerAs: 'vm',
-                fullscreen: true
-            };
-            this.showDialog(config);
+            var templateUrl = 'app/templates/Brands/brands-dialog.html', brand = {};
+            this.showDialog(templateUrl, brand);
         };
         /**
          * showEditDialog
          */
         BrandsController.prototype.showEditDialog = function (brand) {
-            var config = {
-                templateUrl: 'app/templates/Brands/brands-edit-dialog.html',
-                controller: BrandsDialogController,
-                controllerAs: 'vm',
-                fullscreen: true,
-                locals: {
-                    brand: brand
-                }
-            };
-            this.showDialog(config);
+            var templateUrl = 'app/templates/Brands/brands-edit-dialog.html';
+            this.showDialog(templateUrl, brand);
         };
         /**
          * viewBrands
@@ -283,6 +273,9 @@ var app;
             this.view_without_data('/viewBrands')
                 .then(function (brands) {
                 _this.BrandsService.listBrands = brands.data.listBrands;
+            })
+                .catch(function (err) {
+                _this.BrandsService.showToast(err);
             });
         };
         /**
@@ -313,6 +306,9 @@ var app;
                     .catch(function (err) {
                     _this.BrandsService.showToast(err);
                 });
+            })
+                .catch(function (err) {
+                console.log('Confirm Dialog cancelled.');
             });
         };
         return BrandsController;
@@ -334,18 +330,12 @@ var app;
             };
             this.add('/addBrand', brandModel)
                 .then(function (response) {
-                _this.hideDialog();
+                _this.BrandsService.hideDialog();
                 _this.viewBrands();
             })
                 .catch(function (err) {
                 _this.BrandsService.showToast(err);
             });
-        };
-        /**
-         * hideDialog
-         */
-        BrandsDialogController.prototype.hideDialog = function () {
-            this.BrandsService.hideDialog();
         };
         /**
          * editBrand
@@ -357,7 +347,7 @@ var app;
             };
             this.update('/editBrand', brandModel)
                 .then(function (resp) {
-                _this.hideDialog();
+                _this.BrandsService.hideDialog();
                 _this.viewBrands();
             })
                 .catch(function (err) {
@@ -382,43 +372,137 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.CategoriesService = CategoriesService;
+            _this.viewCategories();
             return _this;
         }
         /**
          * showDialog
          */
-        CategoriesController.prototype.showDialog = function () {
+        CategoriesController.prototype.showDialog = function (templateUrl, category) {
             var config = {
-                templateUrl: 'app/templates/Categories/categories-dialog.html',
+                templateUrl: templateUrl,
                 controller: CategoriesDialogController,
                 controllerAs: 'vm',
-                fullscreen: true
+                fullscreen: true,
+                locals: {
+                    category: category
+                }
             };
-            this.$mdDialog.show(config);
+            this.CategoriesService.showDialog(config);
         };
         /**
-         * hideDialog
+         * showConfirmDialog
          */
-        CategoriesController.prototype.hideDialog = function () {
-            this.$mdDialog.hide();
+        CategoriesController.prototype.showConfirmDialog = function (confirmConfig) {
+            return this.CategoriesService.showDialog(confirmConfig);
+        };
+        /**
+        * showAddDialog
+        */
+        CategoriesController.prototype.showAddDialog = function () {
+            var templateUrl = 'app/templates/Categories/categories-dialog.html', category = {};
+            this.showDialog(templateUrl, category);
+        };
+        /**
+         * showEditDialog
+         */
+        CategoriesController.prototype.showEditDialog = function (category) {
+            var templateUrl = 'app/templates/Categories/categories-edit-dialog.html';
+            this.showDialog(templateUrl, category);
+        };
+        /**
+         * viewCategories
+         */
+        CategoriesController.prototype.viewCategories = function () {
+            var _this = this;
+            this.view_without_data('/viewCategories')
+                .then(function (categories) {
+                _this.CategoriesService.listCategories = categories.data.listCategories;
+            })
+                .catch(function (err) {
+                _this.CategoriesService.showToast(err);
+            });
+        };
+        /**
+         * editCategory
+         */
+        CategoriesController.prototype.editCategory = function (category) {
+            this.showEditDialog(category);
+        };
+        /**
+         * deleteCategory
+         */
+        CategoriesController.prototype.deleteCategory = function (category) {
+            var _this = this;
+            var confirmConfig = this.$mdDialog.confirm()
+                .title('Would you like to delete this category?')
+                .textContent('Category Name: ' + category.name)
+                .ok('Delete')
+                .cancel('Cancel');
+            this.CategoriesService.showDialog(confirmConfig)
+                .then(function () {
+                var categoryModel = {
+                    category: category
+                };
+                _this.remove('/deleteCategory', categoryModel)
+                    .then(function (resp) {
+                    _this.viewCategories();
+                })
+                    .catch(function (err) {
+                    _this.CategoriesService.showToast(err);
+                });
+            })
+                .catch(function (err) {
+                console.log('Confirm Dialog cancelled.');
+            });
         };
         return CategoriesController;
     }(app.BaseController));
     var CategoriesDialogController = (function (_super) {
         __extends(CategoriesDialogController, _super);
-        function CategoriesDialogController($mdDialog, CategoriesService, BaseService) {
-            return _super.call(this, $mdDialog, CategoriesService, BaseService) || this;
+        function CategoriesDialogController($mdDialog, CategoriesService, BaseService, category) {
+            var _this = _super.call(this, $mdDialog, CategoriesService, BaseService) || this;
+            _this.category = category;
+            return _this;
         }
         /**
          * addCategory
          */
         CategoriesDialogController.prototype.addCategory = function (category) {
-            this.add('Sample Url', category);
+            var _this = this;
+            var categoryModel = {
+                category: category
+            };
+            this.add('/addCategory', categoryModel)
+                .then(function (resp) {
+                _this.CategoriesService.hideDialog();
+                _this.viewCategories();
+            })
+                .catch(function (err) {
+                _this.CategoriesService.showToast(err);
+            });
+        };
+        /**
+         * editCategory
+         */
+        CategoriesDialogController.prototype.editCategory = function () {
+            var _this = this;
+            var categoryModel = {
+                category: this.category
+            };
+            this.update('/editCategory', categoryModel)
+                .then(function (resp) {
+                _this.CategoriesService.hideDialog();
+                _this.viewCategories();
+            })
+                .catch(function (err) {
+                _this.CategoriesService.showToast(err);
+            });
         };
         return CategoriesDialogController;
     }(CategoriesController));
     CategoriesController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService'];
-    CategoriesDialogController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService'];
+    CategoriesDialogController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService', 'category'];
     angular
         .module('inventory-management')
         .controller('CategoriesController', CategoriesController);
@@ -708,8 +792,11 @@ var app;
     function run($rootScope, DashboardService) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
             var name = toState.title;
-            DashboardService.stateNameModifier(name);
+            stateNameModifier(name);
         });
+        function stateNameModifier(name) {
+            DashboardService.stateNameModifier(name);
+        }
     }
     run.$inject = ['$rootScope', 'DashboardService'];
     angular
@@ -827,14 +914,33 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var CategoriesService = (function (_super) {
-        __extends(CategoriesService, _super);
-        function CategoriesService($http) {
-            return _super.call(this, $http) || this;
+    var CategoriesService = (function () {
+        function CategoriesService(ToastService, DialogService) {
+            this.ToastService = ToastService;
+            this.DialogService = DialogService;
+            this.listCategories = [];
         }
+        /**
+         * showToast
+         */
+        CategoriesService.prototype.showToast = function (message) {
+            this.ToastService.showToast(message);
+        };
+        /**
+         * showDialog
+         */
+        CategoriesService.prototype.showDialog = function (config) {
+            return this.DialogService.showDialog(config);
+        };
+        /**
+         * hideDialog
+         */
+        CategoriesService.prototype.hideDialog = function () {
+            this.DialogService.hideDialog();
+        };
         return CategoriesService;
-    }(app.BaseService));
-    CategoriesService.$inject = ['$http'];
+    }());
+    CategoriesService.$inject = ['ToastService', 'DialogService'];
     angular
         .module('inventory-management')
         .service('CategoriesService', CategoriesService);
@@ -919,9 +1025,10 @@ var app;
                 return config;
             },
             responseError: function (response) {
+                if (response.status === -1)
+                    throw 'API is dead.';
                 if (response.status === 500)
                     throw response.data.errorMessage;
-                // throw 'response';
                 return response;
             }
         };

@@ -9,6 +9,8 @@ namespace app{
         stateNameModifier(name){
             this.state['name'] = name;
         }
+
+
     }
     
     DashboardService.$inject = ['$state'];
