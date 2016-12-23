@@ -1,7 +1,7 @@
 namespace app{
     'use strict';
 
-    class CategoriesController extends BaseController<ICategory> implements IDialogController{
+    class CategoriesController extends BaseController implements IDialogController{
 
         constructor(private $mdDialog: angular.material.IDialogService,
                 protected CategoriesService: ICategoriesService, BaseService: IBaseService){
@@ -14,7 +14,7 @@ namespace app{
         public showDialog() {
            
             let config: angular.material.IDialogOptions = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Categories/categories-dialog.html',
                 controller: CategoriesDialogController,
                 controllerAs: 'vm',
                 fullscreen: true

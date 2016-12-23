@@ -13,10 +13,12 @@ namespace app{
             let config: angular.IRequestConfig = {
                 url: url,
                 method: 'POST',
-                data: data
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
             };
-
-            console.log(config);
 
             return this.$http(config)
                         .then( (data) => data)
@@ -33,7 +35,11 @@ namespace app{
             let config: angular.IRequestConfig = {
                 url: url,
                 method: 'GET',
-                data: data
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
             };
 
             return this.$http(config)
@@ -50,7 +56,11 @@ namespace app{
             
             let config: angular.IRequestConfig = {
                 url: url,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
             };
 
             return this.$http(config)
@@ -62,7 +72,7 @@ namespace app{
     }
 
     BaseService.$inject = ['$http'];
-
+    
     angular
         .module('inventory-management')
         .service('BaseService', BaseService);

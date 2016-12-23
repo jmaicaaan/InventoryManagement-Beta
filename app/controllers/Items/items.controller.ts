@@ -1,7 +1,7 @@
 namespace app{
     'use strict';
 
-    class ItemsController extends BaseController<IItem> implements IDialogController{
+    class ItemsController extends BaseController implements IDialogController{
 
         constructor(private $mdDialog: angular.material.IDialogService,
                 protected ItemsService: IItemsService, BaseService: IBaseService){
@@ -14,7 +14,7 @@ namespace app{
         public showDialog() {
 
             let config: angular.material.IDialogOptions = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Items/items-dialog.html',
                 controller: ItemsDialogController,
                 controllerAs: 'vm',
                 fullscreen: true

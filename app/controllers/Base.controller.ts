@@ -1,43 +1,43 @@
 namespace app{
     'use strict';
 
-    export abstract class BaseController<T> implements IBaseController<T>{
+    export abstract class BaseController implements IBaseController{
        
         constructor(private BaseService: IBaseService){}
 
        /**
         * add
         */
-       public add(url: string, data: T) {
-           this.BaseService.post_request(url, data);
+       public add(url: string, data: any) {
+           return this.BaseService.post_request(url, data);
        }
 
        /**
         * update
         */
-       public update(url: string, data: T) {
-            this.BaseService.post_request(url, data);
+       public update(url: string, data: any) {
+            return this.BaseService.post_request(url, data);
        }
 
        /**
         * remove
         */
-       public remove(url: string, data: T) {
-            this.BaseService.post_request(url, data);
+       public remove(url: string, data: any) {
+            return this.BaseService.post_request(url, data);
        }
 
        /**
         * view
         */
-       public view(url: string, data: T) {
-           return this.BaseService.get_request(url, data);
+       public view(url: string, data: any) {
+           return this.BaseService.post_request(url, data);
        }
 
         /**
         * view
         */
        public view_without_data(url: string) {
-           return this.BaseService.get_request_without_data(url);
+           return this.BaseService.post_request(url, {});
        }
     }
 

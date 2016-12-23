@@ -1,7 +1,7 @@
 namespace app{
     'use strict';
 
-    class SuppliersController extends BaseController<ISupplier> implements IDialogController{
+    class SuppliersController extends BaseController implements IDialogController{
 
         constructor(private $mdDialog: angular.material.IDialogService,
                  protected SuppliersService: ISupplierService, BaseService: IBaseService){
@@ -14,7 +14,7 @@ namespace app{
         public showDialog() {
 
             let config: angular.material.IDialogOptions = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Suppliers/suppliers-dialog.html',
                 controller: SupplierDialogController,
                 controllerAs: 'vm',
                 fullscreen: true

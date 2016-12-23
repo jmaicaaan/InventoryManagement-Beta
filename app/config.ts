@@ -1,7 +1,10 @@
 namespace app{
     'use strict';
 
-    function config($stateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider){
+    function config($stateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider, $httpProvider: angular.IHttpProvider){
+
+
+        $httpProvider.interceptors.push('serviceInterceptor');
 
         $urlRouterProvider  
             .otherwise('/');
@@ -59,7 +62,7 @@ namespace app{
             })
     }
 
-    config.$inject = ['$stateProvider', '$urlRouterProvider'];
+    config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
 
     angular
         .module('inventory-management')

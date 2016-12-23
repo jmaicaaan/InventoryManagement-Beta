@@ -1,11 +1,11 @@
 namespace app{
     'use strict';
 
-    export interface IBaseController<T>{
-        add(url: string, data: T): void;
-        update(url: string, data: T): void;
-        remove(url: string, data: T): void;
-        view(url: string, data: T): angular.IPromise<T>;
-        view_without_data(url: string): angular.IPromise<T>;
+    export interface IBaseController{
+        add(url: string, data: any): angular.IPromise<any>;
+        update(url: string, data: any): angular.IPromise<any>;
+        remove(url: string, data: any): angular.IPromise<any>;
+        view(url: string, data: any): angular.IPromise<any>;
+        view_without_data(url: string): angular.IPromise<any>;
     }
 }

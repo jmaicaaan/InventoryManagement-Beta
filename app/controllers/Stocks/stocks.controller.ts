@@ -1,7 +1,7 @@
 namespace app{
     'use strict';
 
-    class StocksController extends BaseController<IStock> implements IDialogController{
+    class StocksController extends BaseController implements IDialogController{
 
         constructor(private $mdDialog: angular.material.IDialogService,
                  protected StocksService: IStocksService, BaseService: IBaseService){
@@ -14,7 +14,7 @@ namespace app{
         public showDialog() {
 
             let config: angular.material.IDialogOptions = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Stocks/stocks-dialog.html',
                 controller: StocksDialogController,
                 controllerAs: 'vm',
                 fullscreen: true

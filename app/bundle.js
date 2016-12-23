@@ -19,7 +19,8 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    function config($stateProvider, $urlRouterProvider) {
+    function config($stateProvider, $urlRouterProvider, $httpProvider) {
+        $httpProvider.interceptors.push('serviceInterceptor');
         $urlRouterProvider
             .otherwise('/');
         $stateProvider
@@ -73,10 +74,25 @@ var app;
             title: 'Units'
         });
     }
-    config.$inject = ['$stateProvider', '$urlRouterProvider'];
+    config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
     angular
         .module('inventory-management')
         .config(config);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
 })(app || (app = {}));
 "use strict";
 var app;
@@ -170,31 +186,31 @@ var app;
          * add
          */
         BaseController.prototype.add = function (url, data) {
-            this.BaseService.post_request(url, data);
+            return this.BaseService.post_request(url, data);
         };
         /**
          * update
          */
         BaseController.prototype.update = function (url, data) {
-            this.BaseService.post_request(url, data);
+            return this.BaseService.post_request(url, data);
         };
         /**
          * remove
          */
         BaseController.prototype.remove = function (url, data) {
-            this.BaseService.post_request(url, data);
+            return this.BaseService.post_request(url, data);
         };
         /**
          * view
          */
         BaseController.prototype.view = function (url, data) {
-            return this.BaseService.get_request(url, data);
+            return this.BaseService.post_request(url, data);
         };
         /**
         * view
         */
         BaseController.prototype.view_without_data = function (url) {
-            return this.BaseService.get_request_without_data(url);
+            return this.BaseService.post_request(url, {});
         };
         return BaseController;
     }());
@@ -211,43 +227,147 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.BrandsService = BrandsService;
+            _this.viewBrands();
             return _this;
         }
         /**
          * showDialog
          */
-        BrandsController.prototype.showDialog = function () {
+        BrandsController.prototype.showDialog = function (config) {
+            return this.BrandsService.showDialog(config);
+        };
+        /**
+         * hideDialog
+         */
+        BrandsController.prototype.hideDialog = function () {
+            this.BrandsService.hideDialog();
+        };
+        /**
+         * showConfirmDialog
+         */
+        BrandsController.prototype.showConfirmDialog = function (confirmConfig) {
+            return this.BrandsService.showDialog(confirmConfig);
+        };
+        /**
+         * showAddDialog
+         */
+        BrandsController.prototype.showAddDialog = function () {
             var config = {
                 templateUrl: 'app/templates/Brands/brands-dialog.html',
                 controller: BrandsDialogController,
                 controllerAs: 'vm',
                 fullscreen: true
             };
-            this.$mdDialog.show(config);
+            this.showDialog(config);
         };
         /**
-         * hideDialog
+         * showEditDialog
          */
-        BrandsController.prototype.hideDialog = function () {
-            this.$mdDialog.hide();
+        BrandsController.prototype.showEditDialog = function (brand) {
+            var config = {
+                templateUrl: 'app/templates/Brands/brands-edit-dialog.html',
+                controller: BrandsDialogController,
+                controllerAs: 'vm',
+                fullscreen: true,
+                locals: {
+                    brand: brand
+                }
+            };
+            this.showDialog(config);
+        };
+        /**
+         * viewBrands
+         */
+        BrandsController.prototype.viewBrands = function () {
+            var _this = this;
+            this.view_without_data('/viewBrands')
+                .then(function (brands) {
+                _this.BrandsService.listBrands = brands.data.listBrands;
+            });
+        };
+        /**
+         * editBrand
+         */
+        BrandsController.prototype.editBrand = function (brand) {
+            this.showEditDialog(brand);
+        };
+        /**
+         * deleteBrand
+         */
+        BrandsController.prototype.deleteBrand = function (brand) {
+            var _this = this;
+            var confirmConfig = this.$mdDialog.confirm()
+                .title('Would you like to delete this brand?')
+                .textContent('Brand Name: ' + brand.name)
+                .ok('Delete')
+                .cancel('Cancel');
+            this.BrandsService.showDialog(confirmConfig)
+                .then(function () {
+                var brandModel = {
+                    brand: brand
+                };
+                _this.remove('/deleteBrand', brandModel)
+                    .then(function (resp) {
+                    _this.viewBrands();
+                })
+                    .catch(function (err) {
+                    _this.BrandsService.showToast(err);
+                });
+            });
         };
         return BrandsController;
     }(app.BaseController));
     var BrandsDialogController = (function (_super) {
         __extends(BrandsDialogController, _super);
-        function BrandsDialogController($mdDialog, BrandsService, BaseService) {
-            return _super.call(this, $mdDialog, BrandsService, BaseService) || this;
+        function BrandsDialogController($mdDialog, BrandsService, BaseService, brand) {
+            var _this = _super.call(this, $mdDialog, BrandsService, BaseService) || this;
+            _this.brand = brand;
+            return _this;
         }
         /**
          * addBrand
          */
         BrandsDialogController.prototype.addBrand = function (brand) {
-            this.add('Sample Url', brand);
+            var _this = this;
+            var brandModel = {
+                brand: brand
+            };
+            this.add('/addBrand', brandModel)
+                .then(function (response) {
+                _this.hideDialog();
+                _this.viewBrands();
+            })
+                .catch(function (err) {
+                _this.BrandsService.showToast(err);
+            });
+        };
+        /**
+         * hideDialog
+         */
+        BrandsDialogController.prototype.hideDialog = function () {
+            this.BrandsService.hideDialog();
+        };
+        /**
+         * editBrand
+         */
+        BrandsDialogController.prototype.editBrand = function () {
+            var _this = this;
+            var brandModel = {
+                brand: this.brand
+            };
+            this.update('/editBrand', brandModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.viewBrands();
+            })
+                .catch(function (err) {
+                _this.BrandsService.showToast(err);
+            });
         };
         return BrandsDialogController;
     }(BrandsController));
     BrandsController.$inject = ['$mdDialog', 'BrandsService', 'BaseService'];
-    BrandsDialogController.$inject = ['$mdDialog', 'BrandsService', 'BaseService'];
+    BrandsDialogController.$inject = ['$mdDialog', 'BrandsService', 'BaseService', 'brand'];
     angular
         .module('inventory-management')
         .controller('BrandsController', BrandsController);
@@ -269,7 +389,7 @@ var app;
          */
         CategoriesController.prototype.showDialog = function () {
             var config = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Categories/categories-dialog.html',
                 controller: CategoriesDialogController,
                 controllerAs: 'vm',
                 fullscreen: true
@@ -342,7 +462,7 @@ var app;
          */
         ItemsController.prototype.showDialog = function () {
             var config = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Items/items-dialog.html',
                 controller: ItemsDialogController,
                 controllerAs: 'vm',
                 fullscreen: true
@@ -414,7 +534,7 @@ var app;
          */
         StocksController.prototype.showDialog = function () {
             var config = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Stocks/stocks-dialog.html',
                 controller: StocksDialogController,
                 controllerAs: 'vm',
                 fullscreen: true
@@ -465,7 +585,7 @@ var app;
          */
         SuppliersController.prototype.showDialog = function () {
             var config = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Suppliers/suppliers-dialog.html',
                 controller: SupplierDialogController,
                 controllerAs: 'vm',
                 fullscreen: true
@@ -516,7 +636,7 @@ var app;
          */
         UnitsController.prototype.showDialog = function () {
             var config = {
-                templateUrl: 'app/templates/Brands/brands-dialog.html',
+                templateUrl: 'app/templates/Units/units-dialog.html',
                 controller: UnitsDialogController,
                 controllerAs: 'vm',
                 fullscreen: true
@@ -611,9 +731,12 @@ var app;
             var config = {
                 url: url,
                 method: 'POST',
-                data: data
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
             };
-            console.log(config);
             return this.$http(config)
                 .then(function (data) { return data; })
                 .catch(function (err) {
@@ -627,7 +750,11 @@ var app;
             var config = {
                 url: url,
                 method: 'GET',
-                data: data
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
             };
             return this.$http(config)
                 .then(function (data) { return data; })
@@ -641,7 +768,11 @@ var app;
         BaseService.prototype.get_request_without_data = function (url) {
             var config = {
                 url: url,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
             };
             return this.$http(config)
                 .then(function (data) { return data; })
@@ -661,14 +792,33 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var BrandsService = (function (_super) {
-        __extends(BrandsService, _super);
-        function BrandsService($http) {
-            return _super.call(this, $http) || this;
+    var BrandsService = (function () {
+        function BrandsService(ToastService, DialogService) {
+            this.ToastService = ToastService;
+            this.DialogService = DialogService;
+            this.listBrands = [];
         }
+        /**
+         * showToast
+         */
+        BrandsService.prototype.showToast = function (message) {
+            this.ToastService.showToast(message);
+        };
+        /**
+         * showDialog
+         */
+        BrandsService.prototype.showDialog = function (config) {
+            return this.DialogService.showDialog(config);
+        };
+        /**
+         * hideDialog
+         */
+        BrandsService.prototype.hideDialog = function () {
+            this.DialogService.hideDialog();
+        };
         return BrandsService;
-    }(app.BaseService));
-    BrandsService.$inject = ['$http'];
+    }());
+    BrandsService.$inject = ['ToastService', 'DialogService'];
     angular
         .module('inventory-management')
         .service('BrandsService', BrandsService);
@@ -711,6 +861,33 @@ var app;
 var app;
 (function (app) {
     'use strict';
+    var DialogService = (function () {
+        function DialogService($mdDialog) {
+            this.$mdDialog = $mdDialog;
+        }
+        /**
+         * showDialog
+         */
+        DialogService.prototype.showDialog = function (config) {
+            return this.$mdDialog.show(config);
+        };
+        /**
+         * hideDialog
+         */
+        DialogService.prototype.hideDialog = function () {
+            this.$mdDialog.hide();
+        };
+        return DialogService;
+    }());
+    DialogService.$inject = ['$mdDialog'];
+    angular
+        .module('inventory-management')
+        .service('DialogService', DialogService);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
     var ItemsService = (function (_super) {
         __extends(ItemsService, _super);
         function ItemsService($http) {
@@ -722,6 +899,51 @@ var app;
     angular
         .module('inventory-management')
         .service('ItemsService', ItemsService);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    function serviceInterceptor($q, $injector) {
+        return {
+            request: function (config) {
+                var deferred = $q.defer();
+                if (config.withCredentials) {
+                    return getServerURL()
+                        .then(function (serverURL) {
+                        var url = [serverURL, config.url].join('');
+                        config.url = url;
+                        deferred.resolve(config);
+                        return deferred.promise;
+                    });
+                }
+                return config;
+            },
+            responseError: function (response) {
+                if (response.status === 500)
+                    throw response.data.errorMessage;
+                // throw 'response';
+                return response;
+            }
+        };
+        function getServerConfigFile() {
+            var $http = $injector.get('$http');
+            return $http.get('app/server-config.json')
+                .then(function (res) { return res; });
+        }
+        function getServerURL() {
+            return getServerConfigFile()
+                .then(function (response) {
+                var data = response.data;
+                var url = '';
+                url = [data.url, data.port].join(':');
+                url = [url, data.app_context_root].join('/');
+                return url;
+            });
+        }
+    }
+    angular
+        .module('inventory-management')
+        .factory('serviceInterceptor', serviceInterceptor);
 })(app || (app = {}));
 "use strict";
 var app;
@@ -754,6 +976,30 @@ var app;
     angular
         .module('inventory-management')
         .service('SuppliersService', SuppliersService);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+    var ToastService = (function () {
+        function ToastService($mdToast) {
+            this.$mdToast = $mdToast;
+        }
+        /**
+         * showToast
+         */
+        ToastService.prototype.showToast = function (message) {
+            this.$mdToast.show(this.$mdToast
+                .simple()
+                .textContent(message)
+                .position('top left')
+                .hideDelay(5000));
+        };
+        return ToastService;
+    }());
+    angular
+        .module('inventory-management')
+        .service('ToastService', ToastService);
 })(app || (app = {}));
 "use strict";
 var app;
