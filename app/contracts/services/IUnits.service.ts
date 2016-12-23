@@ -3,6 +3,6 @@ namespace app{
 
     export interface IUnitsService extends IDialogService, IToastService{
 
-        public listUnits: Array<IUnit>;
+        listUnits: Array<IUnit>;
     }
 }

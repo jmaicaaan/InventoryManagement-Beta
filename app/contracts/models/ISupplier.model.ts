@@ -3,7 +3,7 @@ namespace app{
 
     export interface ISupplier{
         name: string;
-        contactNo: string;
-        secondaryNo: string;
+        primaryContactNo: string;
+        secondaryContactNo: string;
     }
 }

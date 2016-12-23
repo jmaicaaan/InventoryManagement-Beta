@@ -3,7 +3,7 @@
         <md-input-container class="md-icon-float md-block">
             <label>Search</label>
             <md-icon md-svg-src="app/icons/ic_search_24px.svg" class="name"></md-icon>
-            <input ng-model="user.name" type="text">
+            <input ng-model="vm.queryText" type="text">
         </md-input-container>
     </div>
     <table md-table>
@@ -17,13 +17,14 @@
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row md-select="dessert" md-select-id="name" md-auto-select>
-                <td md-cell>1</td>
-                <td md-cell>Hello</td>
-                <td md-cell>Hello</td>
-                <td md-cell hide-xs hide-ms show-gt-sm>Hello</td>
+            <tr md-row ng-repeat="supplier in vm.SuppliersService.listSuppliers | filter: vm.queryText" md-auto-select>
+                <td md-cell>{{$index + 1}}</td>
+                <td md-cell>{{supplier.name}}</td>
+                <td md-cell>{{supplier.primaryContactNo}}</td>
+                <td md-cell hide-xs hide-ms show-gt-sm>{{supplier.secondaryContactNo}}</td>
                  <td md-cell hide-xs hide-ms show-gt-sm>
-                    <md-button class="md-primary md-raised">Edit</md-button>
+                    <md-button class="md-primary md-raised" ng-click="vm.editSupplier(supplier)">Edit</md-button>
+                    <md-button class="md-primary md-raised" ng-click="vm.deleteSupplier(supplier)">Delete</md-button>
                 </td>
             </tr>
         </tbody>
@@ -31,7 +32,7 @@
     
 </md-content>
 <div>
-    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showDialog();">
+    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
         <md-icon md-svg-src="app/icons/ic_add_24px.svg"></md-icon>
     </md-button>
 </div>

@@ -662,43 +662,137 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.SuppliersService = SuppliersService;
+            _this.viewSuppliers();
             return _this;
         }
         /**
          * ShowDialog
          */
-        SuppliersController.prototype.showDialog = function () {
+        SuppliersController.prototype.showDialog = function (templateUrl, supplier) {
             var config = {
-                templateUrl: 'app/templates/Suppliers/suppliers-dialog.html',
+                templateUrl: templateUrl,
                 controller: SupplierDialogController,
                 controllerAs: 'vm',
-                fullscreen: true
+                fullscreen: true,
+                locals: {
+                    supplier: supplier
+                }
             };
-            this.$mdDialog.show(config);
+            return this.SuppliersService.showDialog(config);
         };
         /**
-         * HideDialog
+         * showConfirmDialog
          */
-        SuppliersController.prototype.hideDialog = function () {
-            this.$mdDialog.hide();
+        SuppliersController.prototype.showConfirmDialog = function (confirmConfig) {
+            return this.SuppliersService.showDialog(confirmConfig);
+        };
+        /**
+         * showAddDialog
+         */
+        SuppliersController.prototype.showAddDialog = function () {
+            var templateUrl = 'app/templates/Suppliers/suppliers-dialog.html', supplier = {};
+            this.showDialog(templateUrl, supplier);
+        };
+        /**
+         * showEditDialog
+         */
+        SuppliersController.prototype.showEditDialog = function (supplier) {
+            var templateUrl = 'app/templates/Suppliers/suppliers-edit-dialog.html';
+            this.showDialog(templateUrl, supplier);
+        };
+        /**
+         * viewSuppliers
+         */
+        SuppliersController.prototype.viewSuppliers = function () {
+            var _this = this;
+            this.view_without_data('/viewSuppliers')
+                .then(function (suppliers) {
+                _this.SuppliersService.listSuppliers = suppliers.data.listSuppliers;
+            })
+                .catch(function (err) {
+                _this.SuppliersService.showToast(err);
+            });
+        };
+        /**
+         * editSupplier
+         */
+        SuppliersController.prototype.editSupplier = function (supplier) {
+            this.showEditDialog(supplier);
+        };
+        /**
+         * deleteSupplier
+         */
+        SuppliersController.prototype.deleteSupplier = function (supplier) {
+            var _this = this;
+            var confirmConfig = this.$mdDialog.confirm()
+                .title('Would you like to delete this supplier?')
+                .textContent('Supplier Name: ' + supplier.name)
+                .ok('Delete')
+                .cancel('Cancel');
+            this.SuppliersService.showDialog(confirmConfig)
+                .then(function () {
+                var supplierModel = {
+                    supplier: supplier
+                };
+                _this.remove('/deleteSupplier', supplierModel)
+                    .then(function (resp) {
+                    _this.viewSuppliers();
+                })
+                    .catch(function (err) {
+                    _this.SuppliersService.showToast(err);
+                });
+            })
+                .catch(function (err) {
+                console.log('Confirm Dialog cancelled.');
+            });
         };
         return SuppliersController;
     }(app.BaseController));
     var SupplierDialogController = (function (_super) {
         __extends(SupplierDialogController, _super);
-        function SupplierDialogController($mdDialog, SuppliersService, BaseService) {
-            return _super.call(this, $mdDialog, SuppliersService, BaseService) || this;
+        function SupplierDialogController($mdDialog, SuppliersService, BaseService, supplier) {
+            var _this = _super.call(this, $mdDialog, SuppliersService, BaseService) || this;
+            _this.supplier = supplier;
+            return _this;
         }
         /**
-         * add
+         * addSupplier
          */
         SupplierDialogController.prototype.addSupplier = function (supplier) {
-            this.add("Sample URL", supplier);
+            var _this = this;
+            var supplierModel = {
+                supplier: supplier
+            };
+            this.add('/addSupplier', supplierModel)
+                .then(function (response) {
+                _this.SuppliersService.hideDialog();
+                _this.viewSuppliers();
+            })
+                .catch(function (err) {
+                _this.SuppliersService.showToast(err);
+            });
+        };
+        /**
+         * editsupplier
+         */
+        SupplierDialogController.prototype.editSupplier = function () {
+            var _this = this;
+            var supplierModel = {
+                supplier: this.supplier
+            };
+            this.update('/editSupplier', supplierModel)
+                .then(function (resp) {
+                _this.SuppliersService.hideDialog();
+                _this.viewSuppliers();
+            })
+                .catch(function (err) {
+                _this.SuppliersService.showToast(err);
+            });
         };
         return SupplierDialogController;
     }(SuppliersController));
     SuppliersController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService'];
-    SupplierDialogController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService'];
+    SupplierDialogController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService', 'supplier'];
     angular
         .module('inventory-management')
         .controller('SuppliersController', SuppliersController);
@@ -1166,14 +1260,33 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var SuppliersService = (function (_super) {
-        __extends(SuppliersService, _super);
-        function SuppliersService($http) {
-            return _super.call(this, $http) || this;
+    var SuppliersService = (function () {
+        function SuppliersService(ToastService, DialogService) {
+            this.ToastService = ToastService;
+            this.DialogService = DialogService;
+            this.listSuppliers = [];
         }
+        /**
+         * showToast
+         */
+        SuppliersService.prototype.showToast = function (message) {
+            this.ToastService.showToast(message);
+        };
+        /**
+         * showDialog
+         */
+        SuppliersService.prototype.showDialog = function (config) {
+            return this.DialogService.showDialog(config);
+        };
+        /**
+         * hideDialog
+         */
+        SuppliersService.prototype.hideDialog = function () {
+            this.DialogService.hideDialog();
+        };
         return SuppliersService;
-    }(app.BaseService));
-    SuppliersService.$inject = ['$http'];
+    }());
+    SuppliersService.$inject = ['ToastService', 'DialogService'];
     angular
         .module('inventory-management')
         .service('SuppliersService', SuppliersService);
