@@ -811,43 +811,101 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.StocksService = StocksService;
+            _this.viewStocks();
             return _this;
         }
         /**
          * ShowDialog
          */
-        StocksController.prototype.showDialog = function () {
+        StocksController.prototype.showDialog = function (templateUrl, stock) {
             var config = {
-                templateUrl: 'app/templates/Stocks/stocks-dialog.html',
+                templateUrl: templateUrl,
                 controller: StocksDialogController,
                 controllerAs: 'vm',
-                fullscreen: true
+                fullscreen: true,
+                locals: {
+                    stock: stock
+                }
             };
-            this.$mdDialog.show(config);
+            this.StocksService.showDialog(config);
         };
         /**
-         * HideDialog
+         * showAddDialog
          */
-        StocksController.prototype.hideDialog = function () {
-            this.$mdDialog.hide();
+        StocksController.prototype.showAddDialog = function () {
+            var templateUrl = 'app/templates/Stocks/stocks-dialog.html', stock = {};
+            this.showDialog(templateUrl, stock);
+        };
+        /**
+         * viewStocks
+         */
+        StocksController.prototype.viewStocks = function () {
+            var _this = this;
+            this.view_without_data('/viewStocks')
+                .then(function (stocks) {
+                _this.StocksService.listStocks = stocks.data.listStocks;
+            })
+                .catch(function (err) {
+                _this.StocksService.showToast(err);
+            });
         };
         return StocksController;
     }(app.BaseController));
     var StocksDialogController = (function (_super) {
         __extends(StocksDialogController, _super);
-        function StocksDialogController($mdDialog, StocksService, BaseService) {
-            return _super.call(this, $mdDialog, StocksService, BaseService) || this;
+        function StocksDialogController($mdDialog, StocksService, BaseService, ItemsService, stock) {
+            var _this = _super.call(this, $mdDialog, StocksService, BaseService) || this;
+            _this.ItemsService = ItemsService;
+            _this.stock = stock;
+            _this.quantity = [];
+            return _this;
         }
         /**
         * addStock
         */
         StocksDialogController.prototype.addStock = function (stock) {
-            this.add("Sample URL", stock);
+            var _this = this;
+            var stockModel = {
+                stock: stock,
+                item: stock.item
+            };
+            this.add("/addStock", stockModel)
+                .then(function () {
+                _this.StocksService.hideDialog();
+                _this.viewStocks();
+            })
+                .catch(function (err) {
+                _this.StocksService.showToast(err);
+            });
+        };
+        /**
+         * loadItems
+         */
+        StocksDialogController.prototype.loadItems = function () {
+            var _this = this;
+            return this.view_without_data('/viewItems')
+                .then(function (items) {
+                _this.ItemsService.listItems = items.data.listItems;
+                return _this.ItemsService.listItems;
+            })
+                .catch(function (err) {
+                _this.ItemsService.showToast(err);
+            });
+        };
+        /**
+         * generateQuantity
+         */
+        StocksDialogController.prototype.generateQuantity = function () {
+            var quantity = [];
+            for (var i = 1; i <= 100; i++) {
+                quantity.push(i);
+            }
+            this.quantity = quantity;
         };
         return StocksDialogController;
     }(StocksController));
     StocksController.$inject = ['$mdDialog', 'StocksService', 'BaseService'];
-    StocksDialogController.$inject = ['$mdDialog', 'StocksService', 'BaseService'];
+    StocksDialogController.$inject = ['$mdDialog', 'StocksService', 'BaseService', 'ItemsService', 'stock'];
     angular
         .module('inventory-management')
         .controller('StocksController', StocksController);
@@ -1500,14 +1558,33 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var StocksService = (function (_super) {
-        __extends(StocksService, _super);
-        function StocksService($http) {
-            return _super.call(this, $http) || this;
+    var StocksService = (function () {
+        function StocksService(ToastService, DialogService) {
+            this.ToastService = ToastService;
+            this.DialogService = DialogService;
+            this.listStocks = [];
         }
+        /**
+         * showToast
+         */
+        StocksService.prototype.showToast = function (message) {
+            this.ToastService.showToast(message);
+        };
+        /**
+         * showDialog
+         */
+        StocksService.prototype.showDialog = function (config) {
+            return this.DialogService.showDialog(config);
+        };
+        /**
+         * hideDialog
+         */
+        StocksService.prototype.hideDialog = function () {
+            this.DialogService.hideDialog();
+        };
         return StocksService;
-    }(app.BaseService));
-    StocksService.$inject = ['$http'];
+    }());
+    StocksService.$inject = ['ToastService', 'DialogService'];
     angular
         .module('inventory-management')
         .service('StocksService', StocksService);

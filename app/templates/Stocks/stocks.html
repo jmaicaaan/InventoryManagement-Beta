@@ -3,7 +3,7 @@
         <md-input-container class="md-icon-float md-block">
             <label>Search</label>
             <md-icon md-svg-src="app/icons/ic_search_24px.svg" class="name"></md-icon>
-            <input ng-model="user.name" type="text">
+            <input ng-model="vm.queryText" type="text">
         </md-input-container>
     </div>
     <table md-table>
@@ -12,24 +12,27 @@
                 <th md-column md-order-by="nameToLower"><span>No.</span></th>
                 <th md-column md-order-by="nameToLower"><span>Item Name</span></th>
                 <th md-column md-order-by="nameToLower"><span>Quantity</span></th>
-                <th md-column md-order-by="nameToLower"><span>Stock Action</span></th>
                 <th md-column md-order-by="nameToLower"><span>Date</span></th>
+                <th md-column md-order-by="nameToLower"><span>Action</span></th>
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row md-select="dessert" md-select-id="name" md-auto-select>
-                <td md-cell>1</td>
-                <td md-cell>Hello</td>
-                <td md-cell>Hello</td>
-                <td md-cell>Hello</td>
-                <td md-cell>Hello</td>
+            <tr md-row ng-repeat="stock in vm.StocksService.listStocks | filter: vm.queryText" md-auto-select>
+                <td md-cell>{{$index + 1}}</td>
+                <td md-cell>{{stock.item.name}}</td>
+                <td md-cell>{{stock.quantity}}</td>
+                <td md-cell>{{stock.date}}</td>
+                <td md-cell>
+                    <span ng-if="stock.stockIn === true">Stock In</span>
+                    <span ng-if="stock.stockIn === false">Stock Out</span>
+                </td>
             </tr>
         </tbody>
     </table>
     
 </md-content>
 <div>
-    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showDialog();">
+    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
         <md-icon md-svg-src="app/icons/ic_add_24px.svg"></md-icon>
     </md-button>
 </div>

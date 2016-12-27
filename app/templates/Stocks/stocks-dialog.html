@@ -4,7 +4,7 @@
             <div class="md-toolbar-tools">
                 <h2>Add Stock</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="vm.hideDialog()">
+                <md-button class="md-icon-button" ng-click="vm.StocksService.hideDialog()">
                     <md-icon md-svg-src="app/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
                 </md-button>
             </div>
@@ -16,9 +16,9 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Item</label>
-                            <md-select ng-model="vm.stock.Item">
-                                <md-option>
-                                    One
+                            <md-select ng-model="vm.stock.item" md-on-open="vm.loadItems();">
+                                <md-option ng-repeat="item in vm.ItemsService.listItems" ng-value="item">
+                                    {{item.name}}
                                 </md-option>
                             </md-select>
                         </md-input-container>
@@ -26,15 +26,15 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Quantity</label>
-                            <md-select ng-model="vm.stock.Quantity">
-                                <md-option ng-repeat="q in [1,2,3,4,5,6,7,8,9,10]" ng-value="q">
-                                    {{q}}
+                            <md-select ng-model="vm.stock.quantity" md-on-open="vm.generateQuantity();">
+                                <md-option ng-repeat="no in vm.quantity" ng-value="no">
+                                    {{no}}
                                 </md-option>
                             </md-select>
                         </md-input-container>
                     </div>
                     <div>
-                        <md-radio-group ng-model="vm.stock.IsStockIn">
+                        <md-radio-group ng-model="vm.stock.stockIn">
 
                             <md-radio-button ng-value="{{true}}">Stock In</md-radio-button>
                             <md-radio-button ng-value="{{false}}">Stock Out</md-radio-button>
