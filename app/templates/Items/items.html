@@ -1,50 +1,71 @@
-<md-content layout="column">
-    <div layout-margin>
-        <md-input-container class="md-icon-float md-block">
-            <label>Search</label>
-            <md-icon md-svg-src="app/icons/ic_search_24px.svg" class="name"></md-icon>
-            <input ng-model="vm.queryText" type="text">
-        </md-input-container>
+<div ui-view>
+    <md-content layout="column">
+        <div layout-margin>
+            <md-input-container class="md-icon-float md-block">
+                <label>Search</label>
+                <md-icon md-svg-src="app/icons/ic_search_24px.svg" class="name"></md-icon>
+                <input ng-model="vm.queryText" type="text">
+            </md-input-container>
+        </div>
+        <div layout-fill>
+            <md-table-container>
+                <table md-table>
+                    <thead md-head>
+                        <tr md-row>
+                            <th md-column><span>No.</span></th>
+                            <th md-column md-order-by="nameToLower"><span>Item Name</span></th>
+                            <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Suppliers Name</span></th>
+                            <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Brand</span></th>
+                            <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Unit</span></th>
+                            <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Quantity</span></th>
+                            <th md-column md-order-by="nameToLower"><span>Total Stocks</span></th>
+                            <th md-column hide-xs hide-ms show-gt-sm><span>Action</span></th>
+                        </tr>
+                    </thead>
+                    <tbody md-body>
+                        <!-- Implement on-hold for mobile -->
+                        <tr md-row ng-repeat="item in vm.ItemsService.listItems | filter: vm.queryText" md-auto-select>
+                            <td md-cell>{{$index + 1}}</td>
+                            <td md-cell><b>{{item.name}}</b></td>
+                            <td md-cell hide-xs hide-ms show-gt-sm>
+                                <p ng-repeat="supplier in item.listSuppliers">
+                                    {{supplier.name}}
+                                </p>
+                            </td>
+                            <td md-cell hide-xs hide-ms show-gt-sm>{{item.brand.name}}</td>
+                            <td md-cell hide-xs hide-ms show-gt-sm>{{item.unit.name}}</td>
+                            <td md-cell hide-xs hide-ms show-gt-sm>{{item.quantity}}</td>
+                            <td md-cell>{{item.totalStocks}}</td>
+                            <td md-cell hide-xs hide-ms show-gt-sm>
+                                <!--<md-button class="md-icon-button" ng-click="vm.viewItemDetails(item)">
+                                <md-icon md-svg-icon="app/icons/ic_pageview_24px.svg"></md-icon>
+                            </md-button>-->
+                                <md-button class="md-icon-button" ng-click="vm.viewItemDetails(item)">
+                                    <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-click="vm.deleteItem(item)">
+                                    <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
+                                </md-button>
+                                <!--<md-button class="md-primary md-raised" ng-click="vm.editItem(item)">Edit</md-button>-->
+                                <!--<md-button class="md-primary md-raised" ng-click="vm.deleteItem(item)">Delete</md-button>-->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+        </div>
+
+    </md-content>
+
+
+    <div>
+        <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
+            <md-icon md-svg-src="app/icons/ic_add_24px.svg"></md-icon>
+        </md-button>
     </div>
-    <div layout-fill>
-        <md-table-container>
-        <table md-table>
-            <thead md-head>
-                <tr md-row>
-                    <th md-column md-order-by="nameToLower"><span>No.</span></th>
-                    <th md-column md-order-by="nameToLower"><span>Item Name</span></th>
-                    <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm ><span>Supplier Name</span></th>
-                    <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Brand</span></th>
-                    <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Units</span></th>
-                    <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Quantity</span></th>
-                    <th md-column md-order-by="nameToLower"><span>Total Stocks</span></th>
-                    <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>View Details</span></th>
-                </tr>
-                </thead>
-            <tbody md-body>
-                <!-- Implement on-hold for mobile -->
-                <tr md-row ng-repeat="item in vm.ItemsService.listItems | filter: vm.queryText" md-auto-select>
-                    <td md-cell>{{$index + 1}}</td>
-                    <td md-cell>{{item.name}}</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm>{{item.supplier.name}}</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm>{{item.brand.name}}</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm>{{item.unit.name}}</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm>{{item.quantity}}</td>
-                    <td md-cell>{{item.totalStocks}}</td>
-                    <td md-cell hide-xs hide-ms show-gt-sm> 
-                        <md-button class="md-primary md-raised">View Details</md-button>
-                        <md-button class="md-primary md-raised">Edit</md-button>
-                        <md-button class="md-primary md-raised">Delete</md-button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        </md-table-container>
-    </div>
-    
-</md-content>
-<div>
-    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
-        <md-icon md-svg-src="app/icons/ic_add_24px.svg"></md-icon>
-    </md-button>
+    <!--<div>
+        <md-button class="md-primary md-secondary md-fab md-fab-bottom-left" aria-label="Open dialog" ng-click="vm.viewItems();">
+            <md-icon md-svg-src="app/icons/ic_add_24px.svg"></md-icon>
+        </md-button>
+    </div>-->
 </div>

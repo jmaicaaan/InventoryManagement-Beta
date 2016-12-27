@@ -1,0 +1,76 @@
+<div layout="column" layout-padding>
+    <form layout="column">
+        <div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Item Name</label>
+                    <input ng-model="vm.item.name" type="text">
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Item Description</label>
+                    <input ng-model="vm.item.description" type="text">
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Item Code</label>
+                    <input ng-model="vm.item.code" type="text">
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Item Location</label>
+                    <input ng-model="vm.item.location" type="text">
+                </md-input-container>
+            </div>
+
+            <div>
+                <md-chips ng-model="vm.selectedSuppliers" md-autocomplete-snap md-autocomplete-wrap-override>
+                    <md-autocomplete md-items="supplier in vm.ItemsService.listSuppliers" placeholder="Supplier Name">
+                        <span><strong>{{supplier.name}}</strong></span>
+                    </md-autocomplete>
+                    <md-chip-template>
+                        {{$chip.name}}
+                    </md-chip-template>
+                </md-chips>
+            </div>
+
+            <div>
+                <md-input-container class="md-block">
+                    <label>Brand</label>
+                    <md-select ng-model="vm.item.brand.id">
+                        <md-option ng-repeat="brand in vm.ItemsService.listBrands" ng-value="brand.id">
+                            {{brand.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Category</label>
+                    <md-select ng-model="vm.item.category.id">
+                        <md-option ng-repeat="category in vm.ItemsService.listCategories" ng-value="category.id">
+                            {{category.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container class="md-block">
+                    <label>Unit</label>
+                    <md-select ng-model="vm.item.unit.id">
+                        <md-option ng-repeat="unit in vm.ItemsService.listUnits" ng-value="unit.id">
+                            {{unit.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+        </div>
+
+        <div layout="column" layout-align="end end">
+            <md-button class="md-primary md-raised" aria-label="Open dialog" ng-click="vm.editItem(vm.item)">Edit Item</md-button>
+        </div>
+    </form>
+</div>

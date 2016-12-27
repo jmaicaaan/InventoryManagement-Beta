@@ -13,19 +13,23 @@
                 <th md-column md-order-by="nameToLower"><span>Brand Name</span></th>
                 <th md-column md-order-by="nameToLower"><span>Action</span></th>
             </tr>
-            </thead>
-            <tbody md-body>
+        </thead>
+        <tbody md-body>
             <tr md-row md-auto-select ng-repeat="brand in vm.BrandsService.listBrands | filter: vm.queryText">
                 <td md-cell>{{$index + 1}}</td>
                 <td md-cell>{{brand.name}}</td>
                 <td md-cell>
-                    <md-button class="md-primary md-raised" ng-click="vm.editBrand(brand)">Edit</md-button>
-                    <md-button class="md-primary md-raised" ng-click="vm.deleteBrand(brand)">Delete</md-button>
+                    <md-button class="md-icon-button" ng-click="vm.editBrand(brand)">
+                        <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="vm.deleteBrand(brand)">
+                        <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
+                    </md-button>
                 </td>
             </tr>
         </tbody>
     </table>
-    
+
 </md-content>
 <div>
     <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">

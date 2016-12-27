@@ -13,7 +13,7 @@ namespace app{
             if(sideNav.hasAttribute('md-component-id')){
                 let component_id = sideNav.getAttribute('md-component-id');
                 $rootScope.$on('$stateChangeStart', () => {
-                    $mdSidenav(component_id).toggle();
+                    $mdSidenav(component_id).close();
                 });
             }else{
                 throw 'No attribute on element <md-sidenav></md-sidenav>';

@@ -34,7 +34,7 @@ namespace app{
        }
 
         /**
-        * view
+        * view_without_data
         */
        public view_without_data(url: string) {
            return this.BaseService.post_request(url, {});

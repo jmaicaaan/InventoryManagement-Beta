@@ -37,7 +37,15 @@ namespace app{
                 templateUrl: 'app/templates/Items/items.html',
                 controller: 'ItemsController',
                 controllerAs: 'vm',
+                onEnter: ItemOnEnter,
                 title: 'Items'
+            })
+            .state('dashboard.items.details', {
+                url: '/details?item',
+                templateUrl: 'app/templates/Items/items-details.html',
+                controller: 'ItemDetailsController',
+                controllerAs: 'vm',
+                title: 'Item Details'
             })
             .state('dashboard.suppliers', {
                 url: 'suppliers',

@@ -3,10 +3,9 @@ namespace app {
 
     class ItemsController extends BaseController {
 
-        constructor(private $mdDialog: angular.material.IDialogService,
-            protected ItemsService: IItemsService, BaseService: IBaseService) {
+        constructor(private $mdDialog: angular.material.IDialogService, protected ItemsService: IItemsService, 
+                BaseService: IBaseService, private $state: angular.ui.IStateService, private LocalStorageService: ILocalStorageService) {
             super(BaseService);
-            this.viewItems();
         }
 
         /**
@@ -51,10 +50,8 @@ namespace app {
         public showEditDialog(item) {
 
             let templateUrl = 'app/templates/Items/items-edit-dialog.html';
-
             this.showDialog(templateUrl, item);
         }
-
 
         /**
          * viewItems
@@ -77,9 +74,9 @@ namespace app {
         }
 
         /**
-         * deleteitem
+         * deleteItem
          */
-        public deleteitem(item) {
+        public deleteItem(item) {
 
             let confirmConfig = this.$mdDialog.confirm()
                 .title('Would you like to delete this item?')
@@ -94,7 +91,7 @@ namespace app {
                         item: item
                     };
 
-                    this.remove('/deleteitem', itemModel)
+                    this.remove('/deleteItem', itemModel)
                         .then((resp) => {
                             this.viewItems();
                         })
@@ -106,72 +103,25 @@ namespace app {
                     console.log('Confirm Dialog cancelled.');
                 });
         }
+
+        /**
+         * viewItemDetails
+         */
+        public viewItemDetails(item: IItem) {
+
+            this.LocalStorageService.set(item.name, JSON.stringify(item));
+            this.$state.go('dashboard.items.details', {item: item.name});
+        }
     }
 
     class ItemsDialogController extends ItemsController {
 
         constructor($mdDialog: angular.material.IDialogService, ItemsService: IItemsService, BaseService: IBaseService,
-            private selectedItem: IItem) {
-            super($mdDialog, ItemsService, BaseService);
-            this.loadBrands();
-            this.loadCategories();
-            this.loadUnits();
-            this.loadSuppliers();
+                private selectedItem: IItem, $state: angular.ui.IStateService, LocalStorageService: ILocalStorageService) {
+            super($mdDialog, ItemsService, BaseService, $state, LocalStorageService);
         }
 
         public selectedSuppliers = [];
-
-        /**
-         * loadBrands
-         */
-        public loadBrands() {
-            this.view_without_data('/viewBrands')
-                .then((brands) => {
-                    this.ItemsService.listBrands = brands.data.listBrands;
-                })
-                .catch((err) => {
-                    console.log(err);  
-                });
-        }
-
-        /**
-         * loadUnits
-         */
-        public loadUnits() {
-            this.view_without_data('/viewUnits')
-                .then((units) => {
-                    this.ItemsService.listUnits = units.data.listUnits;
-                })
-                .catch((err) => {
-                    console.log(err);  
-                });
-        }
-
-        /**
-         * loadCategories
-         */
-        public loadCategories() {
-            this.view_without_data('/viewCategories')
-                .then((categories) => {
-                    this.ItemsService.listCategories = categories.data.listCategories;
-                })
-                .catch((err) => {
-                    console.log(err);  
-                });
-        }
-
-         /**
-         * loadSuppliers
-         */
-        public loadSuppliers() {
-            this.view_without_data('/viewSuppliers')
-                .then((suppliers) => {
-                    this.ItemsService.listSuppliers = suppliers.data.listSuppliers;
-                })
-                .catch((err) => {
-                    console.log(err);  
-                });
-        }
 
         /**
          * addItem
@@ -192,29 +142,10 @@ namespace app {
                     this.ItemsService.showToast(err);
                 });
         }
-
-        /**
-         * editItem
-         */
-        public editItem() {
-
-            let itemModel = {
-                item: this.selectedItem
-            };
-
-            this.update('/editItem', itemModel)
-                .then((resp) => {
-                    this.ItemsService.hideDialog();
-                    this.viewItems();
-                })
-                .catch((err) => {
-                    this.ItemsService.showToast(err);
-                });
-        }
     }
 
-    ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem'];
+    ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', '$state', 'LocalStorageService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem', '$state', 'LocalStorageService'];
 
     angular
         .module('inventory-management')

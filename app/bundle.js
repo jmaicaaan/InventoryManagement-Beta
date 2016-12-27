@@ -50,7 +50,15 @@ var app;
             templateUrl: 'app/templates/Items/items.html',
             controller: 'ItemsController',
             controllerAs: 'vm',
+            onEnter: app.ItemOnEnter,
             title: 'Items'
+        })
+            .state('dashboard.items.details', {
+            url: '/details?item',
+            templateUrl: 'app/templates/Items/items-details.html',
+            controller: 'ItemDetailsController',
+            controllerAs: 'vm',
+            title: 'Item Details'
         })
             .state('dashboard.suppliers', {
             url: 'suppliers',
@@ -78,6 +86,11 @@ var app;
     angular
         .module('inventory-management')
         .config(config);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
 })(app || (app = {}));
 "use strict";
 var app;
@@ -207,7 +220,7 @@ var app;
             return this.BaseService.post_request(url, data);
         };
         /**
-        * view
+        * view_without_data
         */
         BaseController.prototype.view_without_data = function (url) {
             return this.BaseService.post_request(url, {});
@@ -535,11 +548,12 @@ var app;
     'use strict';
     var ItemsController = (function (_super) {
         __extends(ItemsController, _super);
-        function ItemsController($mdDialog, ItemsService, BaseService) {
+        function ItemsController($mdDialog, ItemsService, BaseService, $state, LocalStorageService) {
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.ItemsService = ItemsService;
-            _this.viewItems();
+            _this.$state = $state;
+            _this.LocalStorageService = LocalStorageService;
             return _this;
         }
         /**
@@ -597,9 +611,9 @@ var app;
             this.showEditDialog(item);
         };
         /**
-         * deleteitem
+         * deleteItem
          */
-        ItemsController.prototype.deleteitem = function (item) {
+        ItemsController.prototype.deleteItem = function (item) {
             var _this = this;
             var confirmConfig = this.$mdDialog.confirm()
                 .title('Would you like to delete this item?')
@@ -611,7 +625,7 @@ var app;
                 var itemModel = {
                     item: item
                 };
-                _this.remove('/deleteitem', itemModel)
+                _this.remove('/deleteItem', itemModel)
                     .then(function (resp) {
                     _this.viewItems();
                 })
@@ -623,72 +637,23 @@ var app;
                 console.log('Confirm Dialog cancelled.');
             });
         };
+        /**
+         * viewItemDetails
+         */
+        ItemsController.prototype.viewItemDetails = function (item) {
+            this.LocalStorageService.set(item.name, JSON.stringify(item));
+            this.$state.go('dashboard.items.details', { item: item.name });
+        };
         return ItemsController;
     }(app.BaseController));
     var ItemsDialogController = (function (_super) {
         __extends(ItemsDialogController, _super);
-        function ItemsDialogController($mdDialog, ItemsService, BaseService, selectedItem) {
-            var _this = _super.call(this, $mdDialog, ItemsService, BaseService) || this;
+        function ItemsDialogController($mdDialog, ItemsService, BaseService, selectedItem, $state, LocalStorageService) {
+            var _this = _super.call(this, $mdDialog, ItemsService, BaseService, $state, LocalStorageService) || this;
             _this.selectedItem = selectedItem;
             _this.selectedSuppliers = [];
-            _this.loadBrands();
-            _this.loadCategories();
-            _this.loadUnits();
-            _this.loadSuppliers();
             return _this;
         }
-        /**
-         * loadBrands
-         */
-        ItemsDialogController.prototype.loadBrands = function () {
-            var _this = this;
-            this.view_without_data('/viewBrands')
-                .then(function (brands) {
-                _this.ItemsService.listBrands = brands.data.listBrands;
-            })
-                .catch(function (err) {
-                console.log(err);
-            });
-        };
-        /**
-         * loadUnits
-         */
-        ItemsDialogController.prototype.loadUnits = function () {
-            var _this = this;
-            this.view_without_data('/viewUnits')
-                .then(function (units) {
-                _this.ItemsService.listUnits = units.data.listUnits;
-            })
-                .catch(function (err) {
-                console.log(err);
-            });
-        };
-        /**
-         * loadCategories
-         */
-        ItemsDialogController.prototype.loadCategories = function () {
-            var _this = this;
-            this.view_without_data('/viewCategories')
-                .then(function (categories) {
-                _this.ItemsService.listCategories = categories.data.listCategories;
-            })
-                .catch(function (err) {
-                console.log(err);
-            });
-        };
-        /**
-        * loadSuppliers
-        */
-        ItemsDialogController.prototype.loadSuppliers = function () {
-            var _this = this;
-            this.view_without_data('/viewSuppliers')
-                .then(function (suppliers) {
-                _this.ItemsService.listSuppliers = suppliers.data.listSuppliers;
-            })
-                .catch(function (err) {
-                console.log(err);
-            });
-        };
         /**
          * addItem
          */
@@ -707,30 +672,134 @@ var app;
                 _this.ItemsService.showToast(err);
             });
         };
+        return ItemsDialogController;
+    }(ItemsController));
+    ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', '$state', 'LocalStorageService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem', '$state', 'LocalStorageService'];
+    angular
+        .module('inventory-management')
+        .controller('ItemsController', ItemsController);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+    var ItemDetailsController = (function (_super) {
+        __extends(ItemDetailsController, _super);
+        function ItemDetailsController($stateParams, LocalStorageService, ItemsService, BaseService) {
+            var _this = _super.call(this, BaseService) || this;
+            _this.$stateParams = $stateParams;
+            _this.LocalStorageService = LocalStorageService;
+            _this.ItemsService = ItemsService;
+            _this.item = {};
+            _this.selectedSuppliers = [];
+            _this.item = _this.getItem();
+            _this.selectedSuppliers = _this.item.listSuppliers;
+            return _this;
+        }
+        /**
+         * getItem
+         */
+        ItemDetailsController.prototype.getItem = function () {
+            var itemID = this.$stateParams['item'];
+            var itemLocalStorage = this.LocalStorageService.get(itemID);
+            return JSON.parse(itemLocalStorage);
+        };
         /**
          * editItem
          */
-        ItemsDialogController.prototype.editItem = function () {
+        ItemDetailsController.prototype.editItem = function (item) {
             var _this = this;
             var itemModel = {
-                item: this.selectedItem
+                item: item,
+                listSuppliers: this.selectedSuppliers
             };
             this.update('/editItem', itemModel)
                 .then(function (resp) {
-                _this.ItemsService.hideDialog();
                 _this.viewItems();
             })
                 .catch(function (err) {
                 _this.ItemsService.showToast(err);
             });
         };
-        return ItemsDialogController;
-    }(ItemsController));
-    ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem'];
+        /**
+        * viewItems
+        */
+        ItemDetailsController.prototype.viewItems = function () {
+            var _this = this;
+            this.view_without_data('/viewItems')
+                .then(function (items) {
+                _this.ItemsService.listItems = items.data.listItems;
+            })
+                .catch(function (err) {
+                _this.ItemsService.showToast(err);
+            });
+        };
+        return ItemDetailsController;
+    }(app.BaseController));
+    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'BaseService'];
     angular
         .module('inventory-management')
-        .controller('ItemsController', ItemsController);
+        .controller('ItemDetailsController', ItemDetailsController);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+    function ItemOnEnter(BaseService, ItemsService) {
+        viewItems();
+        loadBrands();
+        loadUnits();
+        loadCategories();
+        loadSuppliers();
+        function viewItems() {
+            BaseService.post_request('/viewItems', {})
+                .then(function (items) {
+                ItemsService.listItems = items.data.listItems;
+            })
+                .catch(function (err) {
+                ItemsService.showToast(err);
+            });
+        }
+        function loadBrands() {
+            BaseService.post_request('/viewBrands', {})
+                .then(function (brands) {
+                ItemsService.listBrands = brands.data.listBrands;
+            })
+                .catch(function (err) {
+                ItemsService.showToast(err);
+            });
+        }
+        function loadUnits() {
+            BaseService.post_request('/viewUnits', {})
+                .then(function (units) {
+                ItemsService.listUnits = units.data.listUnits;
+            })
+                .catch(function (err) {
+                ItemsService.showToast(err);
+            });
+        }
+        function loadCategories() {
+            BaseService.post_request('/viewCategories', {})
+                .then(function (categories) {
+                ItemsService.listCategories = categories.data.listCategories;
+            })
+                .catch(function (err) {
+                ItemsService.showToast(err);
+            });
+        }
+        function loadSuppliers() {
+            BaseService.post_request('/viewSuppliers', {})
+                .then(function (suppliers) {
+                ItemsService.listSuppliers = suppliers.data.listSuppliers;
+            })
+                .catch(function (err) {
+                ItemsService.showToast(err);
+            });
+        }
+    }
+    app.ItemOnEnter = ItemOnEnter;
+    ItemOnEnter.$inject = ['BaseService', 'ItemsService'];
 })(app || (app = {}));
 "use strict";
 var app;
@@ -1086,7 +1155,7 @@ var app;
             if (sideNav.hasAttribute('md-component-id')) {
                 var component_id_1 = sideNav.getAttribute('md-component-id');
                 $rootScope.$on('$stateChangeStart', function () {
-                    $mdSidenav(component_id_1).toggle();
+                    $mdSidenav(component_id_1).close();
                 });
             }
             else {
@@ -1347,6 +1416,39 @@ var app;
     angular
         .module('inventory-management')
         .service('ItemsService', ItemsService);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+    var LocalStorageService = (function () {
+        function LocalStorageService($window) {
+            this.$window = $window;
+        }
+        /**
+         * set
+         */
+        LocalStorageService.prototype.set = function (key, value) {
+            this.$window.localStorage.setItem(key, value);
+        };
+        /**
+         * get
+         */
+        LocalStorageService.prototype.get = function (key) {
+            return this.$window.localStorage.getItem(key);
+        };
+        /**
+         * remove
+         */
+        LocalStorageService.prototype.remove = function (key) {
+            this.$window.localStorage.removeItem(key);
+        };
+        return LocalStorageService;
+    }());
+    LocalStorageService.$inject = ['$window'];
+    angular
+        .module('inventory-management')
+        .service('LocalStorageService', LocalStorageService);
 })(app || (app = {}));
 "use strict";
 var app;
