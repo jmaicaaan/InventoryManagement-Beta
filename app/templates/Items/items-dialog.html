@@ -26,10 +26,11 @@
                         </md-input-container>
                     </div>
                     <div>
-                        <md-input-container class="md-block">
+                         <md-input-container class="md-block">
                             <label>Item Code</label>
                             <input ng-model="vm.item.code" type="text">
-                        </md-input-container>
+                            <md-icon md-svg-src="app/icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()"></md-icon>
+                         </md-input-container>
                     </div>
                     <div>
                         <md-input-container class="md-block">
@@ -40,7 +41,10 @@
 
                     <div>
                         <md-chips ng-model="vm.selectedSuppliers" md-autocomplete-snap md-autocomplete-wrap-override>
-                            <md-autocomplete md-items="supplier in vm.ItemsService.listSuppliers" placeholder="Supplier Name">
+                            <md-autocomplete 
+                                    md-search-text="vm.searchText"
+                                    md-items="supplier in vm.ItemsService.listSuppliers | filter: vm.searchText" 
+                                    placeholder="Supplier Name">
                                 <span><strong>{{supplier.name}}</strong></span>
                             </md-autocomplete>
                             <md-chip-template>

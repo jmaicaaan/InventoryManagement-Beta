@@ -10,3 +10,15 @@
 .md-button.md-fab.md-fab-bottom-right{
     position: fixed;
 }
+
+md-toast{
+    position: fixed;
+}
+
+.icon-on-input{
+    display:inline-block;
+}
+
+.icon-on-input:hover{
+    cursor: pointer;
+}

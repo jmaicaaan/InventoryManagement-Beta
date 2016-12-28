@@ -23,7 +23,7 @@ namespace app {
                     throw 'API is dead.';
 
                 if(response.status === 500)
-                    throw response.data.errorMessage;
+                    throw response.data.message;
                 return response;
             }
         }

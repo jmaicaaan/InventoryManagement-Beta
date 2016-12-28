@@ -4,7 +4,7 @@ namespace app{
     class ItemDetailsController extends BaseController{
 
         constructor(private $stateParams: angular.ui.IStateParamsService, private LocalStorageService: ILocalStorageService,
-                private ItemsService: IItemsService, BaseService: IBaseService){
+                private ItemsService: IItemsService, BaseService: IBaseService, private UIDService: IUIDService){
             super(BaseService);
             this.item = this.getItem();
             this.selectedSuppliers = this.item.listSuppliers;
@@ -35,6 +35,7 @@ namespace app{
             this.update('/editItem', itemModel)
                 .then((resp) => {
                     this.viewItems();
+                    this.ItemsService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.ItemsService.showToast(err);
@@ -53,9 +54,16 @@ namespace app{
                     this.ItemsService.showToast(err);
                 });
         }
+
+        /**
+         * generateItemCode
+         */
+        public generateItemCode() {
+            this.item.code = this.UIDService.generateUID();
+        }
     }
 
-    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'BaseService'];
+    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'BaseService', 'UIDService'];
 
     angular
         .module('inventory-management')

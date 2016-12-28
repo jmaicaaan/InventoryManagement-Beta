@@ -103,6 +103,7 @@ namespace app {
                     this.remove('/deleteCategory', categoryModel)
                         .then((resp) => {
                             this.viewCategories();
+                            this.CategoriesService.showToast(resp.data.message);
                         })
                         .catch((err) => {
                             this.CategoriesService.showToast(err);
@@ -134,6 +135,7 @@ namespace app {
                 .then((resp) => {
                     this.CategoriesService.hideDialog();
                     this.viewCategories();
+                    this.CategoriesService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.CategoriesService.showToast(err);
@@ -153,6 +155,7 @@ namespace app {
                 .then((resp) => {
                     this.CategoriesService.hideDialog();
                     this.viewCategories();
+                    this.CategoriesService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.CategoriesService.showToast(err);

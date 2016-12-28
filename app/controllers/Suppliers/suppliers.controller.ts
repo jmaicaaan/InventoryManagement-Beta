@@ -103,6 +103,7 @@ namespace app {
                     this.remove('/deleteSupplier', supplierModel)
                         .then((resp) => {
                             this.viewSuppliers();
+                            this.SuppliersService.showToast(resp.data.message);
                         })
                         .catch((err) => {
                             this.SuppliersService.showToast(err);
@@ -134,6 +135,7 @@ namespace app {
                 .then((response) => {
                     this.SuppliersService.hideDialog();
                     this.viewSuppliers();
+                    this.SuppliersService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.SuppliersService.showToast(err);
@@ -153,6 +155,7 @@ namespace app {
                 .then((resp) => {
                     this.SuppliersService.hideDialog();
                     this.viewSuppliers();
+                    this.SuppliersService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.SuppliersService.showToast(err);

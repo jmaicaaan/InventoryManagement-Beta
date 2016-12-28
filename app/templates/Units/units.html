@@ -22,10 +22,10 @@
                     <td md-cell>{{$index + 1}}</td>
                     <td md-cell><b>{{unit.name}}</b></td>
                     <td md-cell>
-                        <md-button class="md-icon-button" ng-click="vm.editUnit(unit)">
+                        <md-button class="md-icon-button" ng-click="vm.editUnit(unit)" aria-label="edit"> 
                             <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
                         </md-button>
-                        <md-button class="md-icon-button" ng-click="vm.deleteUnit(unit)">
+                        <md-button class="md-icon-button" ng-click="vm.deleteUnit(unit)" aria-label="delete">
                             <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
                         </md-button>
                     </td>

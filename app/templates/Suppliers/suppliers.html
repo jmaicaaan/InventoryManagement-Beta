@@ -26,10 +26,10 @@
                 <td md-cell>{{supplier.primaryContactNo}}</td>
                 <td md-cell hide-xs hide-ms show-gt-sm>{{supplier.secondaryContactNo}}</td>
                 <td md-cell hide-xs hide-ms show-gt-sm>
-                    <md-button class="md-icon-button" ng-click="vm.editSupplier(supplier)">
+                    <md-button class="md-icon-button" ng-click="vm.editSupplier(supplier)" aria-label="edit">
                         <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
                     </md-button>
-                    <md-button class="md-icon-button" ng-click="vvm.deleteSupplier(supplier)">
+                    <md-button class="md-icon-button" ng-click="vm.deleteSupplier(supplier)" aria-label="delete">
                         <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
                     </md-button>
                 </td>

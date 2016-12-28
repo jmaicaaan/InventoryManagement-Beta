@@ -103,6 +103,7 @@ namespace app {
                     this.remove('/deleteUnit', unitModel)
                         .then((resp) => {
                             this.viewUnits();
+                            this.UnitsService.showToast(resp.data.message);
                         })
                         .catch((err) => {
                             this.UnitsService.showToast(err);
@@ -134,6 +135,7 @@ namespace app {
                 .then((response) => {
                     this.UnitsService.hideDialog();
                     this.viewUnits();
+                    this.UnitsService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.UnitsService.showToast(err);
@@ -153,6 +155,7 @@ namespace app {
                 .then((resp) => {
                     this.UnitsService.hideDialog();
                     this.viewUnits();
+                    this.UnitsService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.UnitsService.showToast(err);

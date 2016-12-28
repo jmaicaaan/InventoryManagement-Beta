@@ -77,9 +77,10 @@ namespace app {
             }
 
             this.add("/addStock", stockModel)
-                .then(() => {
+                .then((resp) => {
                     this.StocksService.hideDialog();
                     this.viewStocks();
+                    this.StocksService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.StocksService.showToast(err);

@@ -196,6 +196,11 @@ var app;
 var app;
 (function (app) {
     'use strict';
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
     var BaseController = (function () {
         function BaseController(BaseService) {
             this.BaseService = BaseService;
@@ -325,6 +330,7 @@ var app;
                 _this.remove('/deleteBrand', brandModel)
                     .then(function (resp) {
                     _this.viewBrands();
+                    _this.BrandsService.showToast(resp.data.message);
                 })
                     .catch(function (err) {
                     _this.BrandsService.showToast(err);
@@ -352,9 +358,10 @@ var app;
                 brand: brand
             };
             this.add('/addBrand', brandModel)
-                .then(function (response) {
+                .then(function (resp) {
                 _this.BrandsService.hideDialog();
                 _this.viewBrands();
+                _this.BrandsService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.BrandsService.showToast(err);
@@ -372,6 +379,7 @@ var app;
                 .then(function (resp) {
                 _this.BrandsService.hideDialog();
                 _this.viewBrands();
+                _this.BrandsService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.BrandsService.showToast(err);
@@ -475,6 +483,7 @@ var app;
                 _this.remove('/deleteCategory', categoryModel)
                     .then(function (resp) {
                     _this.viewCategories();
+                    _this.CategoriesService.showToast(resp.data.message);
                 })
                     .catch(function (err) {
                     _this.CategoriesService.showToast(err);
@@ -505,6 +514,7 @@ var app;
                 .then(function (resp) {
                 _this.CategoriesService.hideDialog();
                 _this.viewCategories();
+                _this.CategoriesService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.CategoriesService.showToast(err);
@@ -522,6 +532,7 @@ var app;
                 .then(function (resp) {
                 _this.CategoriesService.hideDialog();
                 _this.viewCategories();
+                _this.CategoriesService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.CategoriesService.showToast(err);
@@ -648,6 +659,7 @@ var app;
                 _this.remove('/deleteItem', itemModel)
                     .then(function (resp) {
                     _this.viewItems();
+                    _this.ItemsService.showToast(resp.data.message);
                 })
                     .catch(function (err) {
                     _this.ItemsService.showToast(err);
@@ -668,10 +680,13 @@ var app;
     }(app.BaseController));
     var ItemsDialogController = (function (_super) {
         __extends(ItemsDialogController, _super);
-        function ItemsDialogController($mdDialog, ItemsService, BaseService, selectedItem, $state, LocalStorageService) {
+        function ItemsDialogController($mdDialog, ItemsService, BaseService, selectedItem, $state, LocalStorageService, UIDService) {
             var _this = _super.call(this, $mdDialog, ItemsService, BaseService, $state, LocalStorageService) || this;
             _this.selectedItem = selectedItem;
+            _this.UIDService = UIDService;
             _this.selectedSuppliers = [];
+            _this.require_match = true;
+            _this.item = {};
             return _this;
         }
         /**
@@ -684,18 +699,25 @@ var app;
                 listSuppliers: this.selectedSuppliers
             };
             this.add('/addItem', itemModel)
-                .then(function (response) {
+                .then(function (resp) {
                 _this.ItemsService.hideDialog();
                 _this.viewItems();
+                _this.ItemsService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.ItemsService.showToast(err);
             });
         };
+        /**
+         * generateItemCode
+         */
+        ItemsDialogController.prototype.generateItemCode = function () {
+            this.item.code = this.UIDService.generateUID();
+        };
         return ItemsDialogController;
     }(ItemsController));
     ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', '$state', 'LocalStorageService'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem', '$state', 'LocalStorageService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem', '$state', 'LocalStorageService', 'UIDService'];
     angular
         .module('inventory-management')
         .controller('ItemsController', ItemsController);
@@ -706,11 +728,12 @@ var app;
     'use strict';
     var ItemDetailsController = (function (_super) {
         __extends(ItemDetailsController, _super);
-        function ItemDetailsController($stateParams, LocalStorageService, ItemsService, BaseService) {
+        function ItemDetailsController($stateParams, LocalStorageService, ItemsService, BaseService, UIDService) {
             var _this = _super.call(this, BaseService) || this;
             _this.$stateParams = $stateParams;
             _this.LocalStorageService = LocalStorageService;
             _this.ItemsService = ItemsService;
+            _this.UIDService = UIDService;
             _this.item = {};
             _this.selectedSuppliers = [];
             _this.item = _this.getItem();
@@ -737,6 +760,7 @@ var app;
             this.update('/editItem', itemModel)
                 .then(function (resp) {
                 _this.viewItems();
+                _this.ItemsService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.ItemsService.showToast(err);
@@ -755,9 +779,15 @@ var app;
                 _this.ItemsService.showToast(err);
             });
         };
+        /**
+         * generateItemCode
+         */
+        ItemDetailsController.prototype.generateItemCode = function () {
+            this.item.code = this.UIDService.generateUID();
+        };
         return ItemDetailsController;
     }(app.BaseController));
-    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'BaseService'];
+    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'BaseService', 'UIDService'];
     angular
         .module('inventory-management')
         .controller('ItemDetailsController', ItemDetailsController);
@@ -895,9 +925,10 @@ var app;
                 item: stock.item
             };
             this.add("/addStock", stockModel)
-                .then(function () {
+                .then(function (resp) {
                 _this.StocksService.hideDialog();
                 _this.viewStocks();
+                _this.StocksService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.StocksService.showToast(err);
@@ -1025,6 +1056,7 @@ var app;
                 _this.remove('/deleteSupplier', supplierModel)
                     .then(function (resp) {
                     _this.viewSuppliers();
+                    _this.SuppliersService.showToast(resp.data.message);
                 })
                     .catch(function (err) {
                     _this.SuppliersService.showToast(err);
@@ -1055,6 +1087,7 @@ var app;
                 .then(function (response) {
                 _this.SuppliersService.hideDialog();
                 _this.viewSuppliers();
+                _this.SuppliersService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.SuppliersService.showToast(err);
@@ -1072,6 +1105,7 @@ var app;
                 .then(function (resp) {
                 _this.SuppliersService.hideDialog();
                 _this.viewSuppliers();
+                _this.SuppliersService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.SuppliersService.showToast(err);
@@ -1175,6 +1209,7 @@ var app;
                 _this.remove('/deleteUnit', unitModel)
                     .then(function (resp) {
                     _this.viewUnits();
+                    _this.UnitsService.showToast(resp.data.message);
                 })
                     .catch(function (err) {
                     _this.UnitsService.showToast(err);
@@ -1205,6 +1240,7 @@ var app;
                 .then(function (response) {
                 _this.UnitsService.hideDialog();
                 _this.viewUnits();
+                _this.UnitsService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.UnitsService.showToast(err);
@@ -1222,6 +1258,7 @@ var app;
                 .then(function (resp) {
                 _this.UnitsService.hideDialog();
                 _this.viewUnits();
+                _this.UnitsService.showToast(resp.data.message);
             })
                 .catch(function (err) {
                 _this.UnitsService.showToast(err);
@@ -1566,7 +1603,7 @@ var app;
                 if (response.status === -1)
                     throw 'API is dead.';
                 if (response.status === 500)
-                    throw response.data.errorMessage;
+                    throw response.data.message;
                 return response;
             }
         };
@@ -1675,6 +1712,7 @@ var app;
             this.$mdToast.show(this.$mdToast
                 .simple()
                 .textContent(message)
+                .action('close')
                 .position('top left')
                 .hideDelay(5000));
         };
@@ -1683,6 +1721,25 @@ var app;
     angular
         .module('inventory-management')
         .service('ToastService', ToastService);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+    var UIDService = (function () {
+        function UIDService() {
+        }
+        /**
+         * http://stackoverflow.com/questions/6248666/how-to-generate-short-uid-like-ax4j9z-in-js
+         */
+        UIDService.prototype.generateUID = function () {
+            return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
+        };
+        return UIDService;
+    }());
+    angular
+        .module('inventory-management')
+        .service('UIDService', UIDService);
 })(app || (app = {}));
 "use strict";
 var app;

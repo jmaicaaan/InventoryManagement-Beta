@@ -15,6 +15,7 @@ namespace app{
                 this.$mdToast
                 .simple()
                 .textContent(message)
+                .action('close')
                 .position('top left')
                 .hideDelay(5000)
             );

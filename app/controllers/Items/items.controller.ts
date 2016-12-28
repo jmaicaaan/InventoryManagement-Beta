@@ -100,6 +100,7 @@ namespace app {
                     this.remove('/deleteItem', itemModel)
                         .then((resp) => {
                             this.viewItems();
+                            this.ItemsService.showToast(resp.data.message);
                         })
                         .catch((err) => {
                             this.ItemsService.showToast(err);
@@ -123,11 +124,14 @@ namespace app {
     class ItemsDialogController extends ItemsController {
 
         constructor($mdDialog: angular.material.IDialogService, ItemsService: IItemsService, BaseService: IBaseService,
-                private selectedItem: IItem, $state: angular.ui.IStateService, LocalStorageService: ILocalStorageService) {
+                private selectedItem: IItem, $state: angular.ui.IStateService, LocalStorageService: ILocalStorageService,
+                private UIDService: IUIDService) {
             super($mdDialog, ItemsService, BaseService, $state, LocalStorageService);
         }
 
         public selectedSuppliers = [];
+        public require_match = true;
+        public item: any = {};
 
         /**
          * addItem
@@ -140,18 +144,26 @@ namespace app {
             };
 
             this.add('/addItem', itemModel)
-                .then((response) => {
+                .then((resp) => {
                     this.ItemsService.hideDialog();
                     this.viewItems();
+                    this.ItemsService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.ItemsService.showToast(err);
                 });
         }
+
+        /**
+         * generateItemCode
+         */
+        public generateItemCode() {
+            this.item.code = this.UIDService.generateUID();
+        }
     }
 
     ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', '$state', 'LocalStorageService'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem', '$state', 'LocalStorageService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem', '$state', 'LocalStorageService', 'UIDService'];
 
     angular
         .module('inventory-management')

@@ -103,6 +103,7 @@ namespace app {
                     this.remove('/deleteBrand', brandModel)
                         .then((resp) => {
                             this.viewBrands();
+                            this.BrandsService.showToast(resp.data.message);
                         })
                         .catch((err) => {
                             this.BrandsService.showToast(err);
@@ -131,9 +132,10 @@ namespace app {
             };
 
             this.add('/addBrand', brandModel)
-                .then((response) => {
+                .then((resp) => {
                     this.BrandsService.hideDialog();
                     this.viewBrands();
+                    this.BrandsService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.BrandsService.showToast(err);
@@ -153,6 +155,7 @@ namespace app {
                 .then((resp) => {
                     this.BrandsService.hideDialog();
                     this.viewBrands();
+                    this.BrandsService.showToast(resp.data.message);
                 })
                 .catch((err) => {
                     this.BrandsService.showToast(err);
