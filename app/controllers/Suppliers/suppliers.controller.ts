@@ -1,13 +1,19 @@
-namespace app{
+namespace app {
     'use strict';
 
-    class SuppliersController extends BaseController{
+    class SuppliersController extends BaseController {
 
         constructor(private $mdDialog: angular.material.IDialogService,
-                 protected SuppliersService: ISupplierService, BaseService: IBaseService){
+            protected SuppliersService: ISupplierService, BaseService: IBaseService) {
             super(BaseService);
             this.viewSuppliers();
         }
+
+        public md_query: IMDDataTableSortOption = {
+            order: 'name',
+            limit: 5,
+            page: 1
+        };
 
         /**
          * ShowDialog
@@ -108,10 +114,10 @@ namespace app{
         }
     }
 
-    class SupplierDialogController extends SuppliersController{
-       
+    class SupplierDialogController extends SuppliersController {
+
         constructor($mdDialog: angular.material.IDialogService, SuppliersService: ISupplierService, BaseService: IBaseService,
-                    private supplier: ISupplier){
+            private supplier: ISupplier) {
             super($mdDialog, SuppliersService, BaseService);
         }
 

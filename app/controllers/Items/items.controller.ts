@@ -8,6 +8,12 @@ namespace app {
             super(BaseService);
         }
 
+         public md_query: IMDDataTableSortOption = {
+            order: 'name',
+            limit: 5,
+            page: 1
+        };
+
         /**
          * ShowDialog
          */

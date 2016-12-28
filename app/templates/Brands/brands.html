@@ -6,29 +6,37 @@
             <input ng-model="vm.queryText" type="text">
         </md-input-container>
     </div>
-    <table md-table>
-        <thead md-head>
-            <tr md-row>
-                <th md-column md-order-by="nameToLower"><span>No.</span></th>
-                <th md-column md-order-by="nameToLower"><span>Brand Name</span></th>
-                <th md-column md-order-by="nameToLower"><span>Action</span></th>
-            </tr>
-        </thead>
-        <tbody md-body>
-            <tr md-row md-auto-select ng-repeat="brand in vm.BrandsService.listBrands | filter: vm.queryText">
-                <td md-cell>{{$index + 1}}</td>
-                <td md-cell>{{brand.name}}</td>
-                <td md-cell>
-                    <md-button class="md-icon-button" ng-click="vm.editBrand(brand)">
-                        <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
-                    </md-button>
-                    <md-button class="md-icon-button" ng-click="vm.deleteBrand(brand)">
-                        <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
-                    </md-button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <md-table-container>
+        <table md-table>
+            <thead md-head md-order="vm.md_query.order">
+                <tr md-row>
+                    <th md-column><span>No.</span></th>
+                    <th md-column md-order-by="name"><span>Brand Name</span></th>
+                    <th md-column><span>Action</span></th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row md-auto-select ng-repeat="brand in vm.BrandsService.listBrands | 
+                    filter: vm.queryText | orderBy: vm.md_query.order | 
+                        limitTo: vm.md_query.limit : (vm.md_query.page - 1) * vm.md_query.limit">
+                    <td md-cell>{{$index + 1}}</td>
+                    <td md-cell><b>{{brand.name}}</b></td>
+                    <td md-cell>
+                        <md-button class="md-icon-button" ng-click="vm.editBrand(brand)">
+                            <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button" ng-click="vm.deleteBrand(brand)">
+                            <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
+                        </md-button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+    <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" md-page="vm.md_query.page" 
+            md-total="{{vm.BrandsService.listBrands.length}}" md-page-select>
+    </md-table-pagination>
+
 
 </md-content>
 <div>

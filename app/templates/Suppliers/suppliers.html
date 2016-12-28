@@ -6,20 +6,23 @@
             <input ng-model="vm.queryText" type="text">
         </md-input-container>
     </div>
+    <md-table-container>
     <table md-table>
-        <thead md-head>
+        <thead md-head md-order="vm.md_query.order">
             <tr md-row>
-                <th md-column md-order-by="nameToLower"><span>No.</span></th>
-                <th md-column md-order-by="nameToLower"><span>Supplier Name</span></th>
-                <th md-column md-order-by="nameToLower"><span>Supplier Primary Contact No</span></th>
-                <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Supplier Secondary Contact No</span></th>
-                <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Action</span></th>
+                <th md-column><span>No.</span></th>
+                <th md-column md-order-by="name"><span>Supplier Name</span></th>
+                <th md-column><span>Supplier Primary Contact No</span></th>
+                <th md-column hide-xs hide-ms show-gt-sm><span>Supplier Secondary Contact No</span></th>
+                <th md-column hide-xs hide-ms show-gt-sm><span>Action</span></th>
             </tr>
         </thead>
         <tbody md-body>
-            <tr md-row ng-repeat="supplier in vm.SuppliersService.listSuppliers | filter: vm.queryText" md-auto-select>
+            <tr md-row ng-repeat="supplier in vm.SuppliersService.listSuppliers | 
+                    filter: vm.queryText | orderBy: vm.md_query.order | 
+                    limitTo: vm.md_query.limit : (vm.md_query.page - 1) * vm.md_query.limit" md-auto-select>
                 <td md-cell>{{$index + 1}}</td>
-                <td md-cell>{{supplier.name}}</td>
+                <td md-cell><b>{{supplier.name}}</b></td>
                 <td md-cell>{{supplier.primaryContactNo}}</td>
                 <td md-cell hide-xs hide-ms show-gt-sm>{{supplier.secondaryContactNo}}</td>
                 <td md-cell hide-xs hide-ms show-gt-sm>
@@ -33,6 +36,11 @@
             </tr>
         </tbody>
     </table>
+    </md-table-container>
+    <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" 
+            md-page="vm.md_query.page" md-total="{{vm.SuppliersService.listSuppliers.length}}"
+            md-page-select>
+    </md-table-pagination>
 
     <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
         <md-icon md-svg-src="app/icons/ic_add_24px.svg"></md-icon>

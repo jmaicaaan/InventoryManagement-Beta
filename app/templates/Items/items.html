@@ -7,54 +7,51 @@
                 <input ng-model="vm.queryText" type="text">
             </md-input-container>
         </div>
-        <div layout-fill>
-            <md-table-container>
-                <table md-table>
-                    <thead md-head>
-                        <tr md-row>
-                            <th md-column><span>No.</span></th>
-                            <th md-column md-order-by="nameToLower"><span>Item Name</span></th>
-                            <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Suppliers Name</span></th>
-                            <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Brand</span></th>
-                            <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Unit</span></th>
-                            <th md-column md-order-by="nameToLower" hide-xs hide-ms show-gt-sm><span>Quantity</span></th>
-                            <th md-column md-order-by="nameToLower"><span>Total Stocks</span></th>
-                            <th md-column hide-xs hide-ms show-gt-sm><span>Action</span></th>
-                        </tr>
-                    </thead>
-                    <tbody md-body>
-                        <!-- Implement on-hold for mobile -->
-                        <tr md-row ng-repeat="item in vm.ItemsService.listItems | filter: vm.queryText" md-auto-select>
-                            <td md-cell>{{$index + 1}}</td>
-                            <td md-cell><b>{{item.name}}</b></td>
-                            <td md-cell hide-xs hide-ms show-gt-sm>
-                                <p ng-repeat="supplier in item.listSuppliers">
-                                    {{supplier.name}}
-                                </p>
-                            </td>
-                            <td md-cell hide-xs hide-ms show-gt-sm>{{item.brand.name}}</td>
-                            <td md-cell hide-xs hide-ms show-gt-sm>{{item.unit.name}}</td>
-                            <td md-cell hide-xs hide-ms show-gt-sm>{{item.quantity}}</td>
-                            <td md-cell>{{item.totalStocks}}</td>
-                            <td md-cell hide-xs hide-ms show-gt-sm>
-                                <!--<md-button class="md-icon-button" ng-click="vm.viewItemDetails(item)">
-                                <md-icon md-svg-icon="app/icons/ic_pageview_24px.svg"></md-icon>
-                            </md-button>-->
-                                <md-button class="md-icon-button" ng-click="vm.viewItemDetails(item)" aria-label="edit">
-                                    <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
-                                </md-button>
-                                <md-button class="md-icon-button" ng-click="vm.deleteItem(item)" aria-label="delete">
-                                    <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
-                                </md-button>
-                                <!--<md-button class="md-primary md-raised" ng-click="vm.editItem(item)">Edit</md-button>-->
-                                <!--<md-button class="md-primary md-raised" ng-click="vm.deleteItem(item)">Delete</md-button>-->
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </md-table-container>
-        </div>
-
+        <md-table-container>
+            <table md-table>
+                <thead md-head md-order="vm.md_query.order">
+                    <tr md-row>
+                        <th md-column><span>No.</span></th>
+                        <th md-column md-order-by="name"><span>Item Name</span></th>
+                        <th md-column hide-xs hide-ms show-gt-sm><span>Suppliers Name</span></th>
+                        <th md-column md-order-by="brand.name" hide-xs hide-ms show-gt-sm><span>Brand</span></th>
+                        <th md-column md-order-by="unit.name" hide-xs hide-ms show-gt-sm><span>Unit</span></th>
+                        <th md-column md-order-by="quantity" hide-xs hide-ms show-gt-sm><span>Quantity</span></th>
+                        <th md-column md-order-by="totalStocks"><span>Total Stocks</span></th>
+                        <th md-column><span>Action</span></th>
+                    </tr>
+                </thead>
+                <tbody md-body>
+                    <!-- Implement on-hold for mobile -->
+                    <tr md-row ng-repeat="item in vm.ItemsService.listItems | 
+                                filter: vm.queryText | orderBy: vm.md_query.order | 
+                                limitTo: vm.md_query.limit : (vm.md_query.page - 1) * vm.md_query.limit" md-auto-select>
+                        <td md-cell>{{$index + 1}}</td>
+                        <td md-cell><b>{{item.name}}</b></td>
+                        <td md-cell hide-xs hide-ms show-gt-sm>
+                            <p ng-repeat="supplier in item.listSuppliers">
+                                {{supplier.name}}
+                            </p>
+                        </td>
+                        <td md-cell hide-xs hide-ms show-gt-sm>{{item.brand.name}}</td>
+                        <td md-cell hide-xs hide-ms show-gt-sm>{{item.unit.name}}</td>
+                        <td md-cell hide-xs hide-ms show-gt-sm>{{item.quantity}}</td>
+                        <td md-cell>{{item.totalStocks}}</td>
+                        <td md-cell>
+                            <md-button class="md-icon-button" ng-click="vm.viewItemDetails(item)" aria-label="edit">
+                                <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button" ng-click="vm.deleteItem(item)" aria-label="delete">
+                                <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
+                            </md-button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+        <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" md-page="vm.md_query.page" md-total="{{vm.ItemsService.listItems.length}}"
+            md-page-select>
+        </md-table-pagination>
     </md-content>
 
 

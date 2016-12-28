@@ -191,6 +191,11 @@ var app;
 var app;
 (function (app) {
     'use strict';
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
     var BaseController = (function () {
         function BaseController(BaseService) {
             this.BaseService = BaseService;
@@ -240,6 +245,11 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.BrandsService = BrandsService;
+            _this.md_query = {
+                order: 'name',
+                limit: 5,
+                page: 1
+            };
             _this.viewBrands();
             return _this;
         }
@@ -385,6 +395,11 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.CategoriesService = CategoriesService;
+            _this.md_query = {
+                order: 'name',
+                limit: 5,
+                page: 1
+            };
             _this.viewCategories();
             return _this;
         }
@@ -554,6 +569,11 @@ var app;
             _this.ItemsService = ItemsService;
             _this.$state = $state;
             _this.LocalStorageService = LocalStorageService;
+            _this.md_query = {
+                order: 'name',
+                limit: 5,
+                page: 1
+            };
             return _this;
         }
         /**
@@ -811,6 +831,11 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.StocksService = StocksService;
+            _this.md_query = {
+                order: 'name',
+                limit: 5,
+                page: 1
+            };
             _this.viewStocks();
             return _this;
         }
@@ -920,6 +945,11 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.SuppliersService = SuppliersService;
+            _this.md_query = {
+                order: 'name',
+                limit: 5,
+                page: 1
+            };
             _this.viewSuppliers();
             return _this;
         }
@@ -1065,6 +1095,11 @@ var app;
             var _this = _super.call(this, BaseService) || this;
             _this.$mdDialog = $mdDialog;
             _this.UnitsService = UnitsService;
+            _this.md_query = {
+                order: 'name',
+                limit: 5,
+                page: 1
+            };
             _this.viewUnits();
             return _this;
         }
@@ -1527,6 +1562,7 @@ var app;
                 return config;
             },
             responseError: function (response) {
+                alert(JSON.stringify(response));
                 if (response.status === -1)
                     throw 'API is dead.';
                 if (response.status === 500)

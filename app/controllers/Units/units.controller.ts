@@ -1,13 +1,19 @@
-namespace app{
+namespace app {
     'use strict';
 
-    class UnitsController extends BaseController{
+    class UnitsController extends BaseController {
 
         constructor(private $mdDialog: angular.material.IDialogService,
-                protected UnitsService: IUnitsService, BaseService: IBaseService){
+            protected UnitsService: IUnitsService, BaseService: IBaseService) {
             super(BaseService);
             this.viewUnits();
         }
+
+        public md_query: IMDDataTableSortOption = {
+            order: 'name',
+            limit: 5,
+            page: 1
+        };
 
         /**
          * showDialog
@@ -27,9 +33,9 @@ namespace app{
             return this.UnitsService.showDialog(config);
         }
 
-         /**
-         * showConfirmDialog
-         */
+        /**
+        * showConfirmDialog
+        */
         public showConfirmDialog(confirmConfig) {
             return this.UnitsService.showDialog(confirmConfig);
         }
@@ -108,16 +114,16 @@ namespace app{
         }
     }
 
-    class UnitsDialogController extends UnitsController{
+    class UnitsDialogController extends UnitsController {
 
         constructor($mdDialog: angular.material.IDialogService, UnitsService: IUnitsService, BaseService: IBaseService,
-                private unit: IUnit){
+            private unit: IUnit) {
             super($mdDialog, UnitsService, BaseService);
         }
 
-       /**
-         * addUnit
-         */
+        /**
+          * addUnit
+          */
         public addUnit(unit: IUnit) {
 
             let unitModel = {
@@ -157,7 +163,7 @@ namespace app{
     UnitsController.$inject = ['$mdDialog', 'UnitsService', 'BaseService'];
     UnitsDialogController.$inject = ['$mdDialog', 'UnitsService', 'BaseService', 'unit'];
 
-     angular
+    angular
         .module('inventory-management')
         .controller('UnitsController', UnitsController);
 }

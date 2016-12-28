@@ -1,13 +1,19 @@
-namespace app{
+namespace app {
     'use strict';
 
-    class CategoriesController extends BaseController{
+    class CategoriesController extends BaseController {
 
         constructor(private $mdDialog: angular.material.IDialogService,
-                protected CategoriesService: ICategoriesService, BaseService: IBaseService){
+            protected CategoriesService: ICategoriesService, BaseService: IBaseService) {
             super(BaseService);
             this.viewCategories();
         }
+
+        public md_query: IMDDataTableSortOption = {
+            order: 'name',
+            limit: 5,
+            page: 1
+        };
 
         /**
          * showDialog
@@ -34,9 +40,9 @@ namespace app{
             return this.CategoriesService.showDialog(confirmConfig);
         }
 
-         /**
-         * showAddDialog
-         */
+        /**
+        * showAddDialog
+        */
         public showAddDialog() {
 
             let templateUrl = 'app/templates/Categories/categories-dialog.html',
@@ -108,10 +114,10 @@ namespace app{
         }
     }
 
-    class CategoriesDialogController extends CategoriesController{
+    class CategoriesDialogController extends CategoriesController {
 
         constructor($mdDialog: angular.material.IDialogService, CategoriesService: ICategoriesService,
-                    BaseService: IBaseService, private category: ICategory){
+            BaseService: IBaseService, private category: ICategory) {
             super($mdDialog, CategoriesService, BaseService);
         }
 
@@ -119,7 +125,7 @@ namespace app{
          * addCategory
          */
         public addCategory(category: ICategory) {
-            
+
             let categoryModel = {
                 category: category
             };
@@ -157,7 +163,7 @@ namespace app{
     CategoriesController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService'];
     CategoriesDialogController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService', 'category'];
 
-     angular
+    angular
         .module('inventory-management')
         .controller('CategoriesController', CategoriesController);
 }

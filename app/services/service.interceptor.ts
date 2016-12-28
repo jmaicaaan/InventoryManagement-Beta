@@ -18,7 +18,7 @@ namespace app {
                 return config;
             },
             responseError: function(response){
-                
+                alert(JSON.stringify(response));
                 if(response.status === -1)
                     throw 'API is dead.';
 

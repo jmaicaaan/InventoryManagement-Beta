@@ -9,6 +9,12 @@ namespace app {
             this.viewBrands();
         }
 
+        public md_query: IMDDataTableSortOption = {
+            order: 'name',
+            limit: 5,
+            page: 1
+        };
+
         /**
          * showDialog
          */

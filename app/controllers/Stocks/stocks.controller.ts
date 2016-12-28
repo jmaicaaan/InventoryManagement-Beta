@@ -1,13 +1,19 @@
-namespace app{
+namespace app {
     'use strict';
 
-    class StocksController extends BaseController{
+    class StocksController extends BaseController {
 
         constructor(private $mdDialog: angular.material.IDialogService,
-                 protected StocksService: IStocksService, BaseService: IBaseService){
+            protected StocksService: IStocksService, BaseService: IBaseService) {
             super(BaseService);
             this.viewStocks();
         }
+
+        public md_query: IMDDataTableSortOption = {
+            order: 'name',
+            limit: 5,
+            page: 1
+        };
 
         /**
          * ShowDialog
@@ -33,7 +39,7 @@ namespace app{
         public showAddDialog() {
             let templateUrl = 'app/templates/Stocks/stocks-dialog.html',
                 stock = {};
-            
+
             this.showDialog(templateUrl, stock);
         }
 
@@ -41,7 +47,7 @@ namespace app{
          * viewStocks
          */
         public viewStocks() {
-             this.view_without_data('/viewStocks')
+            this.view_without_data('/viewStocks')
                 .then((stocks) => {
                     this.StocksService.listStocks = stocks.data.listStocks;
                 })
@@ -51,10 +57,10 @@ namespace app{
         }
     }
 
-    class StocksDialogController extends StocksController{
+    class StocksDialogController extends StocksController {
 
         constructor($mdDialog: angular.material.IDialogService, StocksService: IStocksService, BaseService: IBaseService,
-                private ItemsService: IItemsService, private stock: IStock){
+            private ItemsService: IItemsService, private stock: IStock) {
             super($mdDialog, StocksService, BaseService);
         }
 
@@ -63,7 +69,7 @@ namespace app{
         /**
         * addStock
         */
-        public addStock(stock: IStock){
+        public addStock(stock: IStock) {
 
             let stockModel = {
                 stock: stock,
@@ -99,7 +105,7 @@ namespace app{
          */
         public generateQuantity() {
             let quantity = [];
-            for(var i = 1; i <= 100; i++){
+            for (var i = 1; i <= 100; i++) {
                 quantity.push(i);
             }
             this.quantity = quantity;
