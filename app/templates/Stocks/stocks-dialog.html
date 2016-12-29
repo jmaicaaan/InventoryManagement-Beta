@@ -11,30 +11,36 @@
         </md-toolbar>
 
         <md-dialog-content layout-padding>
-            <form layout="column">
+            <form name="form" layout="column">
                 <div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Item</label>
-                            <md-select ng-model="vm.stock.item" md-on-open="vm.loadItems();">
+                            <md-select name="item" ng-model="vm.stock.item" md-on-open="vm.loadItems();" required> 
                                 <md-option ng-repeat="item in vm.ItemsService.listItems" ng-value="item">
                                     {{item.name}}
                                 </md-option>
                             </md-select>
+                            <div ng-messages="form.item.$error" style="color:maroon" role="alert">
+                                <div ng-message="required">You did not choose an item.</div>
+                            </div>
                         </md-input-container>
                     </div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Quantity</label>
-                            <md-select ng-model="vm.stock.quantity" md-on-open="vm.generateQuantity();">
+                            <md-select name="quantity" ng-model="vm.stock.quantity" md-on-open="vm.generateQuantity();" required>
                                 <md-option ng-repeat="no in vm.quantity" ng-value="no">
                                     {{no}}
                                 </md-option>
                             </md-select>
+                            <div ng-messages="form.quantity.$error" style="color:maroon" role="alert">
+                                <div ng-message="required">You did not choose a quantity for your item.</div>
+                            </div>
                         </md-input-container>
                     </div>
                     <div>
-                        <md-radio-group ng-model="vm.stock.stockIn">
+                        <md-radio-group  ng-model="vm.stock.stockIn" ng-required="true">
 
                             <md-radio-button ng-value="{{true}}">Stock In</md-radio-button>
                             <md-radio-button ng-value="{{false}}">Stock Out</md-radio-button>
@@ -44,7 +50,8 @@
                 </div>
 
                 <div layout="column" layout-align="end end">
-                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-click="vm.addStock(vm.stock)">Add Stock</md-button>
+                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-disabled="form.$invalid"
+                    ng-click="vm.addStock(vm.stock)">Add Stock</md-button>
                 </div>
             </form>
         </md-dialog-content>

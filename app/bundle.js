@@ -10,9 +10,11 @@ var app;
     angular
         .module('inventory-management', [
         'ngMaterial',
+        'ngMessages',
         'ui.router',
         'md.data.table',
-        'material.components.autocomplete'
+        'material.components.autocomplete',
+        'chart.js'
     ]);
 })(app || (app = {}));
 "use strict";
@@ -554,6 +556,13 @@ var app;
         function DashboardController($mdSidenav, DashboardService) {
             this.$mdSidenav = $mdSidenav;
             this.DashboardService = DashboardService;
+            this.labels = ['Item with lowest stocks'];
+            this.data = [
+                [65, 59, 80, 81, 56, 55, 40],
+                [28, 48, 40, 19, 86, 27, 90]
+            ];
+            this.series = ["Series 1", "Series 2"];
+            this.options = { legend: { display: true } };
         }
         /**
          * toggleSideNav

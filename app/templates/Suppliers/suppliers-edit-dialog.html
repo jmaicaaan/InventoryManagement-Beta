@@ -11,30 +11,47 @@
         </md-toolbar>
 
         <md-dialog-content layout-padding>
-            <form layout="column">
+            <form name="form" layout="column">
                 <div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Supplier Name</label>
-                            <input ng-model="vm.supplier.name" type="text">
+                            <input name="supplierName" ng-model="vm.supplier.name" type="text" required ng-maxlength="30" ng-minlength="3">
+
+                            <div ng-messages="form.supplierName.$error" style="color:maroon" role="alert">
+                                <div ng-message="required">You did not enter a supplier name</div>
+                                <div ng-message="maxlength">The supplier name has to be less than 30 characters long.</div>
+                                <div ng-message="minlength">The supplier name has to be more than 2 characters long. </div>
+                            </div>
                         </md-input-container>
                     </div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Supplier Primary Contact No</label>
-                            <input ng-model="vm.supplier.primaryContactNo" type="text">
+                            <input name="primaryContactNo" ng-model="vm.supplier.primaryContactNo" type="text" required ng-maxlength="15" ng-minlength="5">
+                             <div ng-messages="form.primaryContactNo.$error" style="color:maroon" role="alert">
+                                <div ng-message="required">You did not enter a supplier primary contact no.</div>
+                                <div ng-message="maxlength">The supplier primary contact no. has to be less than 15 characters long.</div>
+                                <div ng-message="minlength">The supplier primary contact no. has to be more than 5 characters long. </div>
+                            </div>
                         </md-input-container>
                     </div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Supplier Secondary Contact No</label>
-                            <input ng-model="vm.supplier.secondaryContactNo" type="text">
+                            <input name="secondaryContactNo" ng-model="vm.supplier.secondaryContactNo" type="text" required ng-maxlength="15" ng-minlength="5">
+                            <div ng-messages="form.secondaryContactNo.$error" style="color:maroon" role="alert">
+                                <div ng-message="required">You did not enter a supplier primary contact no.</div>
+                                <div ng-message="maxlength">The supplier primary contact no. has to be less than 15 characters long.</div>
+                                <div ng-message="minlength">The supplier primary contact no. has to be more than 5 characters long. </div>
+                            </div>
                         </md-input-container>
                     </div>
                 </div>
 
                 <div layout="column" layout-align="end end">
-                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-click="vm.editSupplier(vm.supplier)">Edit Supplier</md-button>
+                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-disabled="form.$invalid"
+                    ng-click="vm.editSupplier(vm.supplier)">Edit Supplier</md-button>
                 </div>
             </form>
         </md-dialog-content>
