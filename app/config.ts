@@ -12,14 +12,14 @@ namespace app{
         $stateProvider
             .state('dashboard', {
                 url: '/',
-                templateUrl: 'app/templates/Dashboard/dashboard.html',
+                templateUrl: 'templates/Dashboard/dashboard.html',
                 controller: 'DashboardController',
                 controllerAs: 'vm',
                 title: 'Dashboard'
             })
             .state('dashboard.brands', {
                 url: 'brands',
-                templateUrl: 'app/templates/Brands/brands.html',
+                templateUrl: 'templates/Brands/brands.html',
                 controller: 'BrandsController',
                 controllerAs: 'vm',
                 title: 'Brands'
@@ -27,14 +27,14 @@ namespace app{
             })
             .state('dashboard.categories', {
                 url: 'categories',
-                templateUrl: 'app/templates/Categories/categories.html',
+                templateUrl: 'templates/Categories/categories.html',
                 controller: 'CategoriesController',
                 controllerAs: 'vm',
                 title: 'Categories'
             })
             .state('dashboard.items', {
                 url: 'items',
-                templateUrl: 'app/templates/Items/items.html',
+                templateUrl: 'templates/Items/items.html',
                 controller: 'ItemsController',
                 controllerAs: 'vm',
                 onEnter: ItemOnEnter,
@@ -42,28 +42,28 @@ namespace app{
             })
             .state('dashboard.items.details', {
                 url: '/details?item',
-                templateUrl: 'app/templates/Items/items-details.html',
+                templateUrl: 'templates/Items/items-details.html',
                 controller: 'ItemDetailsController',
                 controllerAs: 'vm',
                 title: 'Item Details'
             })
             .state('dashboard.suppliers', {
                 url: 'suppliers',
-                templateUrl: 'app/templates/Suppliers/suppliers.html',
+                templateUrl: 'templates/Suppliers/suppliers.html',
                 controller: 'SuppliersController',
                 controllerAs: 'vm',
                 title: 'Suppliers'
             })
             .state('dashboard.stocks', {
                 url: 'stocks',
-                templateUrl: 'app/templates/Stocks/stocks.html',
+                templateUrl: 'templates/Stocks/stocks.html',
                 controller: 'StocksController',
                 controllerAs: 'vm',
                 title: 'Stocks'
             })
               .state('dashboard.units', {
                 url: 'units',
-                templateUrl: 'app/templates/Units/units.html',
+                templateUrl: 'templates/Units/units.html',
                 controller: 'UnitsController',
                 controllerAs: 'vm',
                 title: 'Units'

@@ -2,7 +2,7 @@
     <div layout-margin>
         <md-input-container class="md-icon-float md-block">
             <label>Search</label>
-            <md-icon md-svg-src="app/icons/ic_search_24px.svg" class="name"></md-icon>
+            <md-icon md-svg-src="icons/ic_search_24px.svg" class="name"></md-icon>
             <input ng-model="vm.queryText" type="text">
         </md-input-container>
     </div>
@@ -23,10 +23,10 @@
                     <td md-cell><b>{{unit.name}}</b></td>
                     <td md-cell>
                         <md-button class="md-icon-button" ng-click="vm.editUnit(unit)" aria-label="edit"> 
-                            <md-icon md-svg-icon="app/icons/ic_edit_24px.svg"></md-icon>
+                            <md-icon md-svg-icon="icons/ic_edit_24px.svg"></md-icon>
                         </md-button>
                         <md-button class="md-icon-button" ng-click="vm.deleteUnit(unit)" aria-label="delete">
-                            <md-icon md-svg-icon="app/icons/ic_delete_24px.svg"></md-icon>
+                            <md-icon md-svg-icon="icons/ic_delete_24px.svg"></md-icon>
                         </md-button>
                     </td>
                 </tr>
@@ -40,6 +40,6 @@
 </md-content>
 <div>
     <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
-        <md-icon md-svg-src="app/icons/ic_add_24px.svg"></md-icon>
+        <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
     </md-button>
 </div>

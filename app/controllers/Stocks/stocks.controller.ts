@@ -37,7 +37,7 @@ namespace app {
          * showAddDialog
          */
         public showAddDialog() {
-            let templateUrl = 'app/templates/Stocks/stocks-dialog.html',
+            let templateUrl = 'templates/Stocks/stocks-dialog.html',
                 stock = {};
 
             this.showDialog(templateUrl, stock);

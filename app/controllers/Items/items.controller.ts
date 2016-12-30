@@ -44,7 +44,7 @@ namespace app {
          */
         public showAddDialog() {
 
-            let templateUrl = 'app/templates/Items/items-dialog.html',
+            let templateUrl = 'templates/Items/items-dialog.html',
                 item = {};
 
             this.showDialog(templateUrl, item);
@@ -55,7 +55,7 @@ namespace app {
          */
         public showEditDialog(item) {
 
-            let templateUrl = 'app/templates/Items/items-edit-dialog.html';
+            let templateUrl = 'templates/Items/items-edit-dialog.html';
             this.showDialog(templateUrl, item);
         }
 

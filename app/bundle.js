@@ -28,28 +28,28 @@ var app;
         $stateProvider
             .state('dashboard', {
             url: '/',
-            templateUrl: 'app/templates/Dashboard/dashboard.html',
+            templateUrl: 'templates/Dashboard/dashboard.html',
             controller: 'DashboardController',
             controllerAs: 'vm',
             title: 'Dashboard'
         })
             .state('dashboard.brands', {
             url: 'brands',
-            templateUrl: 'app/templates/Brands/brands.html',
+            templateUrl: 'templates/Brands/brands.html',
             controller: 'BrandsController',
             controllerAs: 'vm',
             title: 'Brands'
         })
             .state('dashboard.categories', {
             url: 'categories',
-            templateUrl: 'app/templates/Categories/categories.html',
+            templateUrl: 'templates/Categories/categories.html',
             controller: 'CategoriesController',
             controllerAs: 'vm',
             title: 'Categories'
         })
             .state('dashboard.items', {
             url: 'items',
-            templateUrl: 'app/templates/Items/items.html',
+            templateUrl: 'templates/Items/items.html',
             controller: 'ItemsController',
             controllerAs: 'vm',
             onEnter: app.ItemOnEnter,
@@ -57,28 +57,28 @@ var app;
         })
             .state('dashboard.items.details', {
             url: '/details?item',
-            templateUrl: 'app/templates/Items/items-details.html',
+            templateUrl: 'templates/Items/items-details.html',
             controller: 'ItemDetailsController',
             controllerAs: 'vm',
             title: 'Item Details'
         })
             .state('dashboard.suppliers', {
             url: 'suppliers',
-            templateUrl: 'app/templates/Suppliers/suppliers.html',
+            templateUrl: 'templates/Suppliers/suppliers.html',
             controller: 'SuppliersController',
             controllerAs: 'vm',
             title: 'Suppliers'
         })
             .state('dashboard.stocks', {
             url: 'stocks',
-            templateUrl: 'app/templates/Stocks/stocks.html',
+            templateUrl: 'templates/Stocks/stocks.html',
             controller: 'StocksController',
             controllerAs: 'vm',
             title: 'Stocks'
         })
             .state('dashboard.units', {
             url: 'units',
-            templateUrl: 'app/templates/Units/units.html',
+            templateUrl: 'templates/Units/units.html',
             controller: 'UnitsController',
             controllerAs: 'vm',
             title: 'Units'
@@ -285,14 +285,14 @@ var app;
          * showAddDialog
          */
         BrandsController.prototype.showAddDialog = function () {
-            var templateUrl = 'app/templates/Brands/brands-dialog.html', brand = {};
+            var templateUrl = 'templates/Brands/brands-dialog.html', brand = {};
             this.showDialog(templateUrl, brand);
         };
         /**
          * showEditDialog
          */
         BrandsController.prototype.showEditDialog = function (brand) {
-            var templateUrl = 'app/templates/Brands/brands-edit-dialog.html';
+            var templateUrl = 'templates/Brands/brands-edit-dialog.html';
             this.showDialog(templateUrl, brand);
         };
         /**
@@ -438,14 +438,14 @@ var app;
         * showAddDialog
         */
         CategoriesController.prototype.showAddDialog = function () {
-            var templateUrl = 'app/templates/Categories/categories-dialog.html', category = {};
+            var templateUrl = 'templates/Categories/categories-dialog.html', category = {};
             this.showDialog(templateUrl, category);
         };
         /**
          * showEditDialog
          */
         CategoriesController.prototype.showEditDialog = function (category) {
-            var templateUrl = 'app/templates/Categories/categories-edit-dialog.html';
+            var templateUrl = 'templates/Categories/categories-edit-dialog.html';
             this.showDialog(templateUrl, category);
         };
         /**
@@ -621,14 +621,14 @@ var app;
          * showAddDialog
          */
         ItemsController.prototype.showAddDialog = function () {
-            var templateUrl = 'app/templates/Items/items-dialog.html', item = {};
+            var templateUrl = 'templates/Items/items-dialog.html', item = {};
             this.showDialog(templateUrl, item);
         };
         /**
          * showEditDialog
          */
         ItemsController.prototype.showEditDialog = function (item) {
-            var templateUrl = 'app/templates/Items/items-edit-dialog.html';
+            var templateUrl = 'templates/Items/items-edit-dialog.html';
             this.showDialog(templateUrl, item);
         };
         /**
@@ -897,7 +897,7 @@ var app;
          * showAddDialog
          */
         StocksController.prototype.showAddDialog = function () {
-            var templateUrl = 'app/templates/Stocks/stocks-dialog.html', stock = {};
+            var templateUrl = 'templates/Stocks/stocks-dialog.html', stock = {};
             this.showDialog(templateUrl, stock);
         };
         /**
@@ -1018,14 +1018,14 @@ var app;
          * showAddDialog
          */
         SuppliersController.prototype.showAddDialog = function () {
-            var templateUrl = 'app/templates/Suppliers/suppliers-dialog.html', supplier = {};
+            var templateUrl = 'templates/Suppliers/suppliers-dialog.html', supplier = {};
             this.showDialog(templateUrl, supplier);
         };
         /**
          * showEditDialog
          */
         SuppliersController.prototype.showEditDialog = function (supplier) {
-            var templateUrl = 'app/templates/Suppliers/suppliers-edit-dialog.html';
+            var templateUrl = 'templates/Suppliers/suppliers-edit-dialog.html';
             this.showDialog(templateUrl, supplier);
         };
         /**
@@ -1171,14 +1171,14 @@ var app;
          * showAddDialog
          */
         UnitsController.prototype.showAddDialog = function () {
-            var templateUrl = 'app/templates/Units/units-dialog.html', unit = {};
+            var templateUrl = 'templates/Units/units-dialog.html', unit = {};
             this.showDialog(templateUrl, unit);
         };
         /**
          * showEditDialog
          */
         UnitsController.prototype.showEditDialog = function (unit) {
-            var templateUrl = 'app/templates/Units/units-edit-dialog.html';
+            var templateUrl = 'templates/Units/units-edit-dialog.html';
             this.showDialog(templateUrl, unit);
         };
         /**
@@ -1618,7 +1618,7 @@ var app;
         };
         function getServerConfigFile() {
             var $http = $injector.get('$http');
-            return $http.get('app/server-config.json')
+            return $http.get('server-config.json')
                 .then(function (res) { return res; });
         }
         function getServerURL() {

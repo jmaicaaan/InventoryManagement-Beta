@@ -31,7 +31,7 @@ namespace app {
         function getServerConfigFile() {
             let $http: angular.IHttpService = $injector.get('$http');
 
-            return $http.get('app/server-config.json')
+            return $http.get('server-config.json')
                 .then((res) => res);
         }
 

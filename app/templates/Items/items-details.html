@@ -29,7 +29,7 @@
                  <md-input-container class="md-block">
                      <label>Item Code</label>
                     <input name="itemCode" ng-model="vm.item.code" type="text" required ng-maxlength="15" ng-minlength="3">
-                    <md-icon md-svg-src="app/icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()"></md-icon>
+                    <md-icon md-svg-src="icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()"></md-icon>
 
                     <div ng-messages="form.itemCode.$error" style="color:maroon" role="alert">
                         <div ng-message="required">You did not enter an item code</div>
