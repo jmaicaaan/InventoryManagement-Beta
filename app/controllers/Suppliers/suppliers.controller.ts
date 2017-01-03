@@ -132,7 +132,7 @@ namespace app {
             };
 
             this.add('/addSupplier', supplierModel)
-                .then((response) => {
+                .then((resp) => {
                     this.SuppliersService.hideDialog();
                     this.viewSuppliers();
                     this.SuppliersService.showToast(resp.data.message);

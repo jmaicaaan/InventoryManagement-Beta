@@ -64,13 +64,17 @@
                     </div>
 
                     <div>
-                        <md-chips name="suppliers" ng-model="vm.selectedSuppliers" md-autocomplete-snap md-autocomplete-wrap-override md-max-chips="4">
+                        <md-chips name="suppliers" ng-model="vm.selectedSuppliers" md-autocomplete-snap 
+                                    md-autocomplete-wrap-override 
+                                    md-require-match="true" 
+                                    md-max-chips="4">
                             <md-autocomplete 
                                     md-search-text="vm.searchText"
                                     md-input-name="listSupplier" 
                                     md-items="supplier in vm.ItemsService.listSuppliers | filter: vm.searchText"
-                                    placeholder="Supplier Name">
-                                <span><strong>{{supplier.name}}</strong></span>
+                                    placeholder="Supplier Name"
+                                    ng-hide="suppliers.length > 4">
+                                <span md-highlight-text="vm.searchText">{{supplier.name}}</span>
                             </md-autocomplete>
                             <md-chip-template>
                                 {{$chip.name}}

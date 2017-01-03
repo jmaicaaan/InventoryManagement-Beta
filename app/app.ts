@@ -5,9 +5,10 @@ namespace app{
         .module('inventory-management', [
             'ngMaterial',
             'ngMessages',
+            'ngAnimate',
             'ui.router',
             'md.data.table',
             'material.components.autocomplete',
-            'chart.js'
+            'highcharts-ng'
         ])
 }

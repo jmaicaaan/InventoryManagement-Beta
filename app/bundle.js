@@ -11,10 +11,11 @@ var app;
         .module('inventory-management', [
         'ngMaterial',
         'ngMessages',
+        'ngAnimate',
         'ui.router',
         'md.data.table',
         'material.components.autocomplete',
-        'chart.js'
+        'highcharts-ng'
     ]);
 })(app || (app = {}));
 "use strict";
@@ -552,17 +553,30 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var DashboardController = (function () {
-        function DashboardController($mdSidenav, DashboardService) {
-            this.$mdSidenav = $mdSidenav;
-            this.DashboardService = DashboardService;
-            this.labels = ['Item with lowest stocks'];
-            this.data = [
-                [65, 59, 80, 81, 56, 55, 40],
-                [28, 48, 40, 19, 86, 27, 90]
-            ];
-            this.series = ["Series 1", "Series 2"];
-            this.options = { legend: { display: true } };
+    var DashboardController = (function (_super) {
+        __extends(DashboardController, _super);
+        function DashboardController($mdSidenav, DashboardService, BaseService) {
+            var _this = _super.call(this, BaseService) || this;
+            _this.$mdSidenav = $mdSidenav;
+            _this.DashboardService = DashboardService;
+            _this.chartConfig = {
+                options: {
+                    chart: {
+                        type: 'column'
+                    }
+                },
+                series: [],
+                title: {
+                    text: 'Low Stocks'
+                },
+                loading: true,
+                credits: {
+                    enabled: false
+                }
+            };
+            _this.hasLowStocks = false;
+            _this.getLowStocks();
+            return _this;
         }
         /**
          * toggleSideNav
@@ -570,9 +584,41 @@ var app;
         DashboardController.prototype.toggleSideNav = function () {
             this.$mdSidenav('sidenav').toggle();
         };
+        /**
+         * getLowStocks
+         */
+        DashboardController.prototype.getLowStocks = function () {
+            var _this = this;
+            this.view_without_data('/stockTracker')
+                .then(function (items) {
+                _this.DashboardService.listLowStocks = items.data.listItems;
+                _this.extractItemFromList(_this.DashboardService.listLowStocks);
+            })
+                .catch(function (err) {
+                _this.DashboardService.showToast(err);
+            })
+                .finally(function () {
+                _this.chartConfig.loading = false;
+            });
+        };
+        /**
+         * extractItemFromList
+         */
+        DashboardController.prototype.extractItemFromList = function (listLowStocks) {
+            var _this = this;
+            if (listLowStocks.length > 0)
+                this.hasLowStocks = true;
+            listLowStocks.forEach(function (i) {
+                var item = {
+                    name: [i.name],
+                    data: [i.totalStocks]
+                };
+                _this.chartConfig.series.push(item);
+            });
+        };
         return DashboardController;
-    }());
-    DashboardController.$inject = ['$mdSidenav', 'DashboardService'];
+    }(app.BaseController));
+    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService'];
     angular
         .module('inventory-management')
         .controller('DashboardController', DashboardController);
@@ -1093,7 +1139,7 @@ var app;
                 supplier: supplier
             };
             this.add('/addSupplier', supplierModel)
-                .then(function (response) {
+                .then(function (resp) {
                 _this.SuppliersService.hideDialog();
                 _this.viewSuppliers();
                 _this.SuppliersService.showToast(resp.data.message);
@@ -1246,7 +1292,7 @@ var app;
                 unit: unit
             };
             this.add('/addUnit', unitModel)
-                .then(function (response) {
+                .then(function (resp) {
                 _this.UnitsService.hideDialog();
                 _this.viewUnits();
                 _this.UnitsService.showToast(resp.data.message);
@@ -1477,15 +1523,36 @@ var app;
 (function (app) {
     'use strict';
     var DashboardService = (function () {
-        function DashboardService() {
+        function DashboardService(ToastService, DialogService) {
+            this.ToastService = ToastService;
+            this.DialogService = DialogService;
             this.state = {};
+            this.listLowStocks = [];
         }
         DashboardService.prototype.stateNameModifier = function (name) {
             this.state['name'] = name;
         };
+        /**
+         * showToast
+         */
+        DashboardService.prototype.showToast = function (message) {
+            this.ToastService.showToast(message);
+        };
+        /**
+         * showDialog
+         */
+        DashboardService.prototype.showDialog = function (config) {
+            return this.DialogService.showDialog(config);
+        };
+        /**
+         * hideDialog
+         */
+        DashboardService.prototype.hideDialog = function () {
+            this.DialogService.hideDialog();
+        };
         return DashboardService;
     }());
-    DashboardService.$inject = ['$state'];
+    DashboardService.$inject = ['ToastService', 'DialogService'];
     angular
         .module('inventory-management')
         .service('DashboardService', DashboardService);

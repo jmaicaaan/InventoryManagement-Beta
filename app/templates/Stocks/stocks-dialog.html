@@ -17,7 +17,7 @@
                         <md-input-container class="md-block">
                             <label>Item</label>
                             <md-select name="item" ng-model="vm.stock.item" md-on-open="vm.loadItems();" required> 
-                                <md-option ng-repeat="item in vm.ItemsService.listItems" ng-value="item">
+                                <md-option ng-repeat="item in vm.ItemsService.listItems | orderBy: 'name'" ng-value="item">
                                     {{item.name}}
                                 </md-option>
                             </md-select>

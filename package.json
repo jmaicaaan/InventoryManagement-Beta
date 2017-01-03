@@ -1,8 +1,8 @@
 {
   "name": "inventory-management",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Inventory Management",
+  "main": "app/main.js",
   "scripts": {
     "start": "concurrently \" npm run lite-server \" \" tsc -w \"   ",
     "lite-server": "lite-server"
@@ -10,7 +10,18 @@
   "author": "JM Santos",
   "license": "ISC",
   "devDependencies": {
+    "Q": "0.0.1",
+    "asar": "^0.12.4",
     "concurrently": "^3.1.0",
-    "lite-server": "^2.2.2"
+    "electron-prebuilt": "^1.4.13",
+    "fs-jetpack": "^0.10.5",
+    "gulp": "^3.9.1",
+    "lite-server": "^2.2.2",
+    "rcedit": "^0.7.0"
+  },
+  "dependencies": {
+    "gulp-minify-css": "^1.2.4",
+    "gulp-uglify": "^2.0.0",
+    "gulp-usemin": "^0.3.26"
   }
 }

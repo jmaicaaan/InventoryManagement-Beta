@@ -6,6 +6,7 @@
     "angular-ui-router": "registry:dt/angular-ui-router#1.1.5+20161122230850"
   },
   "globalDependencies": {
+    "electron": "registry:dt/electron#1.4.8+20161220141501",
     "jquery": "registry:dt/jquery#1.10.0+20161119044246"
   }
 }
