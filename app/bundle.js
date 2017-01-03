@@ -616,6 +616,12 @@ var app;
                 _this.chartConfig.series.push(item);
             });
         };
+        /**
+         * comingSoon
+         */
+        DashboardController.prototype.comingSoon = function () {
+            this.DashboardService.showToast('Coming soon!');
+        };
         return DashboardController;
     }(app.BaseController));
     DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService'];

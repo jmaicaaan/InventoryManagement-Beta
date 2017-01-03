@@ -69,6 +69,13 @@ namespace app{
                 this.chartConfig.series.push(item);
             });
         }
+
+        /**
+         * comingSoon
+         */
+        public comingSoon() {
+            this.DashboardService.showToast('Coming soon!');
+        }
     }
 
     DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService'];
