@@ -13,7 +13,7 @@ var release_windows = require('./build.windows');
 var os = require('os'); 
 
 gulp.task('run', () => {
-    childProcess.spawn(electron, ['.'], {stdio: 'inherit'});
+    childProcess.spawn(electron, ['--debug=5858', '.'], {stdio: 'inherit'});
 });
 
 gulp.task('clean', (callback) => { 
@@ -29,6 +29,7 @@ gulp.task('copy', ['clean'], function () {
             'main.js', 
             'package.json',
             './icons/**',
+            './images/**',
             'server-config.json'
        ] 
     }); 

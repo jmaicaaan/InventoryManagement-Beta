@@ -74,13 +74,15 @@
   </div>
 
   <div ui-view>
-
-    <md-card ng-show="vm.hasLowStocks ">
+    
+    <!--<md-card ng-show="vm.hasLowStocks">
       <md-card-content>
         <highchart id="chart1" config="vm.chartConfig"></highchart>
       </md-card-content>
-    </md-card>
+    </md-card>-->
+    <highchart id="chart1" config="vm.chartConfig"></highchart>
 
+<!--
     <div ng-hide="vm.hasLowStocks">
       <md-card>
         <md-card-content layout="column" layout-align="center center">
@@ -90,6 +92,7 @@
           <span class="md-title"> Everything is up to date! You have no low stocks. </span>
         </md-card-footer>
       </md-card>
-    </div>
+    </div>-->
+    
   </div>
 </div>

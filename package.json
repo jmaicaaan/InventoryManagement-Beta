@@ -16,12 +16,17 @@
     "electron-prebuilt": "^1.4.13",
     "fs-jetpack": "^0.10.5",
     "gulp": "^3.9.1",
+    "highcharts": "^5.0.6",
     "lite-server": "^2.2.2",
     "rcedit": "^0.7.0"
   },
   "dependencies": {
+    "express": "^4.14.0",
+    "fs": "0.0.1-security",
     "gulp-minify-css": "^1.2.4",
     "gulp-uglify": "^2.0.0",
-    "gulp-usemin": "^0.3.26"
+    "gulp-usemin": "^0.3.26",
+    "http": "0.0.0",
+    "path": "^0.12.7"
   }
 }

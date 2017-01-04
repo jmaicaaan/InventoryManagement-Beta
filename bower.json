@@ -21,6 +21,7 @@
     "material-design-icons": "^3.0.1",
     "roboto-fontface": "^0.6.0",
     "highcharts-ng": "^0.0.13",
-    "highcharts": "^5.0.6"
+    "highcharts": "^5.0.6",
+    "jquery": "^3.1.1"
   }
 }

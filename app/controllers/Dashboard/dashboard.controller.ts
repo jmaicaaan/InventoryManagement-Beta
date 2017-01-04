@@ -6,7 +6,7 @@ namespace app{
         constructor(private $mdSidenav: angular.material.ISidenavService, private DashboardService: IDashboardService, 
             BaseService: IBaseService){
                 super(BaseService);
-                this.getLowStocks();
+                // this.getLowStocks();
         }
 
         public chartConfig = {
@@ -15,15 +15,29 @@ namespace app{
                     type: 'column'
                 }
             },
-            series: [],
+            series: [
+                {
+                    name: ['Sample 1'],
+                    data: [5]
+                },
+                {
+                    name: ['Sample 2'],
+                    data: [8]
+                },
+                {
+                    name: ['Sample 3'],
+                    data: [3]
+                }
+            ],
             title: {
                 text: 'Low Stocks'
             },
-            loading: true,
+            // loading: true,
 		    credits: {
 		        enabled: false
 		    }
         };
+        
 
         public hasLowStocks = false;
 
@@ -43,12 +57,10 @@ namespace app{
 
                     this.DashboardService.listLowStocks = items.data.listItems;
                     this.extractItemFromList(this.DashboardService.listLowStocks);
+                    // this.chartConfig.loading = false;
                 })
                 .catch((err) => {
                     this.DashboardService.showToast(err);
-                })
-                .finally(() => {
-                     this.chartConfig.loading = false;
                 });
         }
 
@@ -57,7 +69,9 @@ namespace app{
          */
         public extractItemFromList(listLowStocks: Array<IItem>) {
 
-            if(listLowStocks.length > 0)
+            let len = listLowStocks.length;
+
+            if(len > 0)
                 this.hasLowStocks = true;
 
             listLowStocks.forEach( i => {

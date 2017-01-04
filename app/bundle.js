@@ -565,18 +565,31 @@ var app;
                         type: 'column'
                     }
                 },
-                series: [],
+                series: [
+                    {
+                        name: ['Sample 1'],
+                        data: [5]
+                    },
+                    {
+                        name: ['Sample 2'],
+                        data: [8]
+                    },
+                    {
+                        name: ['Sample 3'],
+                        data: [3]
+                    }
+                ],
                 title: {
                     text: 'Low Stocks'
                 },
-                loading: true,
+                // loading: true,
                 credits: {
                     enabled: false
                 }
             };
             _this.hasLowStocks = false;
-            _this.getLowStocks();
             return _this;
+            // this.getLowStocks();
         }
         /**
          * toggleSideNav
@@ -593,12 +606,10 @@ var app;
                 .then(function (items) {
                 _this.DashboardService.listLowStocks = items.data.listItems;
                 _this.extractItemFromList(_this.DashboardService.listLowStocks);
+                // this.chartConfig.loading = false;
             })
                 .catch(function (err) {
                 _this.DashboardService.showToast(err);
-            })
-                .finally(function () {
-                _this.chartConfig.loading = false;
             });
         };
         /**
@@ -606,7 +617,8 @@ var app;
          */
         DashboardController.prototype.extractItemFromList = function (listLowStocks) {
             var _this = this;
-            if (listLowStocks.length > 0)
+            var len = listLowStocks.length;
+            if (len > 0)
                 this.hasLowStocks = true;
             listLowStocks.forEach(function (i) {
                 var item = {

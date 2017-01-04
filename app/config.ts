@@ -3,7 +3,6 @@ namespace app{
 
     function config($stateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider, $httpProvider: angular.IHttpProvider){
 
-
         $httpProvider.interceptors.push('serviceInterceptor');
 
         $urlRouterProvider  

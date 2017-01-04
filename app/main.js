@@ -1,43 +1,36 @@
-  // app/main.js
 
- // Module to control application life.
-//  var app = require('electron'); 
-
- // Module to create native browser window.
-//  var BrowserWindow = require('browser-window');
+const {app, BrowserWindow} = require('electron')
+var mainWindow = null;
+        
 
 
-const electron = require('electron')
-const {app, BrowserWindow} = electron
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+app.on('ready', () => {
 
- var mainWindow = null;
+  // Create the browser window.
+  mainWindow = new BrowserWindow({ width: 800, height: 600 });
 
- // Quit when all windows are closed.
- app.on('window-all-closed', function () {
-   if (process.platform != 'darwin') {
-     app.quit();
-   }
- });
+  // and load the index.html of the app.
+  mainWindow.loadURL('https://jmaicaaan.github.io/InventoryManagement-Beta/app/#!/');
+  // mainWindow.loadURL('file://' + __dirname + '/index.html');
+  
+  // Open the devtools.
+  mainWindow.openDevTools();
 
- // This method will be called when Electron has finished
- // initialization and is ready to create browser windows.
- app.on('ready', function () {
+  // Emitted when the window is closed.
+  mainWindow.on('closed', () => {
 
-   // Create the browser window.
-   mainWindow = new BrowserWindow({ width: 800, height: 600 });
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null;
+  });
+});
 
-   // and load the index.html of the app.
-   mainWindow.loadURL('file://' + __dirname + '/index.html');
-
-   // Open the devtools.
-   // mainWindow.openDevTools();
-   // Emitted when the window is closed.
-   mainWindow.on('closed', function () {
-
-     // Dereference the window object, usually you would store windows
-     // in an array if your app supports multi windows, this is the time
-     // when you should delete the corresponding element.
-     mainWindow = null;
-   });
-
- });
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+  if (process.platform != 'darwin') {
+    app.quit();
+  }
+});
