@@ -1,7 +1,8 @@
 # InventoryManagement-Beta
 
-# Site: https://jmaicaaan.github.io/InventoryManagement-Beta/
-
+# Note
+    Make sure to run Tomcat server before running the app. 
+    
 # Download:
     https://drive.google.com/drive/folders/0B15D7o9vmq7KaGlqMTRHdGZjUUk?usp=sharing
 
