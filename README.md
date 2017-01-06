@@ -2,6 +2,8 @@
 
 # Site: https://jmaicaaan.github.io/InventoryManagement-Beta/
 
+# Download:
+    https://drive.google.com/drive/folders/0B15D7o9vmq7KaGlqMTRHdGZjUUk?usp=sharing
 
 # Error mapping
     Api is dead? 
@@ -13,3 +15,5 @@
 
     Database login credentials?
         - Create a login credentials in SQL Server with the username and password of inventory
+        
+       
