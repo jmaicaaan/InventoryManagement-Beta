@@ -2,9 +2,9 @@ namespace app {
 
     function serviceInterceptor($q: angular.IQService, $injector): angular.IHttpInterceptor {
         return {
-            request: function(config) {
+            request: function (config) {
                 let deferred = $q.defer();
-                
+
                 if (config.withCredentials) {
 
                     return getServerURL()
@@ -17,14 +17,25 @@ namespace app {
                 }
                 return config;
             },
-            responseError: function(response){
-                alert(JSON.stringify(response));
-                if(response.status === -1)
-                    throw 'API is dead.';
+            responseError: function (response) {
 
-                if(response.status === 500)
+                let headers = response.headers(),
+                    contentType = headers['content-type'],
+                    databaseError = 'Database is dead. See readme file inside your installer.',
+                    apiError = 'API is dead. See readme file inside your installer.';
+
+                if (response.status === -1)
+                    throw apiError;
+
+                if (response.status === 503)
+                    throw databaseError
+
+                if (response.status === 500) {
+                    if (contentType.search('text/html') > -1) {
+                        throw databaseError;
+                    }
                     throw response.data.message;
-                return response;
+                }
             }
         }
 

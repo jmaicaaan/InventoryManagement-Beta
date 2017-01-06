@@ -30,6 +30,8 @@ gulp.task('copy', ['clean'], function () {
             'package.json',
             './icons/**',
             './images/**',
+            './libs/**',
+            'preload.js',
             'server-config.json'
        ] 
     }); 
@@ -54,4 +56,4 @@ gulp.task('build-electron', ['build'], function () {
          case 'win32': 
          return release_windows.build(); 
      } 
-}); 
+});

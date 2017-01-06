@@ -565,31 +565,18 @@ var app;
                         type: 'column'
                     }
                 },
-                series: [
-                    {
-                        name: ['Sample 1'],
-                        data: [5]
-                    },
-                    {
-                        name: ['Sample 2'],
-                        data: [8]
-                    },
-                    {
-                        name: ['Sample 3'],
-                        data: [3]
-                    }
-                ],
+                series: [],
                 title: {
                     text: 'Low Stocks'
                 },
-                // loading: true,
+                loading: true,
                 credits: {
                     enabled: false
                 }
             };
             _this.hasLowStocks = false;
+            _this.getLowStocks();
             return _this;
-            // this.getLowStocks();
         }
         /**
          * toggleSideNav
@@ -606,7 +593,7 @@ var app;
                 .then(function (items) {
                 _this.DashboardService.listLowStocks = items.data.listItems;
                 _this.extractItemFromList(_this.DashboardService.listLowStocks);
-                // this.chartConfig.loading = false;
+                _this.chartConfig.loading = false;
             })
                 .catch(function (err) {
                 _this.DashboardService.showToast(err);
@@ -1693,12 +1680,17 @@ var app;
                 return config;
             },
             responseError: function (response) {
-                alert(JSON.stringify(response));
+                var headers = response.headers(), contentType = headers['content-type'], databaseError = 'Database is dead. See readme file inside your installer.', apiError = 'API is dead. See readme file inside your installer.';
                 if (response.status === -1)
-                    throw 'API is dead.';
-                if (response.status === 500)
+                    throw apiError;
+                if (response.status === 503)
+                    throw databaseError;
+                if (response.status === 500) {
+                    if (contentType.search('text/html') > -1) {
+                        throw databaseError;
+                    }
                     throw response.data.message;
-                return response;
+                }
             }
         };
         function getServerConfigFile() {

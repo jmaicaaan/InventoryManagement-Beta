@@ -110,12 +110,12 @@ function createInstaller() {
 }
 
 function build() { 
-return init()
-        .then(copyElectron) 
-        .then(cleanupRuntime) 
-        .then(createAsar) 
-        .then(updateResources) 
-        .then(rename) 
-        .then(createInstaller); 
+    return init()
+            .then(copyElectron) 
+            .then(cleanupRuntime) 
+            .then(createAsar) 
+            .then(updateResources) 
+            .then(rename) 
+            .then(createInstaller); 
 }
 module.exports = { build: build };
