@@ -1,12 +1,12 @@
 # InventoryManagement-Beta
 
-# Note
+# Note:
     Make sure to run Tomcat server before running the app. 
     
 # Download:
     https://drive.google.com/drive/folders/0B15D7o9vmq7KaGlqMTRHdGZjUUk?usp=sharing
 
-# Error mapping
+# Error mapping:
     Api is dead? 
         - Make sure you have the war file in your webapps.
         - If the error persist, contact me.
