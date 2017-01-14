@@ -1,21 +1,34 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, dialog} = require('electron')
 const path = require('path');
 const fs = require('fs');
+const spawn = require('child_process').spawn;
+const eventEmiter = require('events');
 const manifest = require('./package.json');
 const server_manifest = require('./server-config.json');
+
+const apacheTomcatEmiter = new eventEmiter();
+
 let mainWindow = null,
-  projectDir = null,
-  appDir = null,
-  projectName = null,
-  projectUrl = null,
-  projectPort = null;
+  projectUrl = null;
 
 init();
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-app.on('ready', () => {
+app.on('ready', onAppReady);
+app.on('window-all-closed', onAppClose);
 
+function init() {
+
+  //appDir is not used in prod, the builded application is rooted.
+
+  let projectDir = __dirname,
+    projectName = manifest.name,
+    projectPort = server_manifest.port;
+  projectUrl = [server_manifest.url, ':', projectPort, '/', projectName].join('');
+
+  startApacheTomcat();
+}
+
+function onAppReady() {
   let windowConfig = {
     width: 800,
     height: 600,
@@ -25,39 +38,52 @@ app.on('ready', () => {
     }
   };
 
-  // Create the browser window.
   mainWindow = new BrowserWindow(windowConfig);
+  // mainWindow.loadURL(projectUrl);
 
-
-  // and load the index.html of the app.
-  mainWindow.loadURL(projectUrl);
+  apacheTomcatEmiter.on('end', () => {
+    mainWindow.loadURL(projectUrl);
+  });
 
   // Open the devtools.
   // mainWindow.openDevTools();
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', () => {
 
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
+
+  mainWindow.on('closed', () => {
     mainWindow = null;
   });
-});
+}
 
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
+function onAppClose() {
   if (process.platform != 'darwin') {
     app.quit();
   }
-});
+}
 
-function init() {
 
-  //appDir is not used in prod, the builded application is rooted.
+function startApacheTomcat() {
+  let CATALINA_HOME = process.env['CATALINA_HOME'],
+    errorTitle = 'Apache Tomcat Server',
+    errorMessage = 'Please set CATALINA_HOME to your Apache Tomcat folder in your system environment variables.';
 
-  projectDir = __dirname;
-  projectName = manifest.name;
-  projectPort = server_manifest.port;
-  projectUrl = [server_manifest.url, ':', projectPort, '/', projectName].join('');
+  if (CATALINA_HOME === undefined) {
+    dialog.showErrorBox(errorTitle, errorMessage);
+    app.quit();
+  }
+
+  let startupBat = spawn('cmd.exe', ['/c', 'startup.bat']);
+
+  startupBat.stdout.on('data', (data) => {
+    apacheTomcatEmiter.emit('end');
+  });
+
+  startupBat.stderr.on('data', (data) => {
+    dialog.showErrorBox(errorTitle, [errorMessage, data].join(''));
+    app.quit();
+  });
+
+  startupBat.on('close', (code) => {
+    app.quit();
+  });
 }

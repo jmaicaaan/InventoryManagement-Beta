@@ -7,7 +7,7 @@ namespace app{
                 private ItemsService: IItemsService, BaseService: IBaseService, private UIDService: IUIDService){
             super(BaseService);
             this.item = this.getItem();
-            this.selectedSuppliers = this.item.listSuppliers;
+            this.selectedSuppliers = this.getItemSupplier();
         }
 
         public item: any = {};
@@ -23,19 +23,36 @@ namespace app{
         }
 
         /**
+         * getItemSupplier
+         */
+        public getItemSupplier() {
+            
+            let itemSuppliers = [];
+
+            this.item.itemSupplier.forEach(i => {
+                itemSuppliers.push(i.supplier);
+            });
+            
+            return itemSuppliers;
+        }
+
+        /**
          * editItem
          */
         public editItem(item) {
 
+             let itemID = this.$stateParams['item'];
              let itemModel = {
                 item: item,
                 listSuppliers: this.selectedSuppliers
             };
+            
 
             this.update('/editItem', itemModel)
                 .then((resp) => {
                     this.viewItems();
                     this.ItemsService.showToast(resp.data.message);
+                    this.LocalStorageService.remove(itemID);
                 })
                 .catch((err) => {
                     this.ItemsService.showToast(err);
@@ -59,7 +76,7 @@ namespace app{
          * generateItemCode
          */
         public generateItemCode() {
-            this.item.code = this.UIDService.generateUID();
+            this.item.code = this.UIDService.generateUID().toUpperCase();
         }
     }
 

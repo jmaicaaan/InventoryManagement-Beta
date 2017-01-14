@@ -16,7 +16,9 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Item Name</label>
-                            <input name="itemName" ng-model="vm.item.name" type="text" required ng-maxlength="20" ng-minlength="2">
+                            <input name="itemName" ng-model="vm.item.name" 
+                                ng-change="vm.item.name = vm.item.name.toUpperCase();" 
+                                type="text" required ng-maxlength="20" ng-minlength="2">
                     
                             <div ng-messages="form.itemName.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item name</div>
@@ -28,7 +30,8 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Item Description</label>
-                            <input name="itemDescription" ng-model="vm.item.description" type="text" required ng-maxlength="50" ng-minlength="5">
+                            <input name="itemDescription" ng-model="vm.item.description"
+                                type="text" required ng-maxlength="50" ng-minlength="5">
                     
                             <div ng-messages="form.itemDescription.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item description</div>
@@ -40,8 +43,10 @@
                     <div>
                          <md-input-container class="md-block">
                             <label>Item Code</label>
-                            <input name="itemCode" ng-model="vm.item.code" type="text" required ng-maxlength="15" ng-minlength="3">
-                    <md-icon md-svg-src="icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()"></md-icon>
+                            <input name="itemCode" ng-model="vm.item.code" 
+                                 ng-change="vm.item.code = vm.item.code.toUpperCase();"
+                                type="text" required ng-maxlength="15" ng-minlength="3">
+                            <md-icon md-svg-src="icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()"></md-icon>
 
                             <div ng-messages="form.itemCode.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item code</div>

@@ -5,6 +5,7 @@
   "main": "app/main.js",
   "scripts": {
     "start": "concurrently \" npm run lite-server \" \" tsc -w \"   ",
+    "release": "gulp build-electron",
     "lite-server": "lite-server"
   },
   "author": "JM Santos",

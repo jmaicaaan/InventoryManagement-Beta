@@ -29,8 +29,8 @@
                         <td md-cell>{{$index + 1}}</td>
                         <td md-cell><b>{{item.name}}</b></td>
                         <td md-cell hide-xs hide-ms show-gt-sm>
-                            <p ng-repeat="supplier in item.listSuppliers">
-                                {{supplier.name}}
+                            <p ng-repeat="itemSupplier in item.itemSupplier">
+                                {{itemSupplier.supplier.name}}
                             </p>
                         </td>
                         <td md-cell hide-xs hide-ms show-gt-sm>{{item.brand.name}}</td>

@@ -161,6 +161,15 @@ namespace app {
                     this.SuppliersService.showToast(err);
                 });
         }
+
+        /**
+         * duplicateContactNo
+         */
+        public duplicateContactNo() {
+            if(this.supplier.primaryContactNo === undefined || this.supplier.secondaryContactNo === undefined)
+                return false;
+            return this.supplier.primaryContactNo === this.supplier.secondaryContactNo ? true : false;
+        }
     }
 
     SuppliersController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService'];

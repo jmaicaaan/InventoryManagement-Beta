@@ -1,14 +1,18 @@
 namespace app{
     'use strict';
 
-    function config($stateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider, $httpProvider: angular.IHttpProvider){
+    function config($stateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider, 
+                $httpProvider: angular.IHttpProvider, cfpLoadingBarProvider, $mdThemingProvider){
 
         $httpProvider.interceptors.push('serviceInterceptor');
+
+        cfpLoadingBarProvider.includeSpinner = false;
 
         $urlRouterProvider  
             .otherwise('/');
 
-        $stateProvider
+        $stateProvider          
+
             .state('dashboard', {
                 url: '/',
                 templateUrl: 'templates/Dashboard/dashboard.html',
@@ -69,7 +73,7 @@ namespace app{
             })
     }
 
-    config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
+    config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider', 'cfpLoadingBarProvider', '$mdThemingProvider'];
 
     angular
         .module('inventory-management')

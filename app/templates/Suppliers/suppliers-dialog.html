@@ -28,7 +28,9 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Supplier Primary Contact No</label>
-                            <input name="primaryContactNo" ng-model="vm.supplier.primaryContactNo" type="text" required ng-maxlength="15" ng-minlength="5">
+                            <input name="primaryContactNo" ng-model="vm.supplier.primaryContactNo" 
+                                    ng-change="vm.duplicateContactNo()"
+                                    type="text" required ng-maxlength="15" ng-minlength="5">
                              <div ng-messages="form.primaryContactNo.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter a supplier primary contact no.</div>
                                 <div ng-message="maxlength">The supplier primary contact no. has to be less than 15 characters long.</div>
@@ -39,7 +41,8 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Supplier Secondary Contact No</label>
-                            <input name="secondaryContactNo" ng-model="vm.supplier.secondaryContactNo" type="text" required ng-maxlength="15" ng-minlength="5">
+                            <input name="secondaryContactNo" ng-model="vm.supplier.secondaryContactNo" type="text" required 
+                                    ng-maxlength="15" ng-minlength="5">
                             <div ng-messages="form.secondaryContactNo.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter a supplier primary contact no.</div>
                                 <div ng-message="maxlength">The supplier primary contact no. has to be less than 15 characters long.</div>
@@ -49,8 +52,12 @@
                     </div>
                 </div>
 
+                <div ng-if="vm.duplicateContactNo()" style="color:maroon">
+                    <div>Primary no. and Secondary no. must be different.</div>
+                </div>
+
                 <div layout="column" layout-align="end end">
-                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-disabled="form.$invalid"
+                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-disabled="form.$invalid || vm.duplicateContactNo()"
                     ng-click="vm.addSupplier(vm.supplier)">Add Supplier</md-button>
                 </div>
             </form>

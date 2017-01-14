@@ -158,7 +158,7 @@ namespace app {
          * generateItemCode
          */
         public generateItemCode() {
-            this.item.code = this.UIDService.generateUID();
+            this.item.code = this.UIDService.generateUID().toUpperCase();
         }
     }
 

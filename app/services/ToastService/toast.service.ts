@@ -16,7 +16,7 @@ namespace app{
                 .simple()
                 .textContent(message)
                 .action('close')
-                .position('top left')
+                .position('top right')
                 .hideDelay(5000)
             );
         }

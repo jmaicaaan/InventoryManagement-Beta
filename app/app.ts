@@ -3,6 +3,7 @@ namespace app{
 
     angular
         .module('inventory-management', [
+            'angular-loading-bar',
             'ngMaterial',
             'ngMessages',
             'ngAnimate',

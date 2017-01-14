@@ -9,6 +9,7 @@ var app;
     'use strict';
     angular
         .module('inventory-management', [
+        'angular-loading-bar',
         'ngMaterial',
         'ngMessages',
         'ngAnimate',
@@ -22,8 +23,9 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    function config($stateProvider, $urlRouterProvider, $httpProvider) {
+    function config($stateProvider, $urlRouterProvider, $httpProvider, cfpLoadingBarProvider, $mdThemingProvider) {
         $httpProvider.interceptors.push('serviceInterceptor');
+        cfpLoadingBarProvider.includeSpinner = false;
         $urlRouterProvider
             .otherwise('/');
         $stateProvider
@@ -85,7 +87,7 @@ var app;
             title: 'Units'
         });
     }
-    config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
+    config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider', 'cfpLoadingBarProvider', '$mdThemingProvider'];
     angular
         .module('inventory-management')
         .config(config);
@@ -632,6 +634,25 @@ var app;
 var app;
 (function (app) {
     'use strict';
+    function DashboardOnEnter(BaseService, DashboardService) {
+        viewItems();
+        function viewItems() {
+            BaseService.post_request('/viewItems', {})
+                .then(function (items) {
+                DashboardService.listLowStocks = items.data.listItems;
+            })
+                .catch(function (err) {
+                DashboardService.showToast(err);
+            });
+        }
+    }
+    app.DashboardOnEnter = DashboardOnEnter;
+    DashboardOnEnter.$inject = ['BaseService', 'DashboardService'];
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
     var ItemsController = (function (_super) {
         __extends(ItemsController, _super);
         function ItemsController($mdDialog, ItemsService, BaseService, $state, LocalStorageService) {
@@ -772,7 +793,7 @@ var app;
          * generateItemCode
          */
         ItemsDialogController.prototype.generateItemCode = function () {
-            this.item.code = this.UIDService.generateUID();
+            this.item.code = this.UIDService.generateUID().toUpperCase();
         };
         return ItemsDialogController;
     }(ItemsController));
@@ -797,7 +818,7 @@ var app;
             _this.item = {};
             _this.selectedSuppliers = [];
             _this.item = _this.getItem();
-            _this.selectedSuppliers = _this.item.listSuppliers;
+            _this.selectedSuppliers = _this.getItemSupplier();
             return _this;
         }
         /**
@@ -809,10 +830,21 @@ var app;
             return JSON.parse(itemLocalStorage);
         };
         /**
+         * getItemSupplier
+         */
+        ItemDetailsController.prototype.getItemSupplier = function () {
+            var itemSuppliers = [];
+            this.item.itemSupplier.forEach(function (i) {
+                itemSuppliers.push(i.supplier);
+            });
+            return itemSuppliers;
+        };
+        /**
          * editItem
          */
         ItemDetailsController.prototype.editItem = function (item) {
             var _this = this;
+            var itemID = this.$stateParams['item'];
             var itemModel = {
                 item: item,
                 listSuppliers: this.selectedSuppliers
@@ -821,6 +853,7 @@ var app;
                 .then(function (resp) {
                 _this.viewItems();
                 _this.ItemsService.showToast(resp.data.message);
+                _this.LocalStorageService.remove(itemID);
             })
                 .catch(function (err) {
                 _this.ItemsService.showToast(err);
@@ -843,7 +876,7 @@ var app;
          * generateItemCode
          */
         ItemDetailsController.prototype.generateItemCode = function () {
-            this.item.code = this.UIDService.generateUID();
+            this.item.code = this.UIDService.generateUID().toUpperCase();
         };
         return ItemDetailsController;
     }(app.BaseController));
@@ -910,6 +943,22 @@ var app;
     }
     app.ItemOnEnter = ItemOnEnter;
     ItemOnEnter.$inject = ['BaseService', 'ItemsService'];
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+    var MessengerController = (function () {
+        function MessengerController($http) {
+            this.$http = $http;
+            console.log('Hello');
+        }
+        return MessengerController;
+    }());
+    MessengerController.$inject = ['$http'];
+    angular
+        .module('inventory-management')
+        .controller('MessengerController', MessengerController);
 })(app || (app = {}));
 "use strict";
 var app;
@@ -1170,6 +1219,14 @@ var app;
                 .catch(function (err) {
                 _this.SuppliersService.showToast(err);
             });
+        };
+        /**
+         * duplicateContactNo
+         */
+        SupplierDialogController.prototype.duplicateContactNo = function () {
+            if (this.supplier.primaryContactNo === undefined || this.supplier.secondaryContactNo === undefined)
+                return false;
+            return this.supplier.primaryContactNo === this.supplier.secondaryContactNo ? true : false;
         };
         return SupplierDialogController;
     }(SuppliersController));
@@ -1799,7 +1856,7 @@ var app;
                 .simple()
                 .textContent(message)
                 .action('close')
-                .position('top left')
+                .position('top right')
                 .hideDelay(5000));
         };
         return ToastService;
