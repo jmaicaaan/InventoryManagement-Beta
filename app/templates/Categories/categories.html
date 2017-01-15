@@ -23,9 +23,15 @@
                     <td md-cell><b>{{category.name}}</b></td>
                     <td md-cell>
                         <md-button class="md-icon-button" ng-click="vm.editCategory(category)" aria-label="edit">
+                            <md-tooltip md-direction="left">
+                                Edit Category
+                            </md-tooltip>
                             <md-icon md-svg-icon="icons/ic_edit_24px.svg"></md-icon>
                         </md-button>
                         <md-button class="md-icon-button" ng-click="vm.deleteCategory(category)" aria-label="delete">
+                            <md-tooltip md-direction="left">
+                                Delete Category
+                            </md-tooltip>
                             <md-icon md-svg-icon="icons/ic_delete_24px.svg"></md-icon>
                         </md-button>
                     </td>
@@ -40,6 +46,9 @@
 </md-content>
 <div>
     <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
+        <md-tooltip md-direction="left">
+            Add Category
+        </md-tooltip>
         <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
     </md-button>
 </div>

@@ -1,7 +1,7 @@
 namespace app{
     'use strict';
 
-    class LocalStorageService{
+    class LocalStorageService implements ILocalStorageService{
         constructor(private $window: angular.IWindowService){}
 
         /**

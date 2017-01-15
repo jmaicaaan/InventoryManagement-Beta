@@ -206,6 +206,11 @@ var app;
 var app;
 (function (app) {
     'use strict';
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
     var BaseController = (function () {
         function BaseController(BaseService) {
             this.BaseService = BaseService;
@@ -557,10 +562,11 @@ var app;
     'use strict';
     var DashboardController = (function (_super) {
         __extends(DashboardController, _super);
-        function DashboardController($mdSidenav, DashboardService, BaseService) {
+        function DashboardController($mdSidenav, DashboardService, BaseService, NotificationService) {
             var _this = _super.call(this, BaseService) || this;
             _this.$mdSidenav = $mdSidenav;
             _this.DashboardService = DashboardService;
+            _this.NotificationService = NotificationService;
             _this.chartConfig = {
                 options: {
                     chart: {
@@ -625,7 +631,7 @@ var app;
         };
         return DashboardController;
     }(app.BaseController));
-    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService'];
+    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService', 'NotificationService'];
     angular
         .module('inventory-management')
         .controller('DashboardController', DashboardController);
@@ -1424,16 +1430,20 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    function run($rootScope, DashboardService) {
+    function run($rootScope, DashboardService, NotificationService) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
             var name = toState.title;
             stateNameModifier(name);
+            startNotification();
         });
         function stateNameModifier(name) {
             DashboardService.stateNameModifier(name);
         }
+        function startNotification() {
+            NotificationService.getNotification();
+        }
     }
-    run.$inject = ['$rootScope', 'DashboardService'];
+    run.$inject = ['$rootScope', 'DashboardService', 'NotificationService'];
     angular
         .module('inventory-management')
         .run(run);
@@ -1443,8 +1453,9 @@ var app;
 (function (app) {
     'use strict';
     var BaseService = (function () {
-        function BaseService($http) {
+        function BaseService($http, $q) {
             this.$http = $http;
+            this.$q = $q;
         }
         /**
          * post_request
@@ -1502,10 +1513,27 @@ var app;
                 throw 'Error has occured. ' + err;
             });
         };
+        /**
+         * get_localFile
+         */
+        BaseService.prototype.get_localFile = function (url) {
+            var config = {
+                url: url,
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            return this.$http(config)
+                .then(function (data) { return data; })
+                .catch(function (err) {
+                throw 'Error has occured. ' + err;
+            });
+        };
         return BaseService;
     }());
     app.BaseService = BaseService;
-    BaseService.$inject = ['$http'];
+    BaseService.$inject = ['$http', '$q'];
     angular
         .module('inventory-management')
         .service('BaseService', BaseService);
@@ -1721,6 +1749,61 @@ var app;
 "use strict";
 var app;
 (function (app) {
+    'use strict';
+    var NotificationService = (function () {
+        function NotificationService(BaseService) {
+            this.BaseService = BaseService;
+            this.lowStock = {
+                count: 0
+            };
+        }
+        /**
+         * getNotification
+         */
+        NotificationService.prototype.getNotification = function () {
+            var _this = this;
+            return this.getServerURL()
+                .then(function (serverURL) {
+                var url = [serverURL, '/getNotification'].join('');
+                var source = new EventSource(url);
+                source.onmessage = function (event) {
+                    // console.log(event.data);
+                    var data = event.data;
+                    if (data !== undefined)
+                        if (data > 0) {
+                            _this.lowStock.count = data;
+                        }
+                        else {
+                            _this.lowStock.count = 0;
+                        }
+                    return event.data;
+                };
+            });
+        };
+        NotificationService.prototype.getServerConfigFile = function () {
+            return this.BaseService.get_localFile('/server-config.json')
+                .then(function (res) { return res; });
+        };
+        NotificationService.prototype.getServerURL = function () {
+            return this.getServerConfigFile()
+                .then(function (response) {
+                var data = response.data;
+                var url = '';
+                url = [data.url, data.port].join(':');
+                url = [url, data.app_context_root].join('/');
+                return url;
+            });
+        };
+        return NotificationService;
+    }());
+    NotificationService.$inject = ['BaseService'];
+    angular
+        .module('inventory-management')
+        .service('NotificationService', NotificationService);
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
     function serviceInterceptor($q, $injector) {
         return {
             request: function (config) {
@@ -1865,6 +1948,7 @@ var app;
         .module('inventory-management')
         .service('ToastService', ToastService);
 })(app || (app = {}));
+"use strict";
 "use strict";
 var app;
 (function (app) {

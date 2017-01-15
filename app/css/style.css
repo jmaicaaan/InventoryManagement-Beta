@@ -22,3 +22,7 @@ md-toast{
 .icon-on-input:hover{
     cursor: pointer;
 }
+
+.span-anchor:hover{
+    cursor: pointer;
+}

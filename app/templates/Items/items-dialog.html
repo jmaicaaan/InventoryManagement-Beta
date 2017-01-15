@@ -5,6 +5,9 @@
                 <h2>Add Item</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="vm.ItemsService.hideDialog()">
+                     <md-tooltip md-direction="left">
+                        Close Dialog
+                    </md-tooltip>
                     <md-icon md-svg-src="icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
                 </md-button>
             </div>
@@ -46,7 +49,11 @@
                             <input name="itemCode" ng-model="vm.item.code" 
                                  ng-change="vm.item.code = vm.item.code.toUpperCase();"
                                 type="text" required ng-maxlength="15" ng-minlength="3">
-                            <md-icon md-svg-src="icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()"></md-icon>
+                            <md-icon md-svg-src="icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()">
+                                 <md-tooltip md-direction="left">
+                                    Generate Item Code
+                                </md-tooltip>
+                            </md-icon>
 
                             <div ng-messages="form.itemCode.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item code</div>

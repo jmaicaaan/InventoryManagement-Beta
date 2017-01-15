@@ -11,9 +11,50 @@
         <span flex></span>
         <div layout="row">
           <div>
-            <md-button class="md-icon-button" aria-label="Settings" ng-click="vm.comingSoon();">
+            <!--<md-button class="md-icon-button" aria-label="Settings" ng-click="vm.comingSoon();">
               <md-icon md-svg-icon="icons/ic_notifications_24px.svg"></md-icon>
-            </md-button>
+            </md-button>-->
+
+            <md-menu md-position-mode="target-right target">
+              <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                <md-tooltip md-direction="left">
+                  Show Notifications
+                </md-tooltip>
+                <div ng-if="vm.NotificationService.lowStock.count > 0">
+                  <md-icon md-menu-origin md-svg-icon="icons/ic_notifications_active_24px.svg"></md-icon>
+                </div>
+                <div ng-if="vm.NotificationService.lowStock.count <= 0">
+                  <md-icon md-menu-origin md-svg-icon="icons/ic_notifications_none_24px.svg"></md-icon>
+                </div>
+
+              </md-button>
+              <md-menu-content width="6">
+                <div layout-padding>
+                  <md-toolbar>
+                    <div class="md-toolbar-tools md-warn">
+                      <h3>
+                        <span>Notifications</span>
+                      </h3>
+                    </div>
+                  </md-toolbar>
+
+                  <md-menu-item>
+                    <div ng-if="vm.NotificationService.lowStock.count > 0">
+                      <md-icon md-menu-origin md-svg-icon="icons/ic_warning_24px.svg"></md-icon>
+                      <span ui-sref="dashboard" class="span-anchor"> 
+                          <b>Warning!</b> You have <b>{{vm.NotificationService.lowStock.count}}</b> low stocks.
+                      </span>
+                    </div>
+
+                    <div ng-if="vm.NotificationService.lowStock.count <= 0">
+                      <span>You have no low stocks. </span>
+                    </div>
+                  </md-menu-item>
+                </div>
+
+              </md-menu-content>
+            </md-menu>
+
           </div>
         </div>
       </div>
@@ -28,6 +69,9 @@
           </h2>
           <span flex></span>
           <md-button class="md-icon-button" aria-label="Settings" ng-click="vm.toggleSideNav();">
+            <md-tooltip md-direction="left">
+              Close Menu
+            </md-tooltip>
             <md-icon md-svg-icon="icons/ic_arrow_back_24px.svg"></md-icon>
           </md-button>
         </div>
@@ -40,24 +84,29 @@
           <md-list-item ui-sref="dashboard.items">
             <p> Items </p>
           </md-list-item>
+          <md-list-item ui-sref="dashboard.stocks">
+            <p> Stocks </p>
+          </md-list-item>
+
+
+          <md-divider></md-divider>
+
           <md-list-item ui-sref="dashboard.brands">
             <p> Brands </p>
           </md-list-item>
           <md-list-item ui-sref="dashboard.categories">
             <p> Categories </p>
           </md-list-item>
+          <md-list-item ui-sref="dashboard.suppliers">
+            <p> Suppliers </p>
+          </md-list-item>
+
+
           <md-list-item ui-sref="dashboard.units">
             <p> Units </p>
           </md-list-item>
 
-          <md-divider></md-divider>
 
-          <md-list-item ui-sref="dashboard.suppliers">
-            <p> Suppliers </p>
-          </md-list-item>
-          <md-list-item ui-sref="dashboard.stocks">
-            <p> Stocks </p>
-          </md-list-item>
 
           <md-divider></md-divider>
 
@@ -74,7 +123,7 @@
   </div>
 
   <div ui-view>
-    
+
     <md-card ng-show="vm.hasLowStocks">
       <md-card-content>
         <highchart id="chart1" config="vm.chartConfig"></highchart>
@@ -91,6 +140,6 @@
         </md-card-footer>
       </md-card>
     </div>
-    
+
   </div>
 </div>

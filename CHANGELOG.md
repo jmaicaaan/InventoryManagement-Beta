@@ -1,3 +1,8 @@
+# 1.05.1
+
+    - Added tooltip on every action
+    - Notification for low stocks
+
 # 1.05
 
     - Tomcat is already running on app's startup

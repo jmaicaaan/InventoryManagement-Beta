@@ -22,10 +22,16 @@
                     <td md-cell>{{$index + 1}}</td>
                     <td md-cell><b>{{unit.name}}</b></td>
                     <td md-cell>
-                        <md-button class="md-icon-button" ng-click="vm.editUnit(unit)" aria-label="edit"> 
+                        <md-button class="md-icon-button" ng-click="vm.editUnit(unit)" aria-label="edit">
+                            <md-tooltip md-direction="left">
+                                Edit Unit
+                            </md-tooltip>
                             <md-icon md-svg-icon="icons/ic_edit_24px.svg"></md-icon>
                         </md-button>
                         <md-button class="md-icon-button" ng-click="vm.deleteUnit(unit)" aria-label="delete">
+                            <md-tooltip md-direction="left">
+                                Delete Unit
+                            </md-tooltip>
                             <md-icon md-svg-icon="icons/ic_delete_24px.svg"></md-icon>
                         </md-button>
                     </td>
@@ -40,6 +46,9 @@
 </md-content>
 <div>
     <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
+        <md-tooltip md-direction="left">
+            Add Unit
+        </md-tooltip>
         <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
     </md-button>
 </div>

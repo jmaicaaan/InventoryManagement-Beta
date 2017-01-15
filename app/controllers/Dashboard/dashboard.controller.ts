@@ -4,7 +4,7 @@ namespace app{
     class DashboardController extends BaseController{
 
         constructor(private $mdSidenav: angular.material.ISidenavService, private DashboardService: IDashboardService, 
-            BaseService: IBaseService){
+            BaseService: IBaseService, private NotificationService: INotificationService){
                 super(BaseService);
                 this.getLowStocks();
         }
@@ -79,7 +79,7 @@ namespace app{
         }
     }
 
-    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService'];
+    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService', 'NotificationService'];
 
     angular 
         .module('inventory-management')

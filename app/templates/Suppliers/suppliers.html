@@ -27,9 +27,15 @@
                 <td md-cell hide-xs hide-ms show-gt-sm>{{supplier.secondaryContactNo}}</td>
                 <td md-cell hide-xs hide-ms show-gt-sm>
                     <md-button class="md-icon-button" ng-click="vm.editSupplier(supplier)" aria-label="edit">
+                        <md-tooltip md-direction="left">
+                            Edit Supplier
+                        </md-tooltip>
                         <md-icon md-svg-icon="icons/ic_edit_24px.svg"></md-icon>
                     </md-button>
                     <md-button class="md-icon-button" ng-click="vm.deleteSupplier(supplier)" aria-label="delete">
+                        <md-tooltip md-direction="left">
+                            Delete Supplier
+                        </md-tooltip>
                         <md-icon md-svg-icon="icons/ic_delete_24px.svg"></md-icon>
                     </md-button>
                 </td>
@@ -43,6 +49,9 @@
     </md-table-pagination>
 
     <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
+        <md-tooltip md-direction="left">
+            Add Supplier
+        </md-tooltip>
         <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
     </md-button>
 

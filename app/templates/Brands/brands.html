@@ -22,10 +22,16 @@
                     <td md-cell>{{$index + 1}}</td>
                     <td md-cell><b>{{brand.name}}</b></td>
                     <td md-cell>
-                        <md-button class="md-icon-button" ng-click="vm.editBrand(brand)" aria-label="edit"> 
+                        <md-button class="md-icon-button" ng-click="vm.editBrand(brand)" aria-label="edit">
+                            <md-tooltip md-direction="left">
+                                Edit Brand
+                            </md-tooltip>
                             <md-icon md-svg-icon="icons/ic_edit_24px.svg"></md-icon>
                         </md-button>
                         <md-button class="md-icon-button" ng-click="vm.deleteBrand(brand)" aria-label="delete">
+                            <md-tooltip md-direction="left">
+                                Delete Brand
+                            </md-tooltip>
                             <md-icon md-svg-icon="icons/ic_delete_24px.svg"></md-icon>
                         </md-button>
                     </td>
@@ -33,14 +39,17 @@
             </tbody>
         </table>
     </md-table-container>
-    <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" md-page="vm.md_query.page" 
-            md-total="{{vm.BrandsService.listBrands.length}}" md-page-select>
+    <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" md-page="vm.md_query.page" md-total="{{vm.BrandsService.listBrands.length}}"
+        md-page-select>
     </md-table-pagination>
 
 
 </md-content>
 <div>
     <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
+        <md-tooltip md-direction="left">
+            Add Brand
+        </md-tooltip>
         <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
     </md-button>
 </div>

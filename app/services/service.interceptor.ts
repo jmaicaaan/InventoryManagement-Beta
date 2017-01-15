@@ -5,6 +5,7 @@ namespace app {
             request: function (config) {
                 let deferred = $q.defer();
 
+
                 if (config.withCredentials) {
 
                     return getServerURL()
@@ -15,6 +16,7 @@ namespace app {
                             return deferred.promise;
                         });
                 }
+                
                 return config;
             },
             responseError: function (response) {

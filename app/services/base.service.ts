@@ -3,7 +3,7 @@ namespace app{
 
     export abstract class BaseService implements IBaseService{
 
-        constructor(private $http: angular.IHttpService){}
+        constructor(private $http: angular.IHttpService, private $q: angular.IQService){}
 
         /**
          * post_request
@@ -69,9 +69,28 @@ namespace app{
                             throw 'Error has occured. ' + err;
                         });
         }
+
+        /**
+         * get_localFile
+         */
+        public get_localFile(url: string) {
+             let config: angular.IRequestConfig = {
+                url: url,
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            return this.$http(config)
+                        .then( (data) => data)
+                        .catch( (err) => {
+                            throw 'Error has occured. ' + err;
+                        });
+        }
     }
 
-    BaseService.$inject = ['$http'];
+    BaseService.$inject = ['$http', '$q'];
     
     angular
         .module('inventory-management')
