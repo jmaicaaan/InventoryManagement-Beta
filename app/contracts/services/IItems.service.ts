@@ -8,5 +8,10 @@ namespace app{
         listUnits: Array<IUnit>;
         listCategories: Array<ICategory>;
         listSuppliers: Array<ISupplier>;
+
+        addItem(item: IItem, selectedSuppliers: Array<any>): void;
+        viewItems(): void;
+        removeItem(item: IItem): void;
+        updateItem(item: IItem, itemID: any, selectedSuppliers: Array<any>): void;
     }
 }

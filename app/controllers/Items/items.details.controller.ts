@@ -1,11 +1,10 @@
 namespace app{
     'use strict';
 
-    class ItemDetailsController extends BaseController{
+    class ItemDetailsController{
 
         constructor(private $stateParams: angular.ui.IStateParamsService, private LocalStorageService: ILocalStorageService,
-                private ItemsService: IItemsService, BaseService: IBaseService, private UIDService: IUIDService){
-            super(BaseService);
+                private ItemsService: IItemsService, private UIDService: IUIDService){
             this.item = this.getItem();
             this.selectedSuppliers = this.getItemSupplier();
         }
@@ -41,46 +40,19 @@ namespace app{
          */
         public editItem(item) {
 
-             let itemID = this.$stateParams['item'];
-             let itemModel = {
-                item: item,
-                listSuppliers: this.selectedSuppliers
-            };
-            
-
-            this.update('/editItem', itemModel)
-                .then((resp) => {
-                    this.viewItems();
-                    this.ItemsService.showToast(resp.data.message);
-                    this.LocalStorageService.remove(itemID);
-                })
-                .catch((err) => {
-                    this.ItemsService.showToast(err);
-                });
-        }
-
-         /**
-         * viewItems
-         */
-        public viewItems() {
-            this.view_without_data('/viewItems')
-                .then((items) => {
-                    this.ItemsService.listItems = items.data.listItems;
-                })
-                .catch((err) => {
-                    this.ItemsService.showToast(err);
-                });
+            let itemID = this.$stateParams['item'];
+            this.ItemsService.updateItem(item, itemID, this.selectedSuppliers);
         }
 
         /**
          * generateItemCode
          */
         public generateItemCode() {
-            this.item.code = this.UIDService.generateUID().toUpperCase();
+            this.item.code = this.UIDService.generateUID();
         }
     }
 
-    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'BaseService', 'UIDService'];
+    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'UIDService'];
 
     angular
         .module('inventory-management')

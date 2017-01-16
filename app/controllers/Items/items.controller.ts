@@ -1,11 +1,10 @@
 namespace app {
     'use strict';
 
-    class ItemsController extends BaseController {
+    class ItemsController {
 
         constructor(private $mdDialog: angular.material.IDialogService, protected ItemsService: IItemsService, 
-                BaseService: IBaseService, private $state: angular.ui.IStateService, private LocalStorageService: ILocalStorageService) {
-            super(BaseService);
+               private $state: angular.ui.IStateService, private LocalStorageService: ILocalStorageService) {
         }
 
          public md_query: IMDDataTableSortOption = {
@@ -63,13 +62,7 @@ namespace app {
          * viewItems
          */
         public viewItems() {
-            this.view_without_data('/viewItems')
-                .then((items) => {
-                    this.ItemsService.listItems = items.data.listItems;
-                })
-                .catch((err) => {
-                    this.ItemsService.showToast(err);
-                });
+            this.ItemsService.viewItems();
         }
 
         /**
@@ -89,26 +82,14 @@ namespace app {
                 .textContent('Item Name: ' + item.name)
                 .ok('Delete')
                 .cancel('Cancel')
-
+                
             this.ItemsService.showDialog(confirmConfig)
                 .then(() => {
-
-                    let itemModel = {
-                        item: item
-                    };
-
-                    this.remove('/deleteItem', itemModel)
-                        .then((resp) => {
-                            this.viewItems();
-                            this.ItemsService.showToast(resp.data.message);
-                        })
-                        .catch((err) => {
-                            this.ItemsService.showToast(err);
-                        });
+                    this.ItemsService.removeItem(item);
                 })
                 .catch((err) => {
                     console.log('Confirm Dialog cancelled.');
-                });
+                });       
         }
 
         /**
@@ -123,10 +104,9 @@ namespace app {
 
     class ItemsDialogController extends ItemsController {
 
-        constructor($mdDialog: angular.material.IDialogService, ItemsService: IItemsService, BaseService: IBaseService,
-                private selectedItem: IItem, $state: angular.ui.IStateService, LocalStorageService: ILocalStorageService,
-                private UIDService: IUIDService) {
-            super($mdDialog, ItemsService, BaseService, $state, LocalStorageService);
+        constructor($mdDialog: angular.material.IDialogService, ItemsService: IItemsService, private selectedItem: IItem, 
+                $state: angular.ui.IStateService, LocalStorageService: ILocalStorageService,private UIDService: IUIDService) {
+            super($mdDialog, ItemsService, $state, LocalStorageService);
         }
 
         public selectedSuppliers = [];
@@ -137,33 +117,19 @@ namespace app {
          * addItem
          */
         public addItem(item: IItem) {
-
-            let itemModel = {
-                item: item,
-                listSuppliers: this.selectedSuppliers
-            };
-
-            this.add('/addItem', itemModel)
-                .then((resp) => {
-                    this.ItemsService.hideDialog();
-                    this.viewItems();
-                    this.ItemsService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.ItemsService.showToast(err);
-                });
+            this.ItemsService.addItem(item, this.selectedSuppliers);
         }
 
         /**
          * generateItemCode
          */
         public generateItemCode() {
-            this.item.code = this.UIDService.generateUID().toUpperCase();
+            this.item.code = this.UIDService.generateUID();
         }
     }
 
-    ItemsController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', '$state', 'LocalStorageService'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'BaseService', 'selectedItem', '$state', 'LocalStorageService', 'UIDService'];
+    ItemsController.$inject = ['$mdDialog', 'ItemsService', '$state', 'LocalStorageService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$state', 'LocalStorageService', 'UIDService'];
 
     angular
         .module('inventory-management')

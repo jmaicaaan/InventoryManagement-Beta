@@ -64,12 +64,27 @@ namespace app{
                 controllerAs: 'vm',
                 title: 'Stocks'
             })
-              .state('dashboard.units', {
+            .state('dashboard.units', {
                 url: 'units',
                 templateUrl: 'templates/Units/units.html',
                 controller: 'UnitsController',
                 controllerAs: 'vm',
                 title: 'Units'
+            })
+            .state('dashboard.settings', {
+                url: 'settings',
+                abstract: true,
+                templateUrl: 'templates/Settings/settings.html'
+            })
+            .state('dashboard.settings.general', {
+                url: '/general',
+                title: 'General',
+                templateUrl: 'templates/Settings/General/general.html'
+            })
+            .state('dashboard.settings.troubleshoot', {
+                url: '/troubleshoot',
+                title: 'Troubleshoot',
+                templateUrl: 'templates/Settings/Troubleshoot/troubleshoot.html'
             })
     }
 
