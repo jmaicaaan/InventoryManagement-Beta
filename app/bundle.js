@@ -226,6 +226,11 @@ var app;
 var app;
 (function (app) {
     'use strict';
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
     var BaseController = (function () {
         function BaseController(BaseService) {
             this.BaseService = BaseService;
@@ -269,19 +274,17 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var BrandsController = (function (_super) {
-        __extends(BrandsController, _super);
-        function BrandsController($mdDialog, BrandsService, BaseService) {
-            var _this = _super.call(this, BaseService) || this;
-            _this.$mdDialog = $mdDialog;
-            _this.BrandsService = BrandsService;
-            _this.md_query = {
+    var BrandsController = (function () {
+        function BrandsController($mdDialog, BrandsService, $timeout) {
+            this.$mdDialog = $mdDialog;
+            this.BrandsService = BrandsService;
+            this.$timeout = $timeout;
+            this.md_query = {
                 order: 'name',
                 limit: 5,
                 page: 1
             };
-            _this.viewBrands();
-            return _this;
+            this.viewBrands();
         }
         /**
          * showDialog
@@ -323,13 +326,9 @@ var app;
          */
         BrandsController.prototype.viewBrands = function () {
             var _this = this;
-            this.view_without_data('/viewBrands')
-                .then(function (brands) {
-                _this.BrandsService.listBrands = brands.data.listBrands;
-            })
-                .catch(function (err) {
-                _this.BrandsService.showToast(err);
-            });
+            this.brandPromise = this.$timeout(function () {
+                _this.BrandsService.view();
+            }, 2000);
         };
         /**
          * editBrand
@@ -349,28 +348,18 @@ var app;
                 .cancel('Cancel');
             this.BrandsService.showDialog(confirmConfig)
                 .then(function () {
-                var brandModel = {
-                    brand: brand
-                };
-                _this.remove('/deleteBrand', brandModel)
-                    .then(function (resp) {
-                    _this.viewBrands();
-                    _this.BrandsService.showToast(resp.data.message);
-                })
-                    .catch(function (err) {
-                    _this.BrandsService.showToast(err);
-                });
+                _this.BrandsService.remove(brand);
             })
                 .catch(function (err) {
                 console.log('Confirm Dialog cancelled.');
             });
         };
         return BrandsController;
-    }(app.BaseController));
+    }());
     var BrandsDialogController = (function (_super) {
         __extends(BrandsDialogController, _super);
-        function BrandsDialogController($mdDialog, BrandsService, BaseService, brand) {
-            var _this = _super.call(this, $mdDialog, BrandsService, BaseService) || this;
+        function BrandsDialogController($mdDialog, BrandsService, brand, $timeout) {
+            var _this = _super.call(this, $mdDialog, BrandsService, $timeout) || this;
             _this.brand = brand;
             return _this;
         }
@@ -378,42 +367,18 @@ var app;
          * addBrand
          */
         BrandsDialogController.prototype.addBrand = function (brand) {
-            var _this = this;
-            var brandModel = {
-                brand: brand
-            };
-            this.add('/addBrand', brandModel)
-                .then(function (resp) {
-                _this.BrandsService.hideDialog();
-                _this.viewBrands();
-                _this.BrandsService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.BrandsService.showToast(err);
-            });
+            this.BrandsService.add(brand);
         };
         /**
          * editBrand
          */
         BrandsDialogController.prototype.editBrand = function () {
-            var _this = this;
-            var brandModel = {
-                brand: this.brand
-            };
-            this.update('/editBrand', brandModel)
-                .then(function (resp) {
-                _this.BrandsService.hideDialog();
-                _this.viewBrands();
-                _this.BrandsService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.BrandsService.showToast(err);
-            });
+            this.BrandsService.update(this.brand);
         };
         return BrandsDialogController;
     }(BrandsController));
-    BrandsController.$inject = ['$mdDialog', 'BrandsService', 'BaseService'];
-    BrandsDialogController.$inject = ['$mdDialog', 'BrandsService', 'BaseService', 'brand'];
+    BrandsController.$inject = ['$mdDialog', 'BrandsService', '$timeout'];
+    BrandsDialogController.$inject = ['$mdDialog', 'BrandsService', 'brand', '$timeout'];
     angular
         .module('inventory-management')
         .controller('BrandsController', BrandsController);
@@ -422,19 +387,17 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var CategoriesController = (function (_super) {
-        __extends(CategoriesController, _super);
-        function CategoriesController($mdDialog, CategoriesService, BaseService) {
-            var _this = _super.call(this, BaseService) || this;
-            _this.$mdDialog = $mdDialog;
-            _this.CategoriesService = CategoriesService;
-            _this.md_query = {
+    var CategoriesController = (function () {
+        function CategoriesController($mdDialog, CategoriesService, $timeout) {
+            this.$mdDialog = $mdDialog;
+            this.CategoriesService = CategoriesService;
+            this.$timeout = $timeout;
+            this.md_query = {
                 order: 'name',
                 limit: 5,
                 page: 1
             };
-            _this.viewCategories();
-            return _this;
+            this.viewCategories();
         }
         /**
          * showDialog
@@ -449,7 +412,7 @@ var app;
                     category: category
                 }
             };
-            this.CategoriesService.showDialog(config);
+            return this.CategoriesService.showDialog(config);
         };
         /**
          * showConfirmDialog
@@ -476,13 +439,9 @@ var app;
          */
         CategoriesController.prototype.viewCategories = function () {
             var _this = this;
-            this.view_without_data('/viewCategories')
-                .then(function (categories) {
-                _this.CategoriesService.listCategories = categories.data.listCategories;
-            })
-                .catch(function (err) {
-                _this.CategoriesService.showToast(err);
-            });
+            this.categoryPromise = this.$timeout(function () {
+                _this.CategoriesService.view();
+            }, 2000);
         };
         /**
          * editCategory
@@ -502,28 +461,18 @@ var app;
                 .cancel('Cancel');
             this.CategoriesService.showDialog(confirmConfig)
                 .then(function () {
-                var categoryModel = {
-                    category: category
-                };
-                _this.remove('/deleteCategory', categoryModel)
-                    .then(function (resp) {
-                    _this.viewCategories();
-                    _this.CategoriesService.showToast(resp.data.message);
-                })
-                    .catch(function (err) {
-                    _this.CategoriesService.showToast(err);
-                });
+                _this.CategoriesService.remove(category);
             })
                 .catch(function (err) {
                 console.log('Confirm Dialog cancelled.');
             });
         };
         return CategoriesController;
-    }(app.BaseController));
+    }());
     var CategoriesDialogController = (function (_super) {
         __extends(CategoriesDialogController, _super);
-        function CategoriesDialogController($mdDialog, CategoriesService, BaseService, category) {
-            var _this = _super.call(this, $mdDialog, CategoriesService, BaseService) || this;
+        function CategoriesDialogController($mdDialog, CategoriesService, category, $timeout) {
+            var _this = _super.call(this, $mdDialog, CategoriesService, $timeout) || this;
             _this.category = category;
             return _this;
         }
@@ -531,42 +480,18 @@ var app;
          * addCategory
          */
         CategoriesDialogController.prototype.addCategory = function (category) {
-            var _this = this;
-            var categoryModel = {
-                category: category
-            };
-            this.add('/addCategory', categoryModel)
-                .then(function (resp) {
-                _this.CategoriesService.hideDialog();
-                _this.viewCategories();
-                _this.CategoriesService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.CategoriesService.showToast(err);
-            });
+            this.CategoriesService.add(category);
         };
         /**
          * editCategory
          */
         CategoriesDialogController.prototype.editCategory = function () {
-            var _this = this;
-            var categoryModel = {
-                category: this.category
-            };
-            this.update('/editCategory', categoryModel)
-                .then(function (resp) {
-                _this.CategoriesService.hideDialog();
-                _this.viewCategories();
-                _this.CategoriesService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.CategoriesService.showToast(err);
-            });
+            this.CategoriesService.update(this.category);
         };
         return CategoriesDialogController;
     }(CategoriesController));
-    CategoriesController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService'];
-    CategoriesDialogController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService', 'category'];
+    CategoriesController.$inject = ['$mdDialog', 'CategoriesService', '$timeout'];
+    CategoriesDialogController.$inject = ['$mdDialog', 'CategoriesService', 'category', '$timeout'];
     angular
         .module('inventory-management')
         .controller('CategoriesController', CategoriesController);
@@ -575,14 +500,12 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var DashboardController = (function (_super) {
-        __extends(DashboardController, _super);
-        function DashboardController($mdSidenav, DashboardService, BaseService, NotificationService) {
-            var _this = _super.call(this, BaseService) || this;
-            _this.$mdSidenav = $mdSidenav;
-            _this.DashboardService = DashboardService;
-            _this.NotificationService = NotificationService;
-            _this.chartConfig = {
+    var DashboardController = (function () {
+        function DashboardController($mdSidenav, DashboardService, NotificationService) {
+            this.$mdSidenav = $mdSidenav;
+            this.DashboardService = DashboardService;
+            this.NotificationService = NotificationService;
+            this.chartConfig = {
                 options: {
                     chart: {
                         type: 'column'
@@ -592,14 +515,13 @@ var app;
                 title: {
                     text: 'Low Stocks'
                 },
-                loading: true,
+                loading: false,
                 credits: {
                     enabled: false
                 }
             };
-            _this.hasLowStocks = false;
-            _this.getLowStocks();
-            return _this;
+            this.hasLowStocks = true;
+            this.getLowStocks();
         }
         /**
          * toggleSideNav
@@ -612,14 +534,11 @@ var app;
          */
         DashboardController.prototype.getLowStocks = function () {
             var _this = this;
-            this.view_without_data('/stockTracker')
-                .then(function (items) {
-                _this.DashboardService.listLowStocks = items.data.listItems;
-                _this.extractItemFromList(_this.DashboardService.listLowStocks);
+            this.DashboardService
+                .getLowStocks()
+                .then(function (list) {
+                _this.extractItemFromList(list);
                 _this.chartConfig.loading = false;
-            })
-                .catch(function (err) {
-                _this.DashboardService.showToast(err);
             });
         };
         /**
@@ -645,8 +564,8 @@ var app;
             this.DashboardService.showToast('Coming soon!');
         };
         return DashboardController;
-    }(app.BaseController));
-    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService', 'NotificationService'];
+    }());
+    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'NotificationService'];
     angular
         .module('inventory-management')
         .controller('DashboardController', DashboardController);
@@ -655,36 +574,27 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    function DashboardOnEnter(BaseService, DashboardService) {
-        // viewItems();
-        // function viewItems(){
-        //     BaseService.post_request('/viewItems', {})
-        //         .then((items) => {
-        //             // DashboardService.listLowStocks = items.data.listItems;
-        //         })
-        //         .catch((err) => {
-        //             DashboardService.showToast(err);
-        //         });
-        // }
-    }
+    function DashboardOnEnter(DashboardService) { }
     app.DashboardOnEnter = DashboardOnEnter;
-    DashboardOnEnter.$inject = ['BaseService', 'DashboardService'];
+    DashboardOnEnter.$inject = ['DashboardService'];
 })(app || (app = {}));
 "use strict";
 var app;
 (function (app) {
     'use strict';
     var ItemsController = (function () {
-        function ItemsController($mdDialog, ItemsService, $state, LocalStorageService) {
+        function ItemsController($mdDialog, ItemsService, $state, LocalStorageService, $timeout) {
             this.$mdDialog = $mdDialog;
             this.ItemsService = ItemsService;
             this.$state = $state;
             this.LocalStorageService = LocalStorageService;
+            this.$timeout = $timeout;
             this.md_query = {
                 order: 'name',
                 limit: 5,
                 page: 1
             };
+            this.viewItems();
         }
         /**
          * ShowDialog
@@ -725,7 +635,10 @@ var app;
          * viewItems
          */
         ItemsController.prototype.viewItems = function () {
-            this.ItemsService.viewItems();
+            var _this = this;
+            this.itemPromise = this.$timeout(function () {
+                _this.ItemsService.view();
+            }, 2000);
         };
         /**
          * editItem
@@ -745,7 +658,7 @@ var app;
                 .cancel('Cancel');
             this.ItemsService.showDialog(confirmConfig)
                 .then(function () {
-                _this.ItemsService.removeItem(item);
+                _this.ItemsService.remove(item);
             })
                 .catch(function (err) {
                 console.log('Confirm Dialog cancelled.');
@@ -762,20 +675,25 @@ var app;
     }());
     var ItemsDialogController = (function (_super) {
         __extends(ItemsDialogController, _super);
-        function ItemsDialogController($mdDialog, ItemsService, selectedItem, $state, LocalStorageService, UIDService) {
-            var _this = _super.call(this, $mdDialog, ItemsService, $state, LocalStorageService) || this;
+        function ItemsDialogController($mdDialog, ItemsService, selectedItem, $state, LocalStorageService, UIDService, $timeout, BrandsService, CategoriesService, UnitsService, SuppliersService) {
+            var _this = _super.call(this, $mdDialog, ItemsService, $state, LocalStorageService, $timeout) || this;
             _this.selectedItem = selectedItem;
             _this.UIDService = UIDService;
+            _this.BrandsService = BrandsService;
+            _this.CategoriesService = CategoriesService;
+            _this.UnitsService = UnitsService;
+            _this.SuppliersService = SuppliersService;
             _this.selectedSuppliers = [];
             _this.require_match = true;
             _this.item = {};
+            _this.viewSuppliers();
             return _this;
         }
         /**
          * addItem
          */
         ItemsDialogController.prototype.addItem = function (item) {
-            this.ItemsService.addItem(item, this.selectedSuppliers);
+            this.ItemsService.add(item, this.selectedSuppliers);
         };
         /**
          * generateItemCode
@@ -783,10 +701,20 @@ var app;
         ItemsDialogController.prototype.generateItemCode = function () {
             this.item.code = this.UIDService.generateUID();
         };
+        /**
+         * viewSuppliers
+         */
+        ItemsDialogController.prototype.viewSuppliers = function () {
+            var _this = this;
+            this.$timeout(function () {
+                _this.SuppliersService.view();
+            }, 2000);
+        };
         return ItemsDialogController;
     }(ItemsController));
-    ItemsController.$inject = ['$mdDialog', 'ItemsService', '$state', 'LocalStorageService'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$state', 'LocalStorageService', 'UIDService'];
+    ItemsController.$inject = ['$mdDialog', 'ItemsService', '$state', 'LocalStorageService', '$timeout'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$state',
+        'LocalStorageService', 'UIDService', '$timeout', 'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
     angular
         .module('inventory-management')
         .controller('ItemsController', ItemsController);
@@ -796,15 +724,21 @@ var app;
 (function (app) {
     'use strict';
     var ItemDetailsController = (function () {
-        function ItemDetailsController($stateParams, LocalStorageService, ItemsService, UIDService) {
+        function ItemDetailsController($stateParams, LocalStorageService, ItemsService, UIDService, $timeout, BrandsService, CategoriesService, UnitsService, SuppliersService) {
             this.$stateParams = $stateParams;
             this.LocalStorageService = LocalStorageService;
             this.ItemsService = ItemsService;
             this.UIDService = UIDService;
+            this.$timeout = $timeout;
+            this.BrandsService = BrandsService;
+            this.CategoriesService = CategoriesService;
+            this.UnitsService = UnitsService;
+            this.SuppliersService = SuppliersService;
             this.item = {};
             this.selectedSuppliers = [];
             this.item = this.getItem();
             this.selectedSuppliers = this.getItemSupplier();
+            this.viewSuppliers();
         }
         /**
          * getItem
@@ -829,7 +763,7 @@ var app;
          */
         ItemDetailsController.prototype.editItem = function (item) {
             var itemID = this.$stateParams['item'];
-            this.ItemsService.updateItem(item, itemID, this.selectedSuppliers);
+            this.ItemsService.update(item, itemID, this.selectedSuppliers);
         };
         /**
          * generateItemCode
@@ -837,9 +771,19 @@ var app;
         ItemDetailsController.prototype.generateItemCode = function () {
             this.item.code = this.UIDService.generateUID();
         };
+        /**
+        * viewSuppliers
+        */
+        ItemDetailsController.prototype.viewSuppliers = function () {
+            var _this = this;
+            this.$timeout(function () {
+                _this.SuppliersService.view();
+            }, 2000);
+        };
         return ItemDetailsController;
     }());
-    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'UIDService'];
+    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'UIDService', '$timeout',
+        'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
     angular
         .module('inventory-management')
         .controller('ItemDetailsController', ItemDetailsController);
@@ -848,20 +792,28 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    function ItemOnEnter(BaseService, ItemsService) {
-        viewItems();
-        loadBrands();
-        loadUnits();
-        loadCategories();
-        loadSuppliers();
+    function ItemOnEnter(BaseService, ItemsService, $timeout) {
+        // viewItems();
+        // loadBrands();
+        // loadUnits();
+        // loadCategories();
+        // loadSuppliers();
         function viewItems() {
-            BaseService.post_request('/viewItems', {})
-                .then(function (items) {
-                ItemsService.listItems = items.data.listItems;
-            })
-                .catch(function (err) {
-                ItemsService.showToast(err);
-            });
+            $timeout(function () {
+                BaseService.post_request('/viewItems', {})
+                    .then(function (items) {
+                    ItemsService.listItems = items.data.listItems;
+                })
+                    .then(function () {
+                    loadBrands();
+                    loadUnits();
+                    loadCategories();
+                    loadSuppliers();
+                })
+                    .catch(function (err) {
+                    ItemsService.showToast(err);
+                });
+            }, 2000);
         }
         function loadBrands() {
             BaseService.post_request('/viewBrands', {})
@@ -901,7 +853,7 @@ var app;
         }
     }
     app.ItemOnEnter = ItemOnEnter;
-    ItemOnEnter.$inject = ['BaseService', 'ItemsService'];
+    ItemOnEnter.$inject = ['BaseService', 'ItemsService', '$timeout'];
 })(app || (app = {}));
 "use strict";
 var app;
@@ -923,19 +875,17 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var StocksController = (function (_super) {
-        __extends(StocksController, _super);
-        function StocksController($mdDialog, StocksService, BaseService) {
-            var _this = _super.call(this, BaseService) || this;
-            _this.$mdDialog = $mdDialog;
-            _this.StocksService = StocksService;
-            _this.md_query = {
+    var StocksController = (function () {
+        function StocksController($mdDialog, StocksService, $timeout) {
+            this.$mdDialog = $mdDialog;
+            this.StocksService = StocksService;
+            this.$timeout = $timeout;
+            this.md_query = {
                 order: 'name',
                 limit: 5,
                 page: 1
             };
-            _this.viewStocks();
-            return _this;
+            this.viewStocks();
         }
         /**
          * ShowDialog
@@ -964,20 +914,16 @@ var app;
          */
         StocksController.prototype.viewStocks = function () {
             var _this = this;
-            this.view_without_data('/viewStocks')
-                .then(function (stocks) {
-                _this.StocksService.listStocks = stocks.data.listStocks;
-            })
-                .catch(function (err) {
-                _this.StocksService.showToast(err);
-            });
+            this.stockPromise = this.$timeout(function () {
+                _this.StocksService.view();
+            }, 2000);
         };
         return StocksController;
-    }(app.BaseController));
+    }());
     var StocksDialogController = (function (_super) {
         __extends(StocksDialogController, _super);
-        function StocksDialogController($mdDialog, StocksService, BaseService, ItemsService, stock) {
-            var _this = _super.call(this, $mdDialog, StocksService, BaseService) || this;
+        function StocksDialogController($mdDialog, StocksService, ItemsService, stock, $timeout) {
+            var _this = _super.call(this, $mdDialog, StocksService, $timeout) || this;
             _this.ItemsService = ItemsService;
             _this.stock = stock;
             _this.quantity = [];
@@ -987,34 +933,13 @@ var app;
         * addStock
         */
         StocksDialogController.prototype.addStock = function (stock) {
-            var _this = this;
-            var stockModel = {
-                stock: stock,
-                item: stock.item
-            };
-            this.add("/addStock", stockModel)
-                .then(function (resp) {
-                _this.StocksService.hideDialog();
-                _this.viewStocks();
-                _this.StocksService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.StocksService.showToast(err);
-            });
+            this.StocksService.add(stock);
         };
         /**
          * loadItems
          */
         StocksDialogController.prototype.loadItems = function () {
-            var _this = this;
-            return this.view_without_data('/viewItems')
-                .then(function (items) {
-                _this.ItemsService.listItems = items.data.listItems;
-                return _this.ItemsService.listItems;
-            })
-                .catch(function (err) {
-                _this.ItemsService.showToast(err);
-            });
+            this.ItemsService.view();
         };
         /**
          * generateQuantity
@@ -1028,8 +953,8 @@ var app;
         };
         return StocksDialogController;
     }(StocksController));
-    StocksController.$inject = ['$mdDialog', 'StocksService', 'BaseService'];
-    StocksDialogController.$inject = ['$mdDialog', 'StocksService', 'BaseService', 'ItemsService', 'stock'];
+    StocksController.$inject = ['$mdDialog', 'StocksService', '$timeout'];
+    StocksDialogController.$inject = ['$mdDialog', 'StocksService', 'ItemsService', 'stock', '$timeout'];
     angular
         .module('inventory-management')
         .controller('StocksController', StocksController);
@@ -1038,19 +963,17 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var SuppliersController = (function (_super) {
-        __extends(SuppliersController, _super);
-        function SuppliersController($mdDialog, SuppliersService, BaseService) {
-            var _this = _super.call(this, BaseService) || this;
-            _this.$mdDialog = $mdDialog;
-            _this.SuppliersService = SuppliersService;
-            _this.md_query = {
+    var SuppliersController = (function () {
+        function SuppliersController($mdDialog, SuppliersService, $timeout) {
+            this.$mdDialog = $mdDialog;
+            this.SuppliersService = SuppliersService;
+            this.$timeout = $timeout;
+            this.md_query = {
                 order: 'name',
                 limit: 5,
                 page: 1
             };
-            _this.viewSuppliers();
-            return _this;
+            this.viewSuppliers();
         }
         /**
          * ShowDialog
@@ -1092,13 +1015,9 @@ var app;
          */
         SuppliersController.prototype.viewSuppliers = function () {
             var _this = this;
-            this.view_without_data('/viewSuppliers')
-                .then(function (suppliers) {
-                _this.SuppliersService.listSuppliers = suppliers.data.listSuppliers;
-            })
-                .catch(function (err) {
-                _this.SuppliersService.showToast(err);
-            });
+            this.supplierPromise = this.$timeout(function () {
+                _this.SuppliersService.view();
+            }, 2000);
         };
         /**
          * editSupplier
@@ -1118,28 +1037,18 @@ var app;
                 .cancel('Cancel');
             this.SuppliersService.showDialog(confirmConfig)
                 .then(function () {
-                var supplierModel = {
-                    supplier: supplier
-                };
-                _this.remove('/deleteSupplier', supplierModel)
-                    .then(function (resp) {
-                    _this.viewSuppliers();
-                    _this.SuppliersService.showToast(resp.data.message);
-                })
-                    .catch(function (err) {
-                    _this.SuppliersService.showToast(err);
-                });
+                _this.SuppliersService.remove(supplier);
             })
                 .catch(function (err) {
                 console.log('Confirm Dialog cancelled.');
             });
         };
         return SuppliersController;
-    }(app.BaseController));
+    }());
     var SupplierDialogController = (function (_super) {
         __extends(SupplierDialogController, _super);
-        function SupplierDialogController($mdDialog, SuppliersService, BaseService, supplier) {
-            var _this = _super.call(this, $mdDialog, SuppliersService, BaseService) || this;
+        function SupplierDialogController($mdDialog, SuppliersService, supplier, $timeout) {
+            var _this = _super.call(this, $mdDialog, SuppliersService, $timeout) || this;
             _this.supplier = supplier;
             return _this;
         }
@@ -1147,37 +1056,13 @@ var app;
          * addSupplier
          */
         SupplierDialogController.prototype.addSupplier = function (supplier) {
-            var _this = this;
-            var supplierModel = {
-                supplier: supplier
-            };
-            this.add('/addSupplier', supplierModel)
-                .then(function (resp) {
-                _this.SuppliersService.hideDialog();
-                _this.viewSuppliers();
-                _this.SuppliersService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.SuppliersService.showToast(err);
-            });
+            this.SuppliersService.add(supplier);
         };
         /**
          * editsupplier
          */
         SupplierDialogController.prototype.editSupplier = function () {
-            var _this = this;
-            var supplierModel = {
-                supplier: this.supplier
-            };
-            this.update('/editSupplier', supplierModel)
-                .then(function (resp) {
-                _this.SuppliersService.hideDialog();
-                _this.viewSuppliers();
-                _this.SuppliersService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.SuppliersService.showToast(err);
-            });
+            this.SuppliersService.update(this.supplier);
         };
         /**
          * duplicateContactNo
@@ -1189,8 +1074,8 @@ var app;
         };
         return SupplierDialogController;
     }(SuppliersController));
-    SuppliersController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService'];
-    SupplierDialogController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService', 'supplier'];
+    SuppliersController.$inject = ['$mdDialog', 'SuppliersService', '$timeout'];
+    SupplierDialogController.$inject = ['$mdDialog', 'SuppliersService', 'supplier', '$timeout'];
     angular
         .module('inventory-management')
         .controller('SuppliersController', SuppliersController);
@@ -1199,19 +1084,17 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    var UnitsController = (function (_super) {
-        __extends(UnitsController, _super);
-        function UnitsController($mdDialog, UnitsService, BaseService) {
-            var _this = _super.call(this, BaseService) || this;
-            _this.$mdDialog = $mdDialog;
-            _this.UnitsService = UnitsService;
-            _this.md_query = {
+    var UnitsController = (function () {
+        function UnitsController($mdDialog, UnitsService, $timeout) {
+            this.$mdDialog = $mdDialog;
+            this.UnitsService = UnitsService;
+            this.$timeout = $timeout;
+            this.md_query = {
                 order: 'name',
                 limit: 5,
                 page: 1
             };
-            _this.viewUnits();
-            return _this;
+            this.viewUnits();
         }
         /**
          * showDialog
@@ -1253,13 +1136,9 @@ var app;
          */
         UnitsController.prototype.viewUnits = function () {
             var _this = this;
-            this.view_without_data('/viewUnits')
-                .then(function (units) {
-                _this.UnitsService.listUnits = units.data.listUnits;
-            })
-                .catch(function (err) {
-                _this.UnitsService.showToast(err);
-            });
+            this.unitPromise = this.$timeout(function () {
+                _this.UnitsService.view();
+            }, 2000);
         };
         /**
          * editUnit
@@ -1279,28 +1158,18 @@ var app;
                 .cancel('Cancel');
             this.UnitsService.showDialog(confirmConfig)
                 .then(function () {
-                var unitModel = {
-                    unit: unit
-                };
-                _this.remove('/deleteUnit', unitModel)
-                    .then(function (resp) {
-                    _this.viewUnits();
-                    _this.UnitsService.showToast(resp.data.message);
-                })
-                    .catch(function (err) {
-                    _this.UnitsService.showToast(err);
-                });
+                _this.UnitsService.remove(unit);
             })
                 .catch(function (err) {
                 console.log('Confirm Dialog cancelled.');
             });
         };
         return UnitsController;
-    }(app.BaseController));
+    }());
     var UnitsDialogController = (function (_super) {
         __extends(UnitsDialogController, _super);
-        function UnitsDialogController($mdDialog, UnitsService, BaseService, unit) {
-            var _this = _super.call(this, $mdDialog, UnitsService, BaseService) || this;
+        function UnitsDialogController($mdDialog, UnitsService, unit, $timeout) {
+            var _this = _super.call(this, $mdDialog, UnitsService, $timeout) || this;
             _this.unit = unit;
             return _this;
         }
@@ -1308,42 +1177,18 @@ var app;
           * addUnit
           */
         UnitsDialogController.prototype.addUnit = function (unit) {
-            var _this = this;
-            var unitModel = {
-                unit: unit
-            };
-            this.add('/addUnit', unitModel)
-                .then(function (resp) {
-                _this.UnitsService.hideDialog();
-                _this.viewUnits();
-                _this.UnitsService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.UnitsService.showToast(err);
-            });
+            this.UnitsService.add(unit);
         };
         /**
          * editUnit
          */
         UnitsDialogController.prototype.editUnit = function () {
-            var _this = this;
-            var unitModel = {
-                unit: this.unit
-            };
-            this.update('/editUnit', unitModel)
-                .then(function (resp) {
-                _this.UnitsService.hideDialog();
-                _this.viewUnits();
-                _this.UnitsService.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.UnitsService.showToast(err);
-            });
+            this.UnitsService.update(this.unit);
         };
         return UnitsDialogController;
     }(UnitsController));
-    UnitsController.$inject = ['$mdDialog', 'UnitsService', 'BaseService'];
-    UnitsDialogController.$inject = ['$mdDialog', 'UnitsService', 'BaseService', 'unit'];
+    UnitsController.$inject = ['$mdDialog', 'UnitsService', '$timeout'];
+    UnitsDialogController.$inject = ['$mdDialog', 'UnitsService', 'unit', '$timeout'];
     angular
         .module('inventory-management')
         .controller('UnitsController', UnitsController);
@@ -1424,9 +1269,20 @@ var app;
                 withCredentials: true
             };
             return this.$http(config)
-                .then(function (data) { return data; })
+                .then(function (resp) { return resp; })
                 .catch(function (err) {
-                throw 'Error has occured. ' + err;
+                var headers = err.headers(), contentType = headers['content-type'], databaseError = 'Database is dead. See readme file inside your installer.', apiError = 'API is dead. See readme file inside your installer.';
+                if (err.status === -1)
+                    throw apiError;
+                if (err.status === 503)
+                    throw databaseError;
+                if (err.status === 500) {
+                    if (contentType.search('text/html') > -1) {
+                        throw databaseError;
+                    }
+                    throw err.data.message;
+                }
+                throw 'Error has occured. ' + JSON.stringify(err);
             });
         };
         /**
@@ -1443,7 +1299,7 @@ var app;
                 withCredentials: true
             };
             return this.$http(config)
-                .then(function (data) { return data; })
+                .then(function (resp) { return resp; })
                 .catch(function (err) {
                 throw 'Error has occured. ' + err;
             });
@@ -1461,7 +1317,7 @@ var app;
                 withCredentials: true
             };
             return this.$http(config)
-                .then(function (data) { return data; })
+                .then(function (resp) { return resp; })
                 .catch(function (err) {
                 throw 'Error has occured. ' + err;
             });
@@ -1478,7 +1334,7 @@ var app;
                 }
             };
             return this.$http(config)
-                .then(function (data) { return data; })
+                .then(function (resp) { return resp; })
                 .catch(function (err) {
                 throw 'Error has occured. ' + err;
             });
@@ -1496,9 +1352,10 @@ var app;
 (function (app) {
     'use strict';
     var BrandsService = (function () {
-        function BrandsService(ToastService, DialogService) {
+        function BrandsService(ToastService, DialogService, BaseService) {
             this.ToastService = ToastService;
             this.DialogService = DialogService;
+            this.BaseService = BaseService;
             this.listBrands = [];
         }
         /**
@@ -1519,9 +1376,79 @@ var app;
         BrandsService.prototype.hideDialog = function () {
             this.DialogService.hideDialog();
         };
+        /**
+         * add
+         */
+        BrandsService.prototype.add = function (brand) {
+            var _this = this;
+            var brandModel = {
+                brand: brand
+            };
+            this.BaseService
+                .post_request('/addBrand', brandModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * update
+         */
+        BrandsService.prototype.update = function (brand) {
+            var _this = this;
+            var brandModel = {
+                brand: brand
+            };
+            this.BaseService
+                .post_request('/editBrand', brandModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * view
+         */
+        BrandsService.prototype.view = function () {
+            var _this = this;
+            this.BaseService
+                .post_request('/viewBrands', {})
+                .then(function (resp) {
+                _this.listBrands = resp.data.listBrands;
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * remove
+         */
+        BrandsService.prototype.remove = function (brand) {
+            var _this = this;
+            var brandModel = {
+                brand: brand
+            };
+            this.BaseService
+                .post_request('/deleteBrand', brandModel)
+                .then(function (resp) {
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
         return BrandsService;
     }());
-    BrandsService.$inject = ['ToastService', 'DialogService'];
+    BrandsService.$inject = ['ToastService', 'DialogService', 'BaseService'];
     angular
         .module('inventory-management')
         .service('BrandsService', BrandsService);
@@ -1531,9 +1458,10 @@ var app;
 (function (app) {
     'use strict';
     var CategoriesService = (function () {
-        function CategoriesService(ToastService, DialogService) {
+        function CategoriesService(ToastService, DialogService, BaseService) {
             this.ToastService = ToastService;
             this.DialogService = DialogService;
+            this.BaseService = BaseService;
             this.listCategories = [];
         }
         /**
@@ -1554,9 +1482,79 @@ var app;
         CategoriesService.prototype.hideDialog = function () {
             this.DialogService.hideDialog();
         };
+        /**
+         * add
+         */
+        CategoriesService.prototype.add = function (category) {
+            var _this = this;
+            var categoryModel = {
+                category: category
+            };
+            this.BaseService
+                .post_request('/addCategory', categoryModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * update
+         */
+        CategoriesService.prototype.update = function (category) {
+            var _this = this;
+            var categoryModel = {
+                category: category
+            };
+            this.BaseService
+                .post_request('/editCategory', categoryModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * view
+         */
+        CategoriesService.prototype.view = function () {
+            var _this = this;
+            this.BaseService
+                .post_request('/viewCategories', {})
+                .then(function (resp) {
+                _this.listCategories = resp.data.listCategories;
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * remove
+         */
+        CategoriesService.prototype.remove = function (category) {
+            var _this = this;
+            var categoryModel = {
+                category: category
+            };
+            this.BaseService
+                .post_request('/deleteCategory', categoryModel)
+                .then(function (resp) {
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
         return CategoriesService;
     }());
-    CategoriesService.$inject = ['ToastService', 'DialogService'];
+    CategoriesService.$inject = ['ToastService', 'DialogService', 'BaseService'];
     angular
         .module('inventory-management')
         .service('CategoriesService', CategoriesService);
@@ -1566,11 +1564,16 @@ var app;
 (function (app) {
     'use strict';
     var DashboardService = (function () {
-        function DashboardService(ToastService, DialogService) {
+        function DashboardService(ToastService, DialogService, BaseService, $q) {
             this.ToastService = ToastService;
             this.DialogService = DialogService;
+            this.BaseService = BaseService;
+            this.$q = $q;
             this.state = {};
             this.listLowStocks = [];
+            this.chartConfig = {
+                series: []
+            };
         }
         DashboardService.prototype.stateNameModifier = function (name) {
             this.state['name'] = name;
@@ -1593,9 +1596,24 @@ var app;
         DashboardService.prototype.hideDialog = function () {
             this.DialogService.hideDialog();
         };
+        /**
+         * getLowStocks
+         */
+        DashboardService.prototype.getLowStocks = function () {
+            var _this = this;
+            return this.BaseService
+                .post_request('/stockTracker', {})
+                .then(function (resp) {
+                _this.listLowStocks = resp.data.listItems;
+                return resp.data.listItems;
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
         return DashboardService;
     }());
-    DashboardService.$inject = ['ToastService', 'DialogService'];
+    DashboardService.$inject = ['ToastService', 'DialogService', 'BaseService', '$q'];
     angular
         .module('inventory-management')
         .service('DashboardService', DashboardService);
@@ -1662,9 +1680,9 @@ var app;
             this.DialogService.hideDialog();
         };
         /**
-         * addItem
+         * add
          */
-        ItemsService.prototype.addItem = function (item, selectedSuppliers) {
+        ItemsService.prototype.add = function (item, selectedSuppliers) {
             var _this = this;
             var itemModel = {
                 item: item,
@@ -1674,7 +1692,7 @@ var app;
                 .post_request('/addItem', itemModel)
                 .then(function (resp) {
                 _this.hideDialog();
-                _this.viewItems();
+                _this.view();
                 _this.showToast(resp.data.message);
             })
                 .catch(function (err) {
@@ -1682,9 +1700,29 @@ var app;
             });
         };
         /**
-         * viewItems
+        * update
+        */
+        ItemsService.prototype.update = function (item, itemID, selectedSuppliers) {
+            var _this = this;
+            var itemModel = {
+                item: item,
+                listSuppliers: selectedSuppliers
+            };
+            this.BaseService
+                .post_request('/editItem', itemModel)
+                .then(function (resp) {
+                _this.view();
+                _this.showToast(resp.data.message);
+                _this.LocalStorageService.remove(itemID);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * view
          */
-        ItemsService.prototype.viewItems = function () {
+        ItemsService.prototype.view = function () {
             var _this = this;
             this.BaseService
                 .post_request('/viewItems', {})
@@ -1696,9 +1734,9 @@ var app;
             });
         };
         /**
-         * removeItem
+         * remove
          */
-        ItemsService.prototype.removeItem = function (item) {
+        ItemsService.prototype.remove = function (item) {
             var _this = this;
             var itemModel = {
                 item: item
@@ -1706,28 +1744,8 @@ var app;
             this.BaseService
                 .post_request('/deleteItem', itemModel)
                 .then(function (resp) {
-                _this.viewItems();
+                _this.view();
                 _this.showToast(resp.data.message);
-            })
-                .catch(function (err) {
-                _this.showToast(err);
-            });
-        };
-        /**
-         * updateItem
-         */
-        ItemsService.prototype.updateItem = function (item, itemID, selectedSuppliers) {
-            var _this = this;
-            var itemModel = {
-                item: item,
-                listSuppliers: selectedSuppliers
-            };
-            this.BaseService
-                .post_request('/editItem', itemModel)
-                .then(function (resp) {
-                _this.viewItems();
-                _this.showToast(resp.data.message);
-                _this.LocalStorageService.remove(itemID);
             })
                 .catch(function (err) {
                 _this.showToast(err);
@@ -1845,30 +1863,17 @@ var app;
                     });
                 }
                 return config;
-            },
-            responseError: function (response) {
-                var headers = response.headers(), contentType = headers['content-type'], databaseError = 'Database is dead. See readme file inside your installer.', apiError = 'API is dead. See readme file inside your installer.';
-                if (response.status === -1)
-                    throw apiError;
-                if (response.status === 503)
-                    throw databaseError;
-                if (response.status === 500) {
-                    if (contentType.search('text/html') > -1) {
-                        throw databaseError;
-                    }
-                    throw response.data.message;
-                }
             }
         };
         function getServerConfigFile() {
             var $http = $injector.get('$http');
             return $http.get('server-config.json')
-                .then(function (res) { return res; });
+                .then(function (resp) { return resp; });
         }
         function getServerURL() {
             return getServerConfigFile()
-                .then(function (response) {
-                var data = response.data;
+                .then(function (resp) {
+                var data = resp.data;
                 var url = '';
                 url = [data.url, data.port].join(':');
                 url = [url, data.app_context_root].join('/');
@@ -1885,9 +1890,10 @@ var app;
 (function (app) {
     'use strict';
     var StocksService = (function () {
-        function StocksService(ToastService, DialogService) {
+        function StocksService(ToastService, DialogService, BaseService) {
             this.ToastService = ToastService;
             this.DialogService = DialogService;
+            this.BaseService = BaseService;
             this.listStocks = [];
         }
         /**
@@ -1908,9 +1914,80 @@ var app;
         StocksService.prototype.hideDialog = function () {
             this.DialogService.hideDialog();
         };
+        /**
+        * add
+        */
+        StocksService.prototype.add = function (stock) {
+            var _this = this;
+            var stockModel = {
+                stock: stock,
+                item: stock.item
+            };
+            this.BaseService
+                .post_request('/addStock', stockModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * update
+         */
+        StocksService.prototype.update = function (stock) {
+            var _this = this;
+            var stockModel = {
+                stock: stock
+            };
+            this.BaseService
+                .post_request('/editStock', stockModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * view
+         */
+        StocksService.prototype.view = function () {
+            var _this = this;
+            this.BaseService
+                .post_request('/viewStocks', {})
+                .then(function (resp) {
+                _this.listStocks = resp.data.listStocks;
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * remove
+         */
+        StocksService.prototype.remove = function (stock) {
+            var _this = this;
+            var stockModel = {
+                stock: stock
+            };
+            this.BaseService
+                .post_request('/deleteStock', stockModel)
+                .then(function (resp) {
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
         return StocksService;
     }());
-    StocksService.$inject = ['ToastService', 'DialogService'];
+    StocksService.$inject = ['ToastService', 'DialogService', 'BaseService'];
     angular
         .module('inventory-management')
         .service('StocksService', StocksService);
@@ -1920,9 +1997,10 @@ var app;
 (function (app) {
     'use strict';
     var SuppliersService = (function () {
-        function SuppliersService(ToastService, DialogService) {
+        function SuppliersService(ToastService, DialogService, BaseService) {
             this.ToastService = ToastService;
             this.DialogService = DialogService;
+            this.BaseService = BaseService;
             this.listSuppliers = [];
         }
         /**
@@ -1943,9 +2021,79 @@ var app;
         SuppliersService.prototype.hideDialog = function () {
             this.DialogService.hideDialog();
         };
+        /**
+        * add
+        */
+        SuppliersService.prototype.add = function (supplier) {
+            var _this = this;
+            var supplierModel = {
+                supplier: supplier
+            };
+            this.BaseService
+                .post_request('/addSupplier', supplierModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * update
+         */
+        SuppliersService.prototype.update = function (supplier) {
+            var _this = this;
+            var supplierModel = {
+                supplier: supplier
+            };
+            this.BaseService
+                .post_request('/editSupplier', supplierModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * view
+         */
+        SuppliersService.prototype.view = function () {
+            var _this = this;
+            this.BaseService
+                .post_request('/viewSuppliers', {})
+                .then(function (resp) {
+                _this.listSuppliers = resp.data.listSuppliers;
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * remove
+         */
+        SuppliersService.prototype.remove = function (supplier) {
+            var _this = this;
+            var supplierModel = {
+                supplier: supplier
+            };
+            this.BaseService
+                .post_request('/deleteSupplier', supplierModel)
+                .then(function (resp) {
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
         return SuppliersService;
     }());
-    SuppliersService.$inject = ['ToastService', 'DialogService'];
+    SuppliersService.$inject = ['ToastService', 'DialogService', 'BaseService'];
     angular
         .module('inventory-management')
         .service('SuppliersService', SuppliersService);
@@ -1999,9 +2147,10 @@ var app;
 (function (app) {
     'use strict';
     var UnitsService = (function () {
-        function UnitsService(ToastService, DialogService) {
+        function UnitsService(ToastService, DialogService, BaseService) {
             this.ToastService = ToastService;
             this.DialogService = DialogService;
+            this.BaseService = BaseService;
             this.listUnits = [];
         }
         /**
@@ -2022,9 +2171,79 @@ var app;
         UnitsService.prototype.hideDialog = function () {
             this.DialogService.hideDialog();
         };
+        /**
+         * add
+         */
+        UnitsService.prototype.add = function (unit) {
+            var _this = this;
+            var unitModel = {
+                unit: unit
+            };
+            this.BaseService
+                .post_request('/addUnit', unitModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * update
+         */
+        UnitsService.prototype.update = function (unit) {
+            var _this = this;
+            var unitModel = {
+                unit: unit
+            };
+            this.BaseService
+                .post_request('/editUnit', unitModel)
+                .then(function (resp) {
+                _this.hideDialog();
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * view
+         */
+        UnitsService.prototype.view = function () {
+            var _this = this;
+            this.BaseService
+                .post_request('/viewUnits', {})
+                .then(function (resp) {
+                _this.listUnits = resp.data.listUnits;
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
+        /**
+         * remove
+         */
+        UnitsService.prototype.remove = function (unit) {
+            var _this = this;
+            var unitModel = {
+                unit: unit
+            };
+            this.BaseService
+                .post_request('/deleteUnit', unitModel)
+                .then(function (resp) {
+                _this.view();
+                _this.showToast(resp.data.message);
+            })
+                .catch(function (err) {
+                _this.showToast(err);
+            });
+        };
         return UnitsService;
     }());
-    UnitsService.$inject = ['ToastService', 'DialogService'];
+    UnitsService.$inject = ['ToastService', 'DialogService', 'BaseService'];
     angular
         .module('inventory-management')
         .service('UnitsService', UnitsService);

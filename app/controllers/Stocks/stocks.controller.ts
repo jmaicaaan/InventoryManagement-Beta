@@ -1,11 +1,10 @@
 namespace app {
     'use strict';
 
-    class StocksController extends BaseController {
+    class StocksController{
 
-        constructor(private $mdDialog: angular.material.IDialogService,
-            protected StocksService: IStocksService, BaseService: IBaseService) {
-            super(BaseService);
+        constructor(private $mdDialog: angular.material.IDialogService, protected StocksService: IStocksService,
+            protected $timeout: angular.ITimeoutService) {
             this.viewStocks();
         }
 
@@ -14,6 +13,8 @@ namespace app {
             limit: 5,
             page: 1
         };
+
+        public stockPromise: angular.IPromise<any>;
 
         /**
          * ShowDialog
@@ -47,21 +48,17 @@ namespace app {
          * viewStocks
          */
         public viewStocks() {
-            this.view_without_data('/viewStocks')
-                .then((stocks) => {
-                    this.StocksService.listStocks = stocks.data.listStocks;
-                })
-                .catch((err) => {
-                    this.StocksService.showToast(err);
-                });
+            this.stockPromise = this.$timeout(() => {
+                this.StocksService.view();
+            }, 2000);
         }
     }
 
     class StocksDialogController extends StocksController {
 
-        constructor($mdDialog: angular.material.IDialogService, StocksService: IStocksService, BaseService: IBaseService,
-            private ItemsService: IItemsService, private stock: IStock) {
-            super($mdDialog, StocksService, BaseService);
+        constructor($mdDialog: angular.material.IDialogService, StocksService: IStocksService, 
+            private ItemsService: IItemsService, private stock: IStock, $timeout: angular.ITimeoutService,) {
+            super($mdDialog, StocksService, $timeout);
         }
 
         public quantity = [];
@@ -70,35 +67,14 @@ namespace app {
         * addStock
         */
         public addStock(stock: IStock) {
-
-            let stockModel = {
-                stock: stock,
-                item: stock.item
-            }
-
-            this.add("/addStock", stockModel)
-                .then((resp) => {
-                    this.StocksService.hideDialog();
-                    this.viewStocks();
-                    this.StocksService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.StocksService.showToast(err);
-                });
+            this.StocksService.add(stock);
         }
 
         /**
          * loadItems
          */
         public loadItems() {
-            return this.view_without_data('/viewItems')
-                .then((items) => {
-                    this.ItemsService.listItems = items.data.listItems;
-                    return this.ItemsService.listItems;
-                })
-                .catch((err) => {
-                    this.ItemsService.showToast(err);
-                });
+            this.ItemsService.view();
         }
 
         /**
@@ -113,8 +89,8 @@ namespace app {
         }
     }
 
-    StocksController.$inject = ['$mdDialog', 'StocksService', 'BaseService'];
-    StocksDialogController.$inject = ['$mdDialog', 'StocksService', 'BaseService', 'ItemsService', 'stock'];
+    StocksController.$inject = ['$mdDialog', 'StocksService', '$timeout'];
+    StocksDialogController.$inject = ['$mdDialog', 'StocksService', 'ItemsService', 'stock', '$timeout'];
 
     angular
         .module('inventory-management')

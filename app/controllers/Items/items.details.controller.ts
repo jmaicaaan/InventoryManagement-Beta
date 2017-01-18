@@ -4,9 +4,12 @@ namespace app{
     class ItemDetailsController{
 
         constructor(private $stateParams: angular.ui.IStateParamsService, private LocalStorageService: ILocalStorageService,
-                private ItemsService: IItemsService, private UIDService: IUIDService){
+                private ItemsService: IItemsService, private UIDService: IUIDService, private $timeout: angular.ITimeoutService,
+                private BrandsService: IBrandService, private CategoriesService: ICategoriesService,
+                private UnitsService: IUnitsService, private SuppliersService: ISupplierService){
             this.item = this.getItem();
             this.selectedSuppliers = this.getItemSupplier();
+            this.viewSuppliers();
         }
 
         public item: any = {};
@@ -41,7 +44,7 @@ namespace app{
         public editItem(item) {
 
             let itemID = this.$stateParams['item'];
-            this.ItemsService.updateItem(item, itemID, this.selectedSuppliers);
+            this.ItemsService.update(item, itemID, this.selectedSuppliers);
         }
 
         /**
@@ -50,9 +53,19 @@ namespace app{
         public generateItemCode() {
             this.item.code = this.UIDService.generateUID();
         }
+
+         /**
+         * viewSuppliers
+         */
+        public viewSuppliers() {
+            this.$timeout(() => {
+                this.SuppliersService.view();
+            }, 2000);
+        }
     }
 
-    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'UIDService'];
+    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'UIDService', '$timeout',
+        'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
 
     angular
         .module('inventory-management')

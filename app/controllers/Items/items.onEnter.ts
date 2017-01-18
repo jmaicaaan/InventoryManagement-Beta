@@ -1,22 +1,39 @@
 namespace app{
     'use strict';
 
-    export function ItemOnEnter(BaseService: IBaseService, ItemsService: IItemsService){
+    export function ItemOnEnter(BaseService: IBaseService, ItemsService: IItemsService, $timeout: angular.ITimeoutService){
 
-        viewItems();
-        loadBrands();
-        loadUnits();
-        loadCategories();
-        loadSuppliers();
+        // viewItems();
+        // loadBrands();
+        // loadUnits();
+        // loadCategories();
+        // loadSuppliers();
         
         function viewItems(){
-            BaseService.post_request('/viewItems', {})
+            $timeout(() => {
+                 BaseService.post_request('/viewItems', {})
                 .then((items) => {
                     ItemsService.listItems = items.data.listItems;
                 })
+                .then(() => {
+                    loadBrands();
+                    loadUnits();
+                    loadCategories();
+                    loadSuppliers();
+                })
+                // .then(() => {
+                //     loadUnits();
+                // })
+                // .then(() => {
+                //     loadCategories();
+                // })
+                // .then(() => {
+                //     loadSuppliers();
+                // })
                 .catch((err) => {
                     ItemsService.showToast(err);
                 });
+            }, 2000);
         }
 
         function loadBrands(){
@@ -60,5 +77,5 @@ namespace app{
         }
     }
 
-    ItemOnEnter.$inject = ['BaseService', 'ItemsService'];
+    ItemOnEnter.$inject = ['BaseService', 'ItemsService', '$timeout'];
 }

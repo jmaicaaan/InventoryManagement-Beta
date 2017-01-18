@@ -1,6 +1,6 @@
 namespace app {
 
-    function serviceInterceptor($q: angular.IQService, $injector): angular.IHttpInterceptor {
+    function serviceInterceptor($q: angular.IQService, $injector, ): angular.IHttpInterceptor {
         return {
             request: function (config) {
                 let deferred = $q.defer();
@@ -18,26 +18,6 @@ namespace app {
                 }
                 
                 return config;
-            },
-            responseError: function (response) {
-
-                let headers = response.headers(),
-                    contentType = headers['content-type'],
-                    databaseError = 'Database is dead. See readme file inside your installer.',
-                    apiError = 'API is dead. See readme file inside your installer.';
-
-                if (response.status === -1)
-                    throw apiError;
-
-                if (response.status === 503)
-                    throw databaseError
-
-                if (response.status === 500) {
-                    if (contentType.search('text/html') > -1) {
-                        throw databaseError;
-                    }
-                    throw response.data.message;
-                }
             }
         }
 
@@ -45,14 +25,14 @@ namespace app {
             let $http: angular.IHttpService = $injector.get('$http');
 
             return $http.get('server-config.json')
-                .then((res) => res);
+                .then((resp) => resp);
         }
 
         function getServerURL() {
 
             return getServerConfigFile()
-                .then((response: any) => {
-                    let data: any = response.data;
+                .then((resp: any) => {
+                    let data: any = resp.data;
 
                     let url = '';
                     url = [data.url, data.port].join(':');

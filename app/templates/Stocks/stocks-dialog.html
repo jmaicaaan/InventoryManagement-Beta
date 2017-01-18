@@ -31,6 +31,12 @@
                     </div>
                     <div>
                         <md-input-container class="md-block">
+                            <label>Current Stocks</label>
+                            <input name="currentStocks" ng-model="vm.stock.item.totalStocks" type="text" disabled>
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
                             <label>Quantity</label>
                             <md-select name="quantity" ng-model="vm.stock.quantity" md-on-open="vm.generateQuantity();" required>
                                 <md-option ng-repeat="no in vm.quantity" ng-value="no">

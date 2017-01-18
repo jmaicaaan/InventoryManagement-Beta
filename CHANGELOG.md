@@ -1,3 +1,10 @@
+# 1.06
+    
+    - Dashboard chart on-sync.
+    - Disabled editing of supplier name. Can only delete contact numbers.
+    - Added input length on input forms.
+    - Added timeout on each states before loading items for smoother transitions.
+
 # 1.05.1
 
     - Added tooltip on every action

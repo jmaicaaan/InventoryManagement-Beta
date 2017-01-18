@@ -41,7 +41,7 @@
                   <md-menu-item>
                     <div ng-if="vm.NotificationService.lowStock.count > 0">
                       <md-icon md-menu-origin md-svg-icon="icons/ic_warning_24px.svg"></md-icon>
-                      <span ui-sref="dashboard" class="span-anchor"> 
+                      <span ui-sref="dashboard" ui-sref-opts="{reload: true}" class="span-anchor"> 
                           <b>Warning!</b> You have <b>{{vm.NotificationService.lowStock.count}}</b> low stocks.
                       </span>
                     </div>
@@ -78,7 +78,7 @@
       </md-toolbar>
       <div>
         <md-list>
-          <md-list-item ui-sref="dashboard">
+          <md-list-item ui-sref="dashboard" ui-sref-opts="{reload: true}">
             <p> Home </p>
           </md-list-item>
           <md-list-item ui-sref="dashboard.items">

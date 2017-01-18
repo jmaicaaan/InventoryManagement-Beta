@@ -1,12 +1,11 @@
 namespace app {
     'use strict';
 
-    class BrandsController extends BaseController {
+    class BrandsController{
 
-        constructor(public $mdDialog: angular.material.IDialogService,
-            protected BrandsService: IBrandService, BaseService: IBaseService) {
-            super(BaseService);
-            this.viewBrands();
+        constructor(public $mdDialog: angular.material.IDialogService, protected BrandsService: IBrandService,
+            protected $timeout: angular.ITimeoutService) {
+                this.viewBrands();
         }
 
         public md_query: IMDDataTableSortOption = {
@@ -14,6 +13,8 @@ namespace app {
             limit: 5,
             page: 1
         };
+
+        public brandPromise: angular.IPromise<any>;
 
         /**
          * showDialog
@@ -55,24 +56,17 @@ namespace app {
          * showEditDialog
          */
         public showEditDialog(brand) {
-
             let templateUrl = 'templates/Brands/brands-edit-dialog.html';
-
             this.showDialog(templateUrl, brand);
         }
-
 
         /**
          * viewBrands
          */
         public viewBrands() {
-            this.view_without_data('/viewBrands')
-                .then((brands) => {
-                    this.BrandsService.listBrands = brands.data.listBrands;
-                })
-                .catch((err) => {
-                    this.BrandsService.showToast(err);
-                });
+            this.brandPromise = this.$timeout(() => {
+                this.BrandsService.view();
+            }, 2000);
         }
 
         /**
@@ -95,19 +89,7 @@ namespace app {
 
             this.BrandsService.showDialog(confirmConfig)
                 .then(() => {
-
-                    let brandModel = {
-                        brand: brand
-                    };
-
-                    this.remove('/deleteBrand', brandModel)
-                        .then((resp) => {
-                            this.viewBrands();
-                            this.BrandsService.showToast(resp.data.message);
-                        })
-                        .catch((err) => {
-                            this.BrandsService.showToast(err);
-                        });
+                    this.BrandsService.remove(brand);
                 })
                 .catch((err) => {
                     console.log('Confirm Dialog cancelled.');
@@ -117,54 +99,28 @@ namespace app {
 
     class BrandsDialogController extends BrandsController {
 
-        constructor($mdDialog: angular.material.IDialogService, BrandsService: IBrandService, BaseService: IBaseService,
-            private brand: IBrand) {
-            super($mdDialog, BrandsService, BaseService);
+        constructor($mdDialog: angular.material.IDialogService, BrandsService: IBrandService, private brand: IBrand,
+            $timeout: angular.ITimeoutService) {
+            super($mdDialog, BrandsService, $timeout);
         }
 
         /**
          * addBrand
          */
         public addBrand(brand: IBrand) {
-
-            let brandModel = {
-                brand: brand
-            };
-
-            this.add('/addBrand', brandModel)
-                .then((resp) => {
-                    this.BrandsService.hideDialog();
-                    this.viewBrands();
-                    this.BrandsService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.BrandsService.showToast(err);
-                });
+            this.BrandsService.add(brand);
         }
 
         /**
          * editBrand
          */
         public editBrand() {
-
-            let brandModel = {
-                brand: this.brand
-            };
-
-            this.update('/editBrand', brandModel)
-                .then((resp) => {
-                    this.BrandsService.hideDialog();
-                    this.viewBrands();
-                    this.BrandsService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.BrandsService.showToast(err);
-                });
+            this.BrandsService.update(this.brand);
         }
     }
 
-    BrandsController.$inject = ['$mdDialog', 'BrandsService', 'BaseService'];
-    BrandsDialogController.$inject = ['$mdDialog', 'BrandsService', 'BaseService', 'brand'];
+    BrandsController.$inject = ['$mdDialog', 'BrandsService', '$timeout'];
+    BrandsDialogController.$inject = ['$mdDialog', 'BrandsService', 'brand', '$timeout'];
 
     angular
         .module('inventory-management')

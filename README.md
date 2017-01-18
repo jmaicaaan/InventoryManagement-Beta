@@ -1,7 +1,7 @@
 # InventoryManagement-Beta
 
 # Note:
-    Make sure to run Tomcat server before running the app. 
+    Make sure Tomcat Server is running.
     
 # Download:
     Contains: 

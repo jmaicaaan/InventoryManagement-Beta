@@ -1,13 +1,12 @@
 namespace app{
     'use strict';
 
-    class DashboardController extends BaseController{
+    class DashboardController{
 
-        constructor(private $mdSidenav: angular.material.ISidenavService, private DashboardService: IDashboardService, 
-            BaseService: IBaseService, private NotificationService: INotificationService){
-                super(BaseService);
-                this.getLowStocks();
-        }
+        constructor(private $mdSidenav: angular.material.ISidenavService, private DashboardService: IDashboardService,
+             private NotificationService: INotificationService){
+                 this.getLowStocks();
+        }      
 
         public chartConfig = {
             options: {
@@ -19,14 +18,13 @@ namespace app{
             title: {
                 text: 'Low Stocks'
             },
-            loading: true,
+            loading: false,
 		    credits: {
 		        enabled: false
 		    }
         };
         
-
-        public hasLowStocks = false;
+        public hasLowStocks = true;
 
         /**
          * toggleSideNav
@@ -39,15 +37,12 @@ namespace app{
          * getLowStocks
          */
         public getLowStocks() {
-            this.view_without_data('/stockTracker')
-                .then((items) => {
 
-                    this.DashboardService.listLowStocks = items.data.listItems;
-                    this.extractItemFromList(this.DashboardService.listLowStocks);
+            this.DashboardService
+                .getLowStocks()
+                .then((list) => {
+                    this.extractItemFromList(list);
                     this.chartConfig.loading = false;
-                })
-                .catch((err) => {
-                    this.DashboardService.showToast(err);
                 });
         }
 
@@ -79,7 +74,7 @@ namespace app{
         }
     }
 
-    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'BaseService', 'NotificationService'];
+    DashboardController.$inject = ['$mdSidenav', 'DashboardService', 'NotificationService'];
 
     angular 
         .module('inventory-management')

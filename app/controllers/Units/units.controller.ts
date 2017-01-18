@@ -1,11 +1,10 @@
 namespace app {
     'use strict';
 
-    class UnitsController extends BaseController {
+    class UnitsController {
 
-        constructor(private $mdDialog: angular.material.IDialogService,
-            protected UnitsService: IUnitsService, BaseService: IBaseService) {
-            super(BaseService);
+        constructor(private $mdDialog: angular.material.IDialogService, protected UnitsService: IUnitsService, 
+            protected $timeout: angular.ITimeoutService) {
             this.viewUnits();
         }
 
@@ -14,6 +13,8 @@ namespace app {
             limit: 5,
             page: 1
         };
+
+        public unitPromise: angular.IPromise<any>;
 
         /**
          * showDialog
@@ -55,24 +56,17 @@ namespace app {
          * showEditDialog
          */
         public showEditDialog(unit) {
-
             let templateUrl = 'templates/Units/units-edit-dialog.html';
-
             this.showDialog(templateUrl, unit);
         }
-
 
         /**
          * viewUnits
          */
         public viewUnits() {
-            this.view_without_data('/viewUnits')
-                .then((units) => {
-                    this.UnitsService.listUnits = units.data.listUnits;
-                })
-                .catch((err) => {
-                    this.UnitsService.showToast(err);
-                });
+            this.unitPromise = this.$timeout(() => {
+                this.UnitsService.view();
+            }, 2000);
         }
 
         /**
@@ -95,19 +89,7 @@ namespace app {
 
             this.UnitsService.showDialog(confirmConfig)
                 .then(() => {
-
-                    let unitModel = {
-                        unit: unit
-                    };
-
-                    this.remove('/deleteUnit', unitModel)
-                        .then((resp) => {
-                            this.viewUnits();
-                            this.UnitsService.showToast(resp.data.message);
-                        })
-                        .catch((err) => {
-                            this.UnitsService.showToast(err);
-                        });
+                    this.UnitsService.remove(unit);
                 })
                 .catch((err) => {
                     console.log('Confirm Dialog cancelled.');
@@ -117,54 +99,28 @@ namespace app {
 
     class UnitsDialogController extends UnitsController {
 
-        constructor($mdDialog: angular.material.IDialogService, UnitsService: IUnitsService, BaseService: IBaseService,
-            private unit: IUnit) {
-            super($mdDialog, UnitsService, BaseService);
+        constructor($mdDialog: angular.material.IDialogService, UnitsService: IUnitsService, private unit: IUnit,
+            $timeout: angular.ITimeoutService) {
+            super($mdDialog, UnitsService, $timeout);
         }
 
         /**
           * addUnit
           */
         public addUnit(unit: IUnit) {
-
-            let unitModel = {
-                unit: unit
-            };
-
-            this.add('/addUnit', unitModel)
-                .then((resp) => {
-                    this.UnitsService.hideDialog();
-                    this.viewUnits();
-                    this.UnitsService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.UnitsService.showToast(err);
-                });
+            this.UnitsService.add(unit);
         }
 
         /**
          * editUnit
          */
         public editUnit() {
-
-            let unitModel = {
-                unit: this.unit
-            };
-
-            this.update('/editUnit', unitModel)
-                .then((resp) => {
-                    this.UnitsService.hideDialog();
-                    this.viewUnits();
-                    this.UnitsService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.UnitsService.showToast(err);
-                });
+            this.UnitsService.update(this.unit);
         }
     }
 
-    UnitsController.$inject = ['$mdDialog', 'UnitsService', 'BaseService'];
-    UnitsDialogController.$inject = ['$mdDialog', 'UnitsService', 'BaseService', 'unit'];
+    UnitsController.$inject = ['$mdDialog', 'UnitsService', '$timeout'];
+    UnitsDialogController.$inject = ['$mdDialog', 'UnitsService', 'unit', '$timeout'];
 
     angular
         .module('inventory-management')

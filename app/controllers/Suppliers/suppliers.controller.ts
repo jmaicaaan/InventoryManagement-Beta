@@ -1,11 +1,10 @@
 namespace app {
     'use strict';
 
-    class SuppliersController extends BaseController {
+    class SuppliersController{
 
-        constructor(private $mdDialog: angular.material.IDialogService,
-            protected SuppliersService: ISupplierService, BaseService: IBaseService) {
-            super(BaseService);
+        constructor(private $mdDialog: angular.material.IDialogService, protected SuppliersService: ISupplierService,
+            protected $timeout: angular.ITimeoutService) {
             this.viewSuppliers();
         }
 
@@ -14,6 +13,8 @@ namespace app {
             limit: 5,
             page: 1
         };
+
+        public supplierPromise: angular.IPromise<any>;
 
         /**
          * ShowDialog
@@ -55,9 +56,7 @@ namespace app {
          * showEditDialog
          */
         public showEditDialog(supplier) {
-
             let templateUrl = 'templates/Suppliers/suppliers-edit-dialog.html';
-
             this.showDialog(templateUrl, supplier);
         }
 
@@ -66,13 +65,9 @@ namespace app {
          * viewSuppliers
          */
         public viewSuppliers() {
-            this.view_without_data('/viewSuppliers')
-                .then((suppliers) => {
-                    this.SuppliersService.listSuppliers = suppliers.data.listSuppliers;
-                })
-                .catch((err) => {
-                    this.SuppliersService.showToast(err);
-                });
+            this.supplierPromise = this.$timeout(() => {
+                this.SuppliersService.view();
+            }, 2000);
         }
 
         /**
@@ -95,19 +90,7 @@ namespace app {
 
             this.SuppliersService.showDialog(confirmConfig)
                 .then(() => {
-
-                    let supplierModel = {
-                        supplier: supplier
-                    };
-
-                    this.remove('/deleteSupplier', supplierModel)
-                        .then((resp) => {
-                            this.viewSuppliers();
-                            this.SuppliersService.showToast(resp.data.message);
-                        })
-                        .catch((err) => {
-                            this.SuppliersService.showToast(err);
-                        });
+                    this.SuppliersService.remove(supplier);
                 })
                 .catch((err) => {
                     console.log('Confirm Dialog cancelled.');
@@ -117,49 +100,23 @@ namespace app {
 
     class SupplierDialogController extends SuppliersController {
 
-        constructor($mdDialog: angular.material.IDialogService, SuppliersService: ISupplierService, BaseService: IBaseService,
-            private supplier: ISupplier) {
-            super($mdDialog, SuppliersService, BaseService);
+        constructor($mdDialog: angular.material.IDialogService, SuppliersService: ISupplierService, private supplier: ISupplier,
+         $timeout: angular.ITimeoutService) {
+            super($mdDialog, SuppliersService, $timeout);
         }
 
         /**
          * addSupplier
          */
         public addSupplier(supplier: ISupplier) {
-
-            let supplierModel = {
-                supplier: supplier
-            };
-
-            this.add('/addSupplier', supplierModel)
-                .then((resp) => {
-                    this.SuppliersService.hideDialog();
-                    this.viewSuppliers();
-                    this.SuppliersService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.SuppliersService.showToast(err);
-                });
+            this.SuppliersService.add(supplier);
         }
 
         /**
          * editsupplier
          */
         public editSupplier() {
-
-            let supplierModel = {
-                supplier: this.supplier
-            };
-
-            this.update('/editSupplier', supplierModel)
-                .then((resp) => {
-                    this.SuppliersService.hideDialog();
-                    this.viewSuppliers();
-                    this.SuppliersService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.SuppliersService.showToast(err);
-                });
+            this.SuppliersService.update(this.supplier);
         }
 
         /**
@@ -172,8 +129,8 @@ namespace app {
         }
     }
 
-    SuppliersController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService'];
-    SupplierDialogController.$inject = ['$mdDialog', 'SuppliersService', 'BaseService', 'supplier'];
+    SuppliersController.$inject = ['$mdDialog', 'SuppliersService', '$timeout'];
+    SupplierDialogController.$inject = ['$mdDialog', 'SuppliersService', 'supplier', '$timeout'];
 
     angular
         .module('inventory-management')

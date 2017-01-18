@@ -1,6 +1,5 @@
 const {app, BrowserWindow, dialog} = require('electron')
 const path = require('path');
-const fs = require('fs');
 const spawn = require('child_process').spawn;
 const eventEmiter = require('events');
 const manifest = require('./package.json');

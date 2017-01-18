@@ -9,9 +9,9 @@ namespace app{
         listCategories: Array<ICategory>;
         listSuppliers: Array<ISupplier>;
 
-        addItem(item: IItem, selectedSuppliers: Array<any>): void;
-        viewItems(): void;
-        removeItem(item: IItem): void;
-        updateItem(item: IItem, itemID: any, selectedSuppliers: Array<any>): void;
+        add(item: IItem, selectedSuppliers: Array<any>): void;
+        view(): void;
+        remove(item: IItem): void;
+        update(item: IItem, itemID: any, selectedSuppliers: Array<any>): void;
     }
 }

@@ -21,9 +21,27 @@ namespace app{
             };
 
             return this.$http(config)
-                        .then( (data) => data)
-                        .catch( (err) => {
-                            throw 'Error has occured. ' + err;
+                        .then((resp) => resp)
+                        .catch((err) => {
+                             let headers = err.headers(),
+                                contentType = headers['content-type'],
+                                databaseError = 'Database is dead. See readme file inside your installer.',
+                                apiError = 'API is dead. See readme file inside your installer.';
+
+                                if (err.status === -1)
+                                    throw apiError;
+
+                                if (err.status === 503)
+                                    throw databaseError;
+
+                                if (err.status === 500) {
+                                    if (contentType.search('text/html') > -1) {
+                                        throw databaseError;
+                                    }
+                                    throw err.data.message;
+                                }
+
+                            throw 'Error has occured. ' + JSON.stringify(err);
                         });
         }
 
@@ -43,8 +61,8 @@ namespace app{
             };
 
             return this.$http(config)
-                        .then( (data) => data)
-                        .catch( (err) => {
+                        .then((resp) => resp)
+                        .catch((err) => {
                             throw 'Error has occured. ' + err;
                         });
         }
@@ -64,8 +82,8 @@ namespace app{
             };
 
             return this.$http(config)
-                        .then( (data) => data)
-                        .catch( (err) => {
+                        .then((resp) => resp)
+                        .catch((err) => {
                             throw 'Error has occured. ' + err;
                         });
         }
@@ -83,8 +101,8 @@ namespace app{
             };
 
             return this.$http(config)
-                        .then( (data) => data)
-                        .catch( (err) => {
+                        .then((resp) => resp)
+                        .catch((err) => {
                             throw 'Error has occured. ' + err;
                         });
         }

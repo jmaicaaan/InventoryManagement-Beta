@@ -4,7 +4,9 @@ namespace app {
     class ItemsController {
 
         constructor(private $mdDialog: angular.material.IDialogService, protected ItemsService: IItemsService, 
-               private $state: angular.ui.IStateService, private LocalStorageService: ILocalStorageService) {
+               private $state: angular.ui.IStateService, private LocalStorageService: ILocalStorageService,
+               protected $timeout: angular.ITimeoutService) {
+                   this.viewItems();
         }
 
          public md_query: IMDDataTableSortOption = {
@@ -12,6 +14,8 @@ namespace app {
             limit: 5,
             page: 1
         };
+
+        public itemPromise: angular.IPromise<any>;
 
         /**
          * ShowDialog
@@ -62,7 +66,9 @@ namespace app {
          * viewItems
          */
         public viewItems() {
-            this.ItemsService.viewItems();
+            this.itemPromise = this.$timeout(() => {
+                this.ItemsService.view();
+            }, 2000);
         }
 
         /**
@@ -85,7 +91,7 @@ namespace app {
                 
             this.ItemsService.showDialog(confirmConfig)
                 .then(() => {
-                    this.ItemsService.removeItem(item);
+                    this.ItemsService.remove(item);
                 })
                 .catch((err) => {
                     console.log('Confirm Dialog cancelled.');
@@ -105,8 +111,11 @@ namespace app {
     class ItemsDialogController extends ItemsController {
 
         constructor($mdDialog: angular.material.IDialogService, ItemsService: IItemsService, private selectedItem: IItem, 
-                $state: angular.ui.IStateService, LocalStorageService: ILocalStorageService,private UIDService: IUIDService) {
-            super($mdDialog, ItemsService, $state, LocalStorageService);
+                $state: angular.ui.IStateService, LocalStorageService: ILocalStorageService, private UIDService: IUIDService,
+                $timeout: angular.ITimeoutService, private BrandsService: IBrandService, private CategoriesService: ICategoriesService,
+                private UnitsService: IUnitsService, private SuppliersService: ISupplierService) {
+            super($mdDialog, ItemsService, $state, LocalStorageService, $timeout);
+            this.viewSuppliers();
         }
 
         public selectedSuppliers = [];
@@ -117,7 +126,7 @@ namespace app {
          * addItem
          */
         public addItem(item: IItem) {
-            this.ItemsService.addItem(item, this.selectedSuppliers);
+            this.ItemsService.add(item, this.selectedSuppliers);
         }
 
         /**
@@ -126,10 +135,20 @@ namespace app {
         public generateItemCode() {
             this.item.code = this.UIDService.generateUID();
         }
+
+        /**
+         * viewSuppliers
+         */
+        public viewSuppliers() {
+            this.$timeout(() => {
+                this.SuppliersService.view();
+            }, 2000);
+        }
     }
 
-    ItemsController.$inject = ['$mdDialog', 'ItemsService', '$state', 'LocalStorageService'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$state', 'LocalStorageService', 'UIDService'];
+    ItemsController.$inject = ['$mdDialog', 'ItemsService', '$state', 'LocalStorageService', '$timeout'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$state', 
+                'LocalStorageService', 'UIDService', '$timeout', 'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
 
     angular
         .module('inventory-management')

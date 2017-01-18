@@ -34,9 +34,9 @@ namespace app{
         }
 
         /**
-         * addItem
+         * add
          */
-        public addItem(item: IItem, selectedSuppliers: Array<any>) {
+        public add(item: IItem, selectedSuppliers: Array<any>) {
             
             let itemModel = {
                 item: item,
@@ -47,7 +47,7 @@ namespace app{
                 .post_request('/addItem', itemModel)
                 .then((resp) => {
                     this.hideDialog();
-                    this.viewItems();
+                    this.view();
                     this.showToast(resp.data.message);
                 })
                 .catch((err) => {
@@ -56,10 +56,32 @@ namespace app{
 
         }
 
-        /**
-         * viewItems
+         /**
+         * update
          */
-        public viewItems() {
+        public update(item: IItem, itemID, selectedSuppliers: Array<any>) {
+            
+            let itemModel = {
+                item: item,
+                listSuppliers: selectedSuppliers
+            };
+
+            this.BaseService
+                .post_request('/editItem', itemModel)
+                .then((resp) => {
+                    this.view();
+                    this.showToast(resp.data.message);
+                    this.LocalStorageService.remove(itemID);
+                })
+                .catch((err) => {
+                    this.showToast(err);
+                })
+        }
+
+        /**
+         * view
+         */
+        public view() {
             this.BaseService
                 .post_request('/viewItems', {})
                 .then((resp) => {
@@ -71,9 +93,9 @@ namespace app{
         }
 
         /**
-         * removeItem
+         * remove
          */
-        public removeItem(item: IItem) {
+        public remove(item: IItem) {
             
             let itemModel = {
                 item: item
@@ -82,7 +104,7 @@ namespace app{
            this.BaseService
                 .post_request('/deleteItem', itemModel)
                 .then((resp) => {
-                    this.viewItems();
+                    this.view();
                     this.showToast(resp.data.message);
                 })
                 .catch((err) => {
@@ -91,27 +113,7 @@ namespace app{
 
         }
 
-        /**
-         * updateItem
-         */
-        public updateItem(item: IItem, itemID, selectedSuppliers: Array<any>) {
-            
-            let itemModel = {
-                item: item,
-                listSuppliers: selectedSuppliers
-            };
-
-            this.BaseService
-                .post_request('/editItem', itemModel)
-                .then((resp) => {
-                    this.viewItems();
-                    this.showToast(resp.data.message);
-                    this.LocalStorageService.remove(itemID);
-                })
-                .catch((err) => {
-                    this.showToast(err);
-                })
-        }
+       
     }
 
     ItemsService.$inject = ['ToastService', 'DialogService', 'BaseService', 'LocalStorageService'];

@@ -1,11 +1,10 @@
 namespace app {
     'use strict';
 
-    class CategoriesController extends BaseController {
+    class CategoriesController{
 
-        constructor(private $mdDialog: angular.material.IDialogService,
-            protected CategoriesService: ICategoriesService, BaseService: IBaseService) {
-            super(BaseService);
+        constructor(private $mdDialog: angular.material.IDialogService, protected CategoriesService: ICategoriesService,
+            protected $timeout: angular.ITimeoutService) {
             this.viewCategories();
         }
 
@@ -14,6 +13,8 @@ namespace app {
             limit: 5,
             page: 1
         };
+
+        public categoryPromise: angular.IPromise<any>;
 
         /**
          * showDialog
@@ -30,7 +31,7 @@ namespace app {
                 }
             };
 
-            this.CategoriesService.showDialog(config);
+            return this.CategoriesService.showDialog(config);
         }
 
         /**
@@ -55,24 +56,17 @@ namespace app {
          * showEditDialog
          */
         public showEditDialog(category) {
-
             let templateUrl = 'templates/Categories/categories-edit-dialog.html';
-
             this.showDialog(templateUrl, category);
         }
-
 
         /**
          * viewCategories
          */
         public viewCategories() {
-            this.view_without_data('/viewCategories')
-                .then((categories) => {
-                    this.CategoriesService.listCategories = categories.data.listCategories;
-                })
-                .catch((err) => {
-                    this.CategoriesService.showToast(err);
-                });
+            this.categoryPromise = this.$timeout(() => {
+                this.CategoriesService.view();
+            }, 2000);
         }
 
         /**
@@ -95,19 +89,7 @@ namespace app {
 
             this.CategoriesService.showDialog(confirmConfig)
                 .then(() => {
-
-                    let categoryModel = {
-                        category: category
-                    };
-
-                    this.remove('/deleteCategory', categoryModel)
-                        .then((resp) => {
-                            this.viewCategories();
-                            this.CategoriesService.showToast(resp.data.message);
-                        })
-                        .catch((err) => {
-                            this.CategoriesService.showToast(err);
-                        });
+                    this.CategoriesService.remove(category);
                 })
                 .catch((err) => {
                     console.log('Confirm Dialog cancelled.');
@@ -117,54 +99,28 @@ namespace app {
 
     class CategoriesDialogController extends CategoriesController {
 
-        constructor($mdDialog: angular.material.IDialogService, CategoriesService: ICategoriesService,
-            BaseService: IBaseService, private category: ICategory) {
-            super($mdDialog, CategoriesService, BaseService);
+        constructor($mdDialog: angular.material.IDialogService, CategoriesService: ICategoriesService, private category: ICategory,
+            $timeout: angular.ITimeoutService) {
+            super($mdDialog, CategoriesService, $timeout);
         }
 
         /**
          * addCategory
          */
         public addCategory(category: ICategory) {
-
-            let categoryModel = {
-                category: category
-            };
-
-            this.add('/addCategory', categoryModel)
-                .then((resp) => {
-                    this.CategoriesService.hideDialog();
-                    this.viewCategories();
-                    this.CategoriesService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.CategoriesService.showToast(err);
-                });
+            this.CategoriesService.add(category);
         }
 
         /**
          * editCategory
          */
         public editCategory() {
-
-            let categoryModel = {
-                category: this.category
-            };
-
-            this.update('/editCategory', categoryModel)
-                .then((resp) => {
-                    this.CategoriesService.hideDialog();
-                    this.viewCategories();
-                    this.CategoriesService.showToast(resp.data.message);
-                })
-                .catch((err) => {
-                    this.CategoriesService.showToast(err);
-                });
+            this.CategoriesService.update(this.category);
         }
     }
 
-    CategoriesController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService'];
-    CategoriesDialogController.$inject = ['$mdDialog', 'CategoriesService', 'BaseService', 'category'];
+    CategoriesController.$inject = ['$mdDialog', 'CategoriesService', '$timeout'];
+    CategoriesDialogController.$inject = ['$mdDialog', 'CategoriesService', 'category', '$timeout'];
 
     angular
         .module('inventory-management')
