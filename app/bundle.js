@@ -26,6 +26,9 @@ var app;
     function config($stateProvider, $urlRouterProvider, $httpProvider, cfpLoadingBarProvider, $mdThemingProvider) {
         $httpProvider.interceptors.push('serviceInterceptor');
         cfpLoadingBarProvider.includeSpinner = false;
+        $mdThemingProvider.theme('default')
+            .primaryPalette('blue')
+            .accentPalette('pink');
         $urlRouterProvider
             .otherwise('/');
         $stateProvider
@@ -284,6 +287,8 @@ var app;
                 limit: 5,
                 page: 1
             };
+            this.isSearchOpen = false;
+            this.queryText = '';
             this.viewBrands();
         }
         /**
@@ -354,6 +359,13 @@ var app;
                 console.log('Confirm Dialog cancelled.');
             });
         };
+        /**
+         * toggleSearch
+         */
+        BrandsController.prototype.toggleSearch = function () {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
+        };
         return BrandsController;
     }());
     var BrandsDialogController = (function (_super) {
@@ -397,6 +409,8 @@ var app;
                 limit: 5,
                 page: 1
             };
+            this.isSearchOpen = false;
+            this.queryText = '';
             this.viewCategories();
         }
         /**
@@ -467,6 +481,13 @@ var app;
                 console.log('Confirm Dialog cancelled.');
             });
         };
+        /**
+        * toggleSearch
+        */
+        CategoriesController.prototype.toggleSearch = function () {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
+        };
         return CategoriesController;
     }());
     var CategoriesDialogController = (function (_super) {
@@ -520,7 +541,7 @@ var app;
                     enabled: false
                 }
             };
-            this.hasLowStocks = true;
+            this.hasLowStocks = false;
             this.getLowStocks();
         }
         /**
@@ -594,6 +615,8 @@ var app;
                 limit: 5,
                 page: 1
             };
+            this.isSearchOpen = false;
+            this.queryText = '';
             this.viewItems();
         }
         /**
@@ -671,6 +694,13 @@ var app;
             this.LocalStorageService.set(item.name, JSON.stringify(item));
             this.$state.go('dashboard.items.details', { item: item.name });
         };
+        /**
+         * toggleSearch
+         */
+        ItemsController.prototype.toggleSearch = function () {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
+        };
         return ItemsController;
     }());
     var ItemsDialogController = (function (_super) {
@@ -686,7 +716,9 @@ var app;
             _this.selectedSuppliers = [];
             _this.require_match = true;
             _this.item = {};
+            _this.isEnableEdit = false;
             _this.viewSuppliers();
+            _this.selectedSuppliers = _this.getItemSupplier();
             return _this;
         }
         /**
@@ -700,6 +732,29 @@ var app;
          */
         ItemsDialogController.prototype.generateItemCode = function () {
             this.item.code = this.UIDService.generateUID();
+        };
+        /**
+         * getItemSupplier
+         */
+        ItemsDialogController.prototype.getItemSupplier = function () {
+            var itemSuppliers = [];
+            if (Object.keys(this.selectedItem).length != 0)
+                this.selectedItem.itemSupplier.forEach(function (i) {
+                    itemSuppliers.push(i.supplier);
+                });
+            return itemSuppliers;
+        };
+        /**
+         * toggleEdit
+         */
+        ItemsDialogController.prototype.toggleEdit = function () {
+            this.isEnableEdit = !this.isEnableEdit;
+        };
+        /**
+         * editItem
+         */
+        ItemsDialogController.prototype.editItem = function (item) {
+            this.ItemsService.update(item, item.id, this.selectedSuppliers);
         };
         /**
          * viewSuppliers
@@ -718,75 +773,6 @@ var app;
     angular
         .module('inventory-management')
         .controller('ItemsController', ItemsController);
-})(app || (app = {}));
-"use strict";
-var app;
-(function (app) {
-    'use strict';
-    var ItemDetailsController = (function () {
-        function ItemDetailsController($stateParams, LocalStorageService, ItemsService, UIDService, $timeout, BrandsService, CategoriesService, UnitsService, SuppliersService) {
-            this.$stateParams = $stateParams;
-            this.LocalStorageService = LocalStorageService;
-            this.ItemsService = ItemsService;
-            this.UIDService = UIDService;
-            this.$timeout = $timeout;
-            this.BrandsService = BrandsService;
-            this.CategoriesService = CategoriesService;
-            this.UnitsService = UnitsService;
-            this.SuppliersService = SuppliersService;
-            this.item = {};
-            this.selectedSuppliers = [];
-            this.item = this.getItem();
-            this.selectedSuppliers = this.getItemSupplier();
-            this.viewSuppliers();
-        }
-        /**
-         * getItem
-         */
-        ItemDetailsController.prototype.getItem = function () {
-            var itemID = this.$stateParams['item'];
-            var itemLocalStorage = this.LocalStorageService.get(itemID);
-            return JSON.parse(itemLocalStorage);
-        };
-        /**
-         * getItemSupplier
-         */
-        ItemDetailsController.prototype.getItemSupplier = function () {
-            var itemSuppliers = [];
-            this.item.itemSupplier.forEach(function (i) {
-                itemSuppliers.push(i.supplier);
-            });
-            return itemSuppliers;
-        };
-        /**
-         * editItem
-         */
-        ItemDetailsController.prototype.editItem = function (item) {
-            var itemID = this.$stateParams['item'];
-            this.ItemsService.update(item, itemID, this.selectedSuppliers);
-        };
-        /**
-         * generateItemCode
-         */
-        ItemDetailsController.prototype.generateItemCode = function () {
-            this.item.code = this.UIDService.generateUID();
-        };
-        /**
-        * viewSuppliers
-        */
-        ItemDetailsController.prototype.viewSuppliers = function () {
-            var _this = this;
-            this.$timeout(function () {
-                _this.SuppliersService.view();
-            }, 2000);
-        };
-        return ItemDetailsController;
-    }());
-    ItemDetailsController.$inject = ['$stateParams', 'LocalStorageService', 'ItemsService', 'UIDService', '$timeout',
-        'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
-    angular
-        .module('inventory-management')
-        .controller('ItemDetailsController', ItemDetailsController);
 })(app || (app = {}));
 "use strict";
 var app;
@@ -885,6 +871,8 @@ var app;
                 limit: 5,
                 page: 1
             };
+            this.isSearchOpen = false;
+            this.queryText = '';
             this.viewStocks();
         }
         /**
@@ -917,6 +905,13 @@ var app;
             this.stockPromise = this.$timeout(function () {
                 _this.StocksService.view();
             }, 2000);
+        };
+        /**
+        * toggleSearch
+        */
+        StocksController.prototype.toggleSearch = function () {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
         };
         return StocksController;
     }());
@@ -973,6 +968,9 @@ var app;
                 limit: 5,
                 page: 1
             };
+            this.numberPattern = '\\d+';
+            this.isSearchOpen = false;
+            this.queryText = '';
             this.viewSuppliers();
         }
         /**
@@ -1043,6 +1041,13 @@ var app;
                 console.log('Confirm Dialog cancelled.');
             });
         };
+        /**
+        * toggleSearch
+        */
+        SuppliersController.prototype.toggleSearch = function () {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
+        };
         return SuppliersController;
     }());
     var SupplierDialogController = (function (_super) {
@@ -1094,6 +1099,8 @@ var app;
                 limit: 5,
                 page: 1
             };
+            this.isSearchOpen = false;
+            this.queryText = '';
             this.viewUnits();
         }
         /**
@@ -1163,6 +1170,13 @@ var app;
                 .catch(function (err) {
                 console.log('Confirm Dialog cancelled.');
             });
+        };
+        /**
+        * toggleSearch
+        */
+        UnitsController.prototype.toggleSearch = function () {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
         };
         return UnitsController;
     }());
@@ -1711,9 +1725,9 @@ var app;
             this.BaseService
                 .post_request('/editItem', itemModel)
                 .then(function (resp) {
+                _this.hideDialog();
                 _this.view();
                 _this.showToast(resp.data.message);
-                _this.LocalStorageService.remove(itemID);
             })
                 .catch(function (err) {
                 _this.showToast(err);
@@ -1826,7 +1840,7 @@ var app;
             });
         };
         NotificationService.prototype.getServerConfigFile = function () {
-            return this.BaseService.get_localFile('/server-config.json')
+            return this.BaseService.get_localFile('server-config.json')
                 .then(function (res) { return res; });
         };
         NotificationService.prototype.getServerURL = function () {

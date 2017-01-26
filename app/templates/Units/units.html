@@ -1,54 +1,79 @@
 <md-content layout="column">
-    <div layout-margin>
-        <md-input-container class="md-icon-float md-block">
-            <label>Search</label>
-            <md-icon md-svg-src="icons/ic_search_24px.svg" class="name"></md-icon>
-            <input ng-model="vm.queryText" type="text">
-        </md-input-container>
-    </div>
-    <md-table-container>
-        <table md-table md-progress="vm.unitPromise">
-            <thead md-head md-order="vm.md_query.order">
-                <tr md-row>
-                    <th md-column><span>No.</span></th>
-                    <th md-column md-order-by="name"><span>Unit Name</span></th>
-                    <th md-column><span>Action</span></th>
-                </tr>
-            </thead>
-            <tbody md-body>
-                <tr md-row ng-repeat="unit in vm.UnitsService.listUnits | 
-                        filter: vm.queryText | orderBy: vm.md_query.order | 
-                        limitTo: vm.md_query.limit : (vm.md_query.page - 1) * vm.md_query.limit" md-auto-select>
-                    <td md-cell>{{$index + 1}}</td>
-                    <td md-cell><b>{{unit.name}}</b></td>
-                    <td md-cell>
+   <md-card>
+      <md-card-content>
+          <div>
+            <div class="md-toolbar-tools">
+              <h4>Manage Units</h4>
+              <span flex></span>
+
+              <div class="toolbar-search" ng-show="vm.isSearchOpen === true">
+                <md-input-container md-no-float class="md-block">
+                  <md-icon md-svg-src="icons/ic_search_24px.svg"></md-icon>
+                  <input ng-model="vm.queryText" type="text" placeholder="Search">
+                </md-input-container>
+              </div>
+
+              <div ng-show="vm.isSearchOpen === true">
+                <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.toggleSearch();">
+                  <md-tooltip md-direction="left">
+                      Close
+                  </md-tooltip>
+                  <md-icon md-svg-src="icons/ic_close_24px.svg"></md-icon>
+                </md-button>
+              </div>
+
+              <div ng-show="vm.isSearchOpen === false">
+                <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.toggleSearch();">
+                  <md-tooltip md-direction="left">
+                      Search Unit
+                  </md-tooltip>
+                  <md-icon md-svg-src="icons/ic_search_24px.svg"></md-icon>
+                </md-button>
+                <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.showAddDialog();">
+                  <md-tooltip md-direction="left">
+                      Add Unit
+                  </md-tooltip>
+                  <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
+                </md-button>
+              </div>
+            </div>
+          </div>
+         <md-table-container>
+            <table md-table md-progress="vm.unitPromise">
+               <thead md-head md-order="vm.md_query.order">
+                  <tr md-row>
+                     <th md-column><span>No.</span></th>
+                     <th md-column md-order-by="name"><span>Unit Name</span></th>
+                     <th md-column><span>Action</span></th>
+                  </tr>
+               </thead>
+               <tbody md-body>
+                  <tr md-row ng-repeat="unit in vm.UnitsService.listUnits | 
+                     filter: vm.queryText | orderBy: vm.md_query.order | 
+                     limitTo: vm.md_query.limit : (vm.md_query.page - 1) * vm.md_query.limit" md-auto-select>
+                     <td md-cell>{{$index + 1}}</td>
+                     <td md-cell><b>{{unit.name}}</b></td>
+                     <td md-cell>
                         <md-button class="md-icon-button" ng-click="vm.editUnit(unit)" aria-label="edit">
-                            <md-tooltip md-direction="left">
-                                Edit Unit
-                            </md-tooltip>
-                            <md-icon md-svg-icon="icons/ic_edit_24px.svg"></md-icon>
+                           <md-tooltip md-direction="left">
+                              Edit Unit
+                           </md-tooltip>
+                           <md-icon md-svg-icon="icons/ic_edit_24px.svg"></md-icon>
                         </md-button>
                         <md-button class="md-icon-button" ng-click="vm.deleteUnit(unit)" aria-label="delete">
-                            <md-tooltip md-direction="left">
-                                Delete Unit
-                            </md-tooltip>
-                            <md-icon md-svg-icon="icons/ic_delete_24px.svg"></md-icon>
+                           <md-tooltip md-direction="left">
+                              Delete Unit
+                           </md-tooltip>
+                           <md-icon md-svg-icon="icons/ic_delete_24px.svg"></md-icon>
                         </md-button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </md-table-container>
-    <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" 
-        md-page="vm.md_query.page" md-total="{{vm.UnitsService.listUnits.length}}" md-page-select>
-    </md-table-pagination>
-
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </md-table-container>
+         <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" 
+            md-page="vm.md_query.page" md-total="{{vm.UnitsService.listUnits.length}}" md-page-select>
+         </md-table-pagination>
+      </md-card-content>
+   </md-card>
 </md-content>
-<div>
-    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
-        <md-tooltip md-direction="left">
-            Add Unit
-        </md-tooltip>
-        <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
-    </md-button>
-</div>

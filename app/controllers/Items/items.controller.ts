@@ -16,6 +16,8 @@ namespace app {
         };
 
         public itemPromise: angular.IPromise<any>;
+        public isSearchOpen = false;
+        public queryText = '';
 
         /**
          * ShowDialog
@@ -87,7 +89,7 @@ namespace app {
                 .title('Would you like to delete this item?')
                 .textContent('Item Name: ' + item.name)
                 .ok('Delete')
-                .cancel('Cancel')
+                .cancel('Cancel');
                 
             this.ItemsService.showDialog(confirmConfig)
                 .then(() => {
@@ -106,6 +108,14 @@ namespace app {
             this.LocalStorageService.set(item.name, JSON.stringify(item));
             this.$state.go('dashboard.items.details', {item: item.name});
         }
+
+        /**
+         * toggleSearch
+         */
+        public toggleSearch() {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
+        }
     }
 
     class ItemsDialogController extends ItemsController {
@@ -116,11 +126,13 @@ namespace app {
                 private UnitsService: IUnitsService, private SuppliersService: ISupplierService) {
             super($mdDialog, ItemsService, $state, LocalStorageService, $timeout);
             this.viewSuppliers();
+            this.selectedSuppliers = this.getItemSupplier();
         }
 
         public selectedSuppliers = [];
         public require_match = true;
         public item: any = {};
+        public isEnableEdit = false;
 
         /**
          * addItem
@@ -134,6 +146,35 @@ namespace app {
          */
         public generateItemCode() {
             this.item.code = this.UIDService.generateUID();
+        }
+
+        /**
+         * getItemSupplier
+         */
+        public getItemSupplier() {
+            
+            let itemSuppliers = [];
+
+            if(Object.keys(this.selectedItem).length != 0)
+                this.selectedItem.itemSupplier.forEach(i => {
+                    itemSuppliers.push(i.supplier);
+                });
+            
+            return itemSuppliers;
+        }
+
+        /**
+         * toggleEdit
+         */
+        public toggleEdit() {
+            this.isEnableEdit = !this.isEnableEdit;
+        }
+
+        /**
+         * editItem
+         */
+        public editItem(item: IItem) {
+            this.ItemsService.update(item, item.id, this.selectedSuppliers);
         }
 
         /**

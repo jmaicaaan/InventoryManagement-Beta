@@ -1,48 +1,77 @@
 <md-content layout="column">
-    <div layout-margin>
-        <md-input-container class="md-icon-float md-block">
-            <label>Search</label>
-            <md-icon md-svg-src="icons/ic_search_24px.svg" class="name"></md-icon>
-            <input ng-model="vm.queryText" type="text">
-        </md-input-container>
-    </div>
-    <md-table-container>
-        <table md-table md-progress="vm.stockPromise"> 
-            <thead md-head md-order="vm.md_query.order">
-                <tr md-row>
-                    <th md-column><span>No.</span></th>
-                    <th md-column md-order-by="item.name"><span>Item Name</span></th>
-                    <th md-column md-order-by="quantity"><span>Quantity</span></th>
-                    <th md-column md-order-by="date"><span>Date</span></th>
-                    <th md-column md-order-by="stockIn"><span>Status</span></th>
-                </tr>
-            </thead>
-            <tbody md-body>
-                <tr md-row ng-repeat="stock in vm.StocksService.listStocks | 
-                        filter: vm.queryText | orderBy: vm.md_query.order | 
-                        limitTo: vm.md_query.limit : (vm.md_query.page - 1) * vm.md_query.limit" md-auto-select>
-                    <td md-cell>{{$index + 1}}</td>
-                    <td md-cell><b>{{stock.item.name}}</b></td>
-                    <td md-cell>{{stock.quantity}}</td>
-                    <td md-cell>{{stock.date}}</td>
-                    <td md-cell>
+   <md-card>
+      <md-card-content>
+          <div>
+             <div class="md-toolbar-tools">
+               <h4>Manage Stocks</h4>
+               <span flex></span>
+
+               <div class="toolbar-search" ng-show="vm.isSearchOpen === true">
+                  <md-input-container md-no-float class="md-block">
+                    <md-icon md-svg-src="icons/ic_search_24px.svg"></md-icon>
+                    <input ng-model="vm.queryText" type="text" placeholder="Search">
+                  </md-input-container>
+               </div>
+
+               <div ng-show="vm.isSearchOpen === true">
+                  <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.toggleSearch();">
+                    <md-tooltip md-direction="left">
+                        Close
+                    </md-tooltip>
+                    <md-icon md-svg-src="icons/ic_close_24px.svg"></md-icon>
+                  </md-button>
+               </div>
+
+               <div ng-show="vm.isSearchOpen === false">
+                  <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.toggleSearch();">
+                    <md-tooltip md-direction="left">
+                        Search Stock
+                    </md-tooltip>
+                    <md-icon md-svg-src="icons/ic_search_24px.svg"></md-icon>
+                  </md-button>
+                  <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.showAddDialog();">
+                    <md-tooltip md-direction="left">
+                        Add Stock
+                    </md-tooltip>
+                    <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
+                  </md-button>
+               </div>
+             </div>
+           </div>
+         <md-table-container>
+            <table md-table md-progress="vm.stockPromise">
+               <thead md-head md-order="vm.md_query.order">
+                  <tr md-row>
+                     <th md-column><span>No.</span></th>
+                     <th md-column md-order-by="item.name"><span>Item Name</span></th>
+                     <th md-column md-order-by="item.brand.name"><span>Brand</span></th>
+                     <th md-column md-order-by="item.category.name"><span>Category</span></th>
+                     <th md-column md-order-by="quantity"><span>Quantity</span></th>
+                     <th md-column md-order-by="date"><span>Date</span></th>
+                     <th md-column md-order-by="stockIn"><span>Status</span></th>
+                  </tr>
+               </thead>
+               <tbody md-body>
+                  <tr md-row ng-repeat="stock in vm.StocksService.listStocks | 
+                     filter: vm.queryText | orderBy: vm.md_query.order | 
+                     limitTo: vm.md_query.limit : (vm.md_query.page - 1) * vm.md_query.limit" md-auto-select>
+                     <td md-cell>{{$index + 1}}</td>
+                     <td md-cell><b>{{stock.item.name}}</b></td>
+                     <td md-cell>{{stock.item.brand.name}}</td>
+                     <td md-cell>{{stock.item.category.name}}</td>
+                     <td md-cell>{{stock.quantity}} {{stock.item.unit.name}}</td>
+                     <td md-cell>{{stock.date}}</td>
+                     <td md-cell>
                         <span ng-if="stock.stockIn === true">Stock In</span>
                         <span ng-if="stock.stockIn === false">Stock Out</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </md-table-container>
-    <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" md-page="vm.md_query.page"
-        md-total="{{vm.StocksService.listStocks.length}}" md-page-select>
-    </md-table-pagination>
-
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </md-table-container>
+         <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[5, 10, 15]" md-page="vm.md_query.page"
+            md-total="{{vm.StocksService.listStocks.length}}" md-page-select>
+         </md-table-pagination>
+      </md-card-content>
+   </md-card>
 </md-content>
-<div>
-    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="Open dialog" ng-click="vm.showAddDialog();">
-        <md-tooltip md-direction="left">
-            Add Stocks
-        </md-tooltip>
-        <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
-    </md-button>
-</div>

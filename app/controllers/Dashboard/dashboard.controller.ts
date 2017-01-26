@@ -24,7 +24,7 @@ namespace app{
 		    }
         };
         
-        public hasLowStocks = true;
+        public hasLowStocks = false;
 
         /**
          * toggleSideNav

@@ -8,3 +8,6 @@ bower_components/
 resources/
 dist/
 build/
+typings/
+.vscode/
+InventoryManagement.git/

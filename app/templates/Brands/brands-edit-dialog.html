@@ -19,12 +19,12 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Brand Name</label>
-                            <input name="brandName" ng-model="vm.brand.name" type="text" required md-maxlength="20" md-minlength="2">
+                            <input name="brandName" ng-model="vm.brand.name" type="text" required md-maxlength="20" minlength="2">
 
                             <div ng-messages="form.brandName.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter a brand name</div>
                                 <div ng-message="md-maxlength">The brand name has to be less than 20 characters long.</div>
-                                <div ng-message="md-minlength">The brand name has to be more than 2 characters long. </div>
+                                <div ng-message="minlength">The brand name has to be more than 2 characters long. </div>
                             </div>
                         </md-input-container>
                     </div>

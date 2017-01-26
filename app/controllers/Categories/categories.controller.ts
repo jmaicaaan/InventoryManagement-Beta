@@ -15,6 +15,8 @@ namespace app {
         };
 
         public categoryPromise: angular.IPromise<any>;
+        public isSearchOpen = false;
+        public queryText = '';
 
         /**
          * showDialog
@@ -94,6 +96,14 @@ namespace app {
                 .catch((err) => {
                     console.log('Confirm Dialog cancelled.');
                 });
+        }
+
+         /**
+         * toggleSearch
+         */
+        public toggleSearch() {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
         }
     }
 

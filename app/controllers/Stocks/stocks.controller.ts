@@ -15,6 +15,8 @@ namespace app {
         };
 
         public stockPromise: angular.IPromise<any>;
+        public isSearchOpen = false;
+        public queryText = '';
 
         /**
          * ShowDialog
@@ -51,6 +53,14 @@ namespace app {
             this.stockPromise = this.$timeout(() => {
                 this.StocksService.view();
             }, 2000);
+        }
+
+         /**
+         * toggleSearch
+         */
+        public toggleSearch() {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
         }
     }
 

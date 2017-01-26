@@ -37,7 +37,7 @@ namespace app{
 
         public getServerConfigFile() {
 
-            return this.BaseService.get_localFile('/server-config.json')
+            return this.BaseService.get_localFile('server-config.json')
                 .then((res) => res);
         }
 
@@ -45,6 +45,7 @@ namespace app{
 
             return this.getServerConfigFile()
                 .then((response: any) => {
+                    
                     let data: any = response.data;
 
                     let url = '';

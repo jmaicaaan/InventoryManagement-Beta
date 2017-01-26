@@ -2,6 +2,7 @@ namespace app{
     'use strict';
 
     export interface IItem{
+        id: number;
         name: string;
         description: string;
         code: string;
@@ -11,6 +12,7 @@ namespace app{
         brand: IBrand;
         category: ICategory;
         suppliers: Array<ISupplier>;
+        itemSupplier: any;
         unit: IUnit;
     }
 }

@@ -69,13 +69,13 @@ namespace app{
             this.BaseService
                 .post_request('/editItem', itemModel)
                 .then((resp) => {
+                    this.hideDialog();
                     this.view();
                     this.showToast(resp.data.message);
-                    this.LocalStorageService.remove(itemID);
                 })
                 .catch((err) => {
                     this.showToast(err);
-                })
+                });
         }
 
         /**

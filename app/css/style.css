@@ -26,3 +26,12 @@ md-toast{
 .span-anchor:hover{
     cursor: pointer;
 }
+
+.md-default, .md-table-toolbar{
+    background: #fff;
+    color: black;
+}
+
+.toolbar-search{
+    margin-top: 20px;
+}

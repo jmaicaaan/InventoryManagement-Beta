@@ -19,12 +19,12 @@
                     <div>
                         <md-input-container class="md-block">
                             <label>Category Name</label>
-                            <input name="categoryName" ng-model="vm.category.name" type="text" required md-maxlength="20" md-minlength="2">
+                            <input name="categoryName" ng-model="vm.category.name" type="text" required md-maxlength="20" minlength="2">
 
                             <div ng-messages="form.categoryName.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter a category name</div>
                                 <div ng-message="md-maxlength">The category name has to be less than 20 characters long.</div>
-                                <div ng-message="md-minlength">The category name has to be more than 2 characters long. </div>
+                                <div ng-message="minlength">The category name has to be more than 2 characters long. </div>
                             </div>
                         </md-input-container>
                     </div>

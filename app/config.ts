@@ -2,11 +2,15 @@ namespace app{
     'use strict';
 
     function config($stateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider, 
-                $httpProvider: angular.IHttpProvider, cfpLoadingBarProvider, $mdThemingProvider){
-
+                $httpProvider: angular.IHttpProvider, cfpLoadingBarProvider, $mdThemingProvider: angular.material.IThemingProvider){
+            
         $httpProvider.interceptors.push('serviceInterceptor');
 
         cfpLoadingBarProvider.includeSpinner = false;
+
+        $mdThemingProvider.theme('default')
+            .primaryPalette('blue')
+            .accentPalette('pink');
 
         $urlRouterProvider  
             .otherwise('/');

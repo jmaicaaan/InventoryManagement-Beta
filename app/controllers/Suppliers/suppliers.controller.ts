@@ -15,6 +15,10 @@ namespace app {
         };
 
         public supplierPromise: angular.IPromise<any>;
+        public numberPattern = '\\d+';
+        public isSearchOpen = false;
+        public queryText = '';
+        
 
         /**
          * ShowDialog
@@ -95,6 +99,14 @@ namespace app {
                 .catch((err) => {
                     console.log('Confirm Dialog cancelled.');
                 });
+        }
+
+         /**
+         * toggleSearch
+         */
+        public toggleSearch() {
+            this.queryText = '';
+            this.isSearchOpen = !this.isSearchOpen;
         }
     }
 

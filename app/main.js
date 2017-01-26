@@ -2,7 +2,6 @@ const {app, BrowserWindow, dialog} = require('electron')
 const path = require('path');
 const spawn = require('child_process').spawn;
 const eventEmiter = require('events');
-const manifest = require('./package.json');
 const server_manifest = require('./server-config.json');
 
 const apacheTomcatEmiter = new eventEmiter();
@@ -20,7 +19,7 @@ function init() {
   //appDir is not used in prod, the builded application is rooted.
 
   let projectDir = __dirname,
-    projectName = manifest.name,
+    projectName = server_manifest.electron_root,
     projectPort = server_manifest.port;
   projectUrl = [server_manifest.url, ':', projectPort, '/', projectName].join('');
 
@@ -31,6 +30,7 @@ function onAppReady() {
   let windowConfig = {
     width: 800,
     height: 600,
+    title: 'Electron',
     icon: path.join(__dirname, '/icons/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname + '/preload.js')
@@ -38,20 +38,27 @@ function onAppReady() {
   };
 
   mainWindow = new BrowserWindow(windowConfig);
-  // mainWindow.loadURL(projectUrl);
 
-  apacheTomcatEmiter.on('end', () => {
-    mainWindow.loadURL(projectUrl);
-  });
+  mainWindow.loadURL(projectUrl);
 
   // Open the devtools.
   // mainWindow.openDevTools();
 
+  
+  let isRemoteURLLoaded = () => {
+    if(mainWindow.getTitle() === 'Electron'){
+      mainWindow.reload();
+    }
+  };
 
+  mainWindow.on('focus', () => {
+    isRemoteURLLoaded();
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+  
 }
 
 function onAppClose() {
@@ -86,3 +93,4 @@ function startApacheTomcat() {
     app.quit();
   });
 }
+

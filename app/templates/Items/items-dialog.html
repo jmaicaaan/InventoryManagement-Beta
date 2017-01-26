@@ -21,12 +21,12 @@
                             <label>Item Name</label>
                             <input name="itemName" ng-model="vm.item.name" 
                                 ng-change="vm.item.name = vm.item.name.toUpperCase();" 
-                                type="text" required md-maxlength="20" md-minlength="2">
+                                type="text" required md-maxlength="50" minlength="2">
                     
                             <div ng-messages="form.itemName.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item name</div>
-                                <div ng-message="md-maxlength">The item name has to be less than 20 characters long.</div>
-                                <div ng-message="md-minlength">The item name has to be more than 2 characters long. </div>
+                                <div ng-message="md-maxlength">The item name has to be less than 50 characters long.</div>
+                                <div ng-message="minlength">The item name has to be more than 2 characters long. </div>
                             </div>
                         </md-input-container>
                     </div>
@@ -34,12 +34,12 @@
                         <md-input-container class="md-block">
                             <label>Item Description</label>
                             <input name="itemDescription" ng-model="vm.item.description"
-                                type="text" required md-maxlength="50" md-minlength="5">
+                                type="text" required md-maxlength="50" minlength="5">
                     
                             <div ng-messages="form.itemDescription.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item description</div>
                                 <div ng-message="md-maxlength">The item description has to be less than 50 characters long.</div>
-                                <div ng-message="md-minlength">The item description has to be more than 5 characters long. </div>
+                                <div ng-message="minlength">The item description has to be more than 5 characters long. </div>
                             </div>
                         </md-input-container>
                     </div>
@@ -48,7 +48,7 @@
                             <label>Item Code</label>
                             <input name="itemCode" ng-model="vm.item.code" 
                                  ng-change="vm.item.code = vm.item.code.toUpperCase();"
-                                type="text" required md-maxlength="15" md-minlength="3">
+                                type="text" required md-maxlength="15" minlength="3">
                             <md-icon md-svg-src="icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()">
                                  <md-tooltip md-direction="left">
                                     Generate Item Code
@@ -58,19 +58,19 @@
                             <div ng-messages="form.itemCode.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item code</div>
                                 <div ng-message="md-maxlength">The item code has to be less than 15 characters long.</div>
-                                <div ng-message="md-minlength">The item code has to be more than 3 characters long. </div>
+                                <div ng-message="minlength">The item code has to be more than 3 characters long. </div>
                             </div>
                          </md-input-container>
                     </div>
                     <div>
                         <md-input-container class="md-block">
                             <label>Item Location</label>
-                            <input name="itemLocation" ng-model="vm.item.location" type="text" required md-maxlength="50" md-minlength="5">
+                            <input name="itemLocation" ng-model="vm.item.location" type="text" required md-maxlength="50" minlength="5">
 
                             <div ng-messages="form.itemLocation.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item location</div>
                                 <div ng-message="md-maxlength">The item location has to be less than 50 characters long.</div>
-                                <div ng-message="md-minlength">The item location has to be more than 5 characters long. </div>
+                                <div ng-message="minlength">The item location has to be more than 5 characters long. </div>
                             </div>
                         </md-input-container>
                     </div>
@@ -85,8 +85,11 @@
                                     md-input-name="listSupplier" 
                                     md-items="supplier in vm.SuppliersService.listSuppliers | filter: vm.searchText"
                                     placeholder="Supplier Name"
+                                    md-item-text="supplier.name"
                                     ng-hide="suppliers.length > 4">
-                                <span md-highlight-text="vm.searchText">{{supplier.name}}</span>
+                                <md-item-template>
+                                    <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{supplier.name}}</span>
+                                </md-item-template>
                             </md-autocomplete>
                             <md-chip-template>
                                 {{$chip.name}}

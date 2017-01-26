@@ -5,7 +5,8 @@
 
 angular
     .module('material.components.autocomplete')
-    .controller('MdAutocompleteCtrl', MdAutocompleteCtrl);
+    .controller('MdAutocompleteCtrl', ['$scope', '$element', '$mdUtil', '$mdConstant', '$mdTheming', '$window',
+                             '$animate', '$rootElement', '$attrs', '$q'], MdAutocompleteCtrl);
 
 var ITEM_HEIGHT   = 41,
     MAX_HEIGHT    = 5.5 * ITEM_HEIGHT,
