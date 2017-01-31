@@ -18,7 +18,7 @@ namespace app{
             title: {
                 text: 'Low Stocks'
             },
-            loading: false,
+            loading: true,
 		    credits: {
 		        enabled: false
 		    }

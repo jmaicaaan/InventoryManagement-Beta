@@ -1,3 +1,8 @@
+# 1.08
+
+    - Item Module
+        - Fixed Item Dialog not synching Brands, Categories, Suppliers and Units
+
 # 1.07
 
     - Changed theme color from Indigo to Blue

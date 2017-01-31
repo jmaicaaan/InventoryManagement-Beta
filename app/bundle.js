@@ -536,7 +536,7 @@ var app;
                 title: {
                     text: 'Low Stocks'
                 },
-                loading: false,
+                loading: true,
                 credits: {
                     enabled: false
                 }
@@ -622,10 +622,10 @@ var app;
         /**
          * ShowDialog
          */
-        ItemsController.prototype.showDialog = function (templateUrl, item) {
+        ItemsController.prototype.showDialog = function (controller, templateUrl, item) {
             var config = {
                 templateUrl: templateUrl,
-                controller: ItemsDialogController,
+                controller: controller,
                 controllerAs: 'vm',
                 fullscreen: true,
                 locals: {
@@ -645,14 +645,14 @@ var app;
          */
         ItemsController.prototype.showAddDialog = function () {
             var templateUrl = 'templates/Items/items-dialog.html', item = {};
-            this.showDialog(templateUrl, item);
+            this.showDialog(ItemsDialogController, templateUrl, item);
         };
         /**
          * showEditDialog
          */
         ItemsController.prototype.showEditDialog = function (item) {
             var templateUrl = 'templates/Items/items-edit-dialog.html';
-            this.showDialog(templateUrl, item);
+            this.showDialog(app.ItemEditController, templateUrl, item);
         };
         /**
          * viewItems
@@ -703,58 +703,26 @@ var app;
         };
         return ItemsController;
     }());
-    var ItemsDialogController = (function (_super) {
-        __extends(ItemsDialogController, _super);
-        function ItemsDialogController($mdDialog, ItemsService, selectedItem, $state, LocalStorageService, UIDService, $timeout, BrandsService, CategoriesService, UnitsService, SuppliersService) {
-            var _this = _super.call(this, $mdDialog, ItemsService, $state, LocalStorageService, $timeout) || this;
-            _this.selectedItem = selectedItem;
-            _this.UIDService = UIDService;
-            _this.BrandsService = BrandsService;
-            _this.CategoriesService = CategoriesService;
-            _this.UnitsService = UnitsService;
-            _this.SuppliersService = SuppliersService;
-            _this.selectedSuppliers = [];
-            _this.require_match = true;
-            _this.item = {};
-            _this.isEnableEdit = false;
-            _this.viewSuppliers();
-            _this.selectedSuppliers = _this.getItemSupplier();
-            return _this;
+    app.ItemsController = ItemsController;
+    var ItemsDialogController = (function () {
+        function ItemsDialogController($mdDialog, ItemsService, selectedItem, $timeout, BrandsService, CategoriesService, UnitsService, SuppliersService) {
+            this.ItemsService = ItemsService;
+            this.selectedItem = selectedItem;
+            this.$timeout = $timeout;
+            this.BrandsService = BrandsService;
+            this.CategoriesService = CategoriesService;
+            this.UnitsService = UnitsService;
+            this.SuppliersService = SuppliersService;
+            this.selectedSuppliers = [];
+            this.require_match = true;
+            this.item = {};
+            this.viewSuppliers();
         }
         /**
          * addItem
          */
         ItemsDialogController.prototype.addItem = function (item) {
             this.ItemsService.add(item, this.selectedSuppliers);
-        };
-        /**
-         * generateItemCode
-         */
-        ItemsDialogController.prototype.generateItemCode = function () {
-            this.item.code = this.UIDService.generateUID();
-        };
-        /**
-         * getItemSupplier
-         */
-        ItemsDialogController.prototype.getItemSupplier = function () {
-            var itemSuppliers = [];
-            if (Object.keys(this.selectedItem).length != 0)
-                this.selectedItem.itemSupplier.forEach(function (i) {
-                    itemSuppliers.push(i.supplier);
-                });
-            return itemSuppliers;
-        };
-        /**
-         * toggleEdit
-         */
-        ItemsDialogController.prototype.toggleEdit = function () {
-            this.isEnableEdit = !this.isEnableEdit;
-        };
-        /**
-         * editItem
-         */
-        ItemsDialogController.prototype.editItem = function (item) {
-            this.ItemsService.update(item, item.id, this.selectedSuppliers);
         };
         /**
          * viewSuppliers
@@ -766,10 +734,11 @@ var app;
             }, 2000);
         };
         return ItemsDialogController;
-    }(ItemsController));
+    }());
+    app.ItemsDialogController = ItemsDialogController;
     ItemsController.$inject = ['$mdDialog', 'ItemsService', '$state', 'LocalStorageService', '$timeout'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$state',
-        'LocalStorageService', 'UIDService', '$timeout', 'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$timeout',
+        'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
     angular
         .module('inventory-management')
         .controller('ItemsController', ItemsController);
@@ -778,68 +747,74 @@ var app;
 var app;
 (function (app) {
     'use strict';
-    function ItemOnEnter(BaseService, ItemsService, $timeout) {
-        // viewItems();
-        // loadBrands();
-        // loadUnits();
-        // loadCategories();
-        // loadSuppliers();
-        function viewItems() {
-            $timeout(function () {
-                BaseService.post_request('/viewItems', {})
-                    .then(function (items) {
-                    ItemsService.listItems = items.data.listItems;
-                })
-                    .then(function () {
-                    loadBrands();
-                    loadUnits();
-                    loadCategories();
-                    loadSuppliers();
-                })
-                    .catch(function (err) {
-                    ItemsService.showToast(err);
+    var ItemEditController = (function () {
+        function ItemEditController($mdDialog, ItemsService, selectedItem, $timeout, BrandsService, CategoriesService, UnitsService, SuppliersService) {
+            this.ItemsService = ItemsService;
+            this.selectedItem = selectedItem;
+            this.$timeout = $timeout;
+            this.BrandsService = BrandsService;
+            this.CategoriesService = CategoriesService;
+            this.UnitsService = UnitsService;
+            this.SuppliersService = SuppliersService;
+            this.isEnableEdit = false;
+            this.item = {};
+            this.selectedSuppliers = [];
+            this.item = this.selectedItem;
+            this.selectedSuppliers = this.getItemSupplier();
+        }
+        /**
+        * toggleEdit
+        */
+        ItemEditController.prototype.toggleEdit = function () {
+            this.isEnableEdit = !this.isEnableEdit;
+        };
+        /**
+        * getItemSupplier
+        */
+        ItemEditController.prototype.getItemSupplier = function () {
+            var itemSuppliers = [];
+            if (Object.keys(this.selectedItem).length != 0)
+                this.selectedItem.itemSupplier.forEach(function (i) {
+                    itemSuppliers.push(i.supplier);
                 });
+            return itemSuppliers;
+        };
+        /**
+        * editItem
+        */
+        ItemEditController.prototype.editItem = function (item) {
+            this.ItemsService.update(item, item.id, this.selectedSuppliers);
+        };
+        /**
+         * viewSuppliers
+         */
+        ItemEditController.prototype.viewSuppliers = function () {
+            var _this = this;
+            this.$timeout(function () {
+                _this.SuppliersService.view();
             }, 2000);
-        }
-        function loadBrands() {
-            BaseService.post_request('/viewBrands', {})
-                .then(function (brands) {
-                ItemsService.listBrands = brands.data.listBrands;
-            })
-                .catch(function (err) {
-                ItemsService.showToast(err);
-            });
-        }
-        function loadUnits() {
-            BaseService.post_request('/viewUnits', {})
-                .then(function (units) {
-                ItemsService.listUnits = units.data.listUnits;
-            })
-                .catch(function (err) {
-                ItemsService.showToast(err);
-            });
-        }
-        function loadCategories() {
-            BaseService.post_request('/viewCategories', {})
-                .then(function (categories) {
-                ItemsService.listCategories = categories.data.listCategories;
-            })
-                .catch(function (err) {
-                ItemsService.showToast(err);
-            });
-        }
-        function loadSuppliers() {
-            BaseService.post_request('/viewSuppliers', {})
-                .then(function (suppliers) {
-                ItemsService.listSuppliers = suppliers.data.listSuppliers;
-            })
-                .catch(function (err) {
-                ItemsService.showToast(err);
-            });
+        };
+        return ItemEditController;
+    }());
+    app.ItemEditController = ItemEditController;
+    ItemEditController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$timeout', 'BrandsService',
+        'CategoriesService', 'UnitsService', 'SuppliersService'];
+})(app || (app = {}));
+"use strict";
+var app;
+(function (app) {
+    'use strict';
+    function ItemOnEnter(BaseService, ItemsService, $timeout, BrandsService, CategoriesService, UnitsService, SuppliersService) {
+        loadDependecies();
+        function loadDependecies() {
+            BrandsService.view();
+            UnitsService.view();
+            CategoriesService.view();
+            SuppliersService.view();
         }
     }
     app.ItemOnEnter = ItemOnEnter;
-    ItemOnEnter.$inject = ['BaseService', 'ItemsService', '$timeout'];
+    ItemOnEnter.$inject = ['BaseService', 'ItemsService', '$timeout', 'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
 })(app || (app = {}));
 "use strict";
 var app;

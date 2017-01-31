@@ -1,81 +1,19 @@
-namespace app{
+namespace app {
     'use strict';
 
-    export function ItemOnEnter(BaseService: IBaseService, ItemsService: IItemsService, $timeout: angular.ITimeoutService){
+    export function ItemOnEnter(BaseService: IBaseService, ItemsService: IItemsService, $timeout: angular.ITimeoutService,
+        BrandsService: IBrandService, CategoriesService: ICategoriesService,
+        UnitsService: IUnitsService, SuppliersService: ISupplierService) {
 
-        // viewItems();
-        // loadBrands();
-        // loadUnits();
-        // loadCategories();
-        // loadSuppliers();
-        
-        function viewItems(){
-            $timeout(() => {
-                 BaseService.post_request('/viewItems', {})
-                .then((items) => {
-                    ItemsService.listItems = items.data.listItems;
-                })
-                .then(() => {
-                    loadBrands();
-                    loadUnits();
-                    loadCategories();
-                    loadSuppliers();
-                })
-                // .then(() => {
-                //     loadUnits();
-                // })
-                // .then(() => {
-                //     loadCategories();
-                // })
-                // .then(() => {
-                //     loadSuppliers();
-                // })
-                .catch((err) => {
-                    ItemsService.showToast(err);
-                });
-            }, 2000);
-        }
+        loadDependecies();
 
-        function loadBrands(){
-            BaseService.post_request('/viewBrands', {})
-                .then((brands) => {
-                    ItemsService.listBrands = brands.data.listBrands;
-                })
-                .catch((err) => {
-                    ItemsService.showToast(err);  
-                });
-        }
-
-        function loadUnits() {
-            BaseService.post_request('/viewUnits', {})
-                .then((units) => {
-                    ItemsService.listUnits = units.data.listUnits;
-                })
-                .catch((err) => {
-                    ItemsService.showToast(err);  
-                });
-        }
-
-        function loadCategories() {
-            BaseService.post_request('/viewCategories', {})
-                .then((categories) => {
-                    ItemsService.listCategories = categories.data.listCategories;
-                })
-                .catch((err) => {
-                    ItemsService.showToast(err);  
-                });
-        }
-
-        function loadSuppliers() {
-            BaseService.post_request('/viewSuppliers', {})
-                .then((suppliers) => {
-                    ItemsService.listSuppliers = suppliers.data.listSuppliers;
-                })
-                .catch((err) => {
-                    ItemsService.showToast(err);  
-                });
+        function loadDependecies() {
+            BrandsService.view();
+            UnitsService.view();
+            CategoriesService.view();
+            SuppliersService.view();
         }
     }
 
-    ItemOnEnter.$inject = ['BaseService', 'ItemsService', '$timeout'];
+    ItemOnEnter.$inject = ['BaseService', 'ItemsService', '$timeout', 'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
 }

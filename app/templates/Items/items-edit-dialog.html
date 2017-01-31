@@ -36,8 +36,8 @@
                     <div>
                     <md-input-container class="md-block">
                         <label>Item Name</label>
-                        <input name="itemName" ng-model="vm.selectedItem.name" 
-                            ng-change="vm.selectedItem.name = vm.selectedItem.name.toUpperCase();" 
+                        <input name="itemName" ng-model="vm.item.name" 
+                            ng-change="vm.item.name = vm.item.name.toUpperCase();" 
                             type="text" required md-maxlength="50" minlength="2" ng-disabled="vm.isEnableEdit === false">
                         <div ng-messages="form.itemName.$error" style="color:maroon" role="alert">
                             <div ng-message="required">You did not enter an item name</div>
@@ -49,7 +49,7 @@
                     <div>
                     <md-input-container class="md-block">
                         <label>Item Description</label>
-                        <input name="itemDescription" ng-model="vm.selectedItem.description"
+                        <input name="itemDescription" ng-model="vm.item.description"
                             type="text" required md-maxlength="50" minlength="5" ng-disabled="vm.isEnableEdit === false">
                         <div ng-messages="form.itemDescription.$error" style="color:maroon" role="alert">
                             <div ng-message="required">You did not enter an item description</div>
@@ -61,8 +61,8 @@
                     <div>
                     <md-input-container class="md-block">
                         <label>Item Code</label>
-                        <input name="itemCode" ng-model="vm.selectedItem.code" 
-                            ng-change="vm.selectedItem.code = vm.selectedItem.code.toUpperCase();"
+                        <input name="itemCode" ng-model="vm.item.code" 
+                            ng-change="vm.item.code = vm.item.code.toUpperCase();"
                             type="text" required md-maxlength="15" minlength="3" ng-disabled="vm.isEnableEdit === false">
                         <div ng-messages="form.itemCode.$error" style="color:maroon" role="alert">
                             <div ng-message="required">You did not enter an item code</div>
@@ -74,7 +74,7 @@
                     <div>
                     <md-input-container class="md-block">
                         <label>Item Location</label>
-                        <input name="itemLocation" ng-model="vm.selectedItem.location" type="text" 
+                        <input name="itemLocation" ng-model="vm.item.location" type="text" 
                             required md-maxlength="50" minlength="5" ng-disabled="vm.isEnableEdit === false">
                         <div ng-messages="form.itemLocation.$error" style="color:maroon" role="alert">
                             <div ng-message="required">You did not enter an item location</div>
@@ -112,14 +112,15 @@
                     <div ng-if="vm.isEnableEdit === false">
                     <md-input-container class="md-block">
                         <label>Brand</label>
-                        <input name="brand" ng-model="vm.selectedItem.brand.name" type="text" disabled>
+                        <input name="brand" ng-model="vm.item.brand.name" type="text" disabled>
                     </md-input-container>
                     </div>
                     <div ng-if="vm.isEnableEdit === true">
                     <md-input-container class="md-block">
                         <label>Brand</label>
-                        <md-select name="brand" ng-model="vm.selectedItem.brand" required md-on-open="vm.BrandsService.view();">
-                            <md-option ng-repeat="brand in vm.BrandsService.listBrands" ng-value="brand">
+                        <md-select name="brand" ng-model="vm.item.brand" required>
+                            <md-option ng-repeat="brand in vm.BrandsService.listBrands" ng-value="brand"
+                                ng-selected="vm.item.brand.name === brand.name">
                                 {{brand.name}}
                             </md-option>
                         </md-select>
@@ -131,14 +132,15 @@
                     <div ng-if="vm.isEnableEdit === false">
                     <md-input-container class="md-block">
                         <label>Category</label>
-                        <input name="category" ng-model="vm.selectedItem.category.name" type="text" disabled>
+                        <input name="category" ng-model="vm.item.category.name" type="text" disabled>
                     </md-input-container>
                     </div>
                     <div ng-if="vm.isEnableEdit === true">
                     <md-input-container class="md-block">
                         <label>Category</label>
-                        <md-select name="category" ng-model="vm.selectedItem.category" required md-on-open="vm.CategoriesService.view();">
-                            <md-option ng-repeat="category in vm.CategoriesService.listCategories" ng-value="category">
+                        <md-select name="category" ng-model="vm.item.category" required>
+                            <md-option ng-repeat="category in vm.CategoriesService.listCategories" ng-value="category"
+                                ng-selected="vm.item.category.name === category.name">
                                 {{category.name}}
                             </md-option>
                         </md-select>
@@ -150,14 +152,15 @@
                     <div ng-if="vm.isEnableEdit === false">
                     <md-input-container class="md-block">
                         <label>Unit</label>
-                        <input name="category" ng-model="vm.selectedItem.unit.name" type="text" disabled>
+                        <input name="category" ng-model="vm.item.unit.name" type="text" disabled>
                     </md-input-container>
                     </div>
                     <div ng-if="vm.isEnableEdit === true">
                     <md-input-container class="md-block">
                         <label>Unit</label>
-                        <md-select name="unit" ng-model="vm.selectedItem.unit" required md-on-open="vm.UnitsService.view();">
-                            <md-option ng-repeat="unit in vm.UnitsService.listUnits" ng-value="unit">
+                        <md-select name="unit" ng-model="vm.item.unit" required>
+                            <md-option ng-repeat="unit in vm.UnitsService.listUnits" ng-value="unit"
+                                ng-selected="vm.item.unit.name === unit.name">
                                 {{unit.name}}
                             </md-option>
                         </md-select>
@@ -171,7 +174,7 @@
                             Cancel
                         </md-button>
                         <md-button class="md-primary md-raised" aria-label="Open dialog" 
-                            ng-disabled="form.$invalid" ng-click="vm.editItem(vm.selectedItem);">
+                            ng-disabled="form.$invalid" ng-click="vm.editItem(vm.item);">
                             Edit Item
                         </md-button>
                     </div>

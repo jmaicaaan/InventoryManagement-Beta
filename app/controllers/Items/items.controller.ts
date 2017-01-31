@@ -1,7 +1,7 @@
 namespace app {
     'use strict';
 
-    class ItemsController {
+    export class ItemsController {
 
         constructor(private $mdDialog: angular.material.IDialogService, protected ItemsService: IItemsService, 
                private $state: angular.ui.IStateService, private LocalStorageService: ILocalStorageService,
@@ -22,11 +22,11 @@ namespace app {
         /**
          * ShowDialog
          */
-        public showDialog(templateUrl, item) {
+        public showDialog(controller: Function, templateUrl, item) {
 
             let config: angular.material.IDialogOptions = {
                 templateUrl: templateUrl,
-                controller: ItemsDialogController,
+                controller: controller,
                 controllerAs: 'vm',
                 fullscreen: true,
                 locals: {
@@ -52,7 +52,7 @@ namespace app {
             let templateUrl = 'templates/Items/items-dialog.html',
                 item = {};
 
-            this.showDialog(templateUrl, item);
+            this.showDialog(ItemsDialogController, templateUrl, item);
         }
 
         /**
@@ -61,7 +61,7 @@ namespace app {
         public showEditDialog(item) {
 
             let templateUrl = 'templates/Items/items-edit-dialog.html';
-            this.showDialog(templateUrl, item);
+            this.showDialog(ItemEditController, templateUrl, item);
         }
 
         /**
@@ -118,63 +118,24 @@ namespace app {
         }
     }
 
-    class ItemsDialogController extends ItemsController {
+    export class ItemsDialogController{
 
-        constructor($mdDialog: angular.material.IDialogService, ItemsService: IItemsService, private selectedItem: IItem, 
-                $state: angular.ui.IStateService, LocalStorageService: ILocalStorageService, private UIDService: IUIDService,
-                $timeout: angular.ITimeoutService, private BrandsService: IBrandService, private CategoriesService: ICategoriesService,
+        constructor($mdDialog: angular.material.IDialogService, private ItemsService: IItemsService, private selectedItem: IItem,  
+                private $timeout: angular.ITimeoutService, 
+                private BrandsService: IBrandService, private CategoriesService: ICategoriesService,
                 private UnitsService: IUnitsService, private SuppliersService: ISupplierService) {
-            super($mdDialog, ItemsService, $state, LocalStorageService, $timeout);
             this.viewSuppliers();
-            this.selectedSuppliers = this.getItemSupplier();
         }
 
         public selectedSuppliers = [];
         public require_match = true;
         public item: any = {};
-        public isEnableEdit = false;
 
         /**
          * addItem
          */
         public addItem(item: IItem) {
             this.ItemsService.add(item, this.selectedSuppliers);
-        }
-
-        /**
-         * generateItemCode
-         */
-        public generateItemCode() {
-            this.item.code = this.UIDService.generateUID();
-        }
-
-        /**
-         * getItemSupplier
-         */
-        public getItemSupplier() {
-            
-            let itemSuppliers = [];
-
-            if(Object.keys(this.selectedItem).length != 0)
-                this.selectedItem.itemSupplier.forEach(i => {
-                    itemSuppliers.push(i.supplier);
-                });
-            
-            return itemSuppliers;
-        }
-
-        /**
-         * toggleEdit
-         */
-        public toggleEdit() {
-            this.isEnableEdit = !this.isEnableEdit;
-        }
-
-        /**
-         * editItem
-         */
-        public editItem(item: IItem) {
-            this.ItemsService.update(item, item.id, this.selectedSuppliers);
         }
 
         /**
@@ -188,8 +149,8 @@ namespace app {
     }
 
     ItemsController.$inject = ['$mdDialog', 'ItemsService', '$state', 'LocalStorageService', '$timeout'];
-    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$state', 
-                'LocalStorageService', 'UIDService', '$timeout', 'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
+    ItemsDialogController.$inject = ['$mdDialog', 'ItemsService', 'selectedItem', '$timeout', 
+        'BrandsService', 'CategoriesService', 'UnitsService', 'SuppliersService'];
 
     angular
         .module('inventory-management')

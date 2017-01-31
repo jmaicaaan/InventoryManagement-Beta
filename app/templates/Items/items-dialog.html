@@ -49,11 +49,6 @@
                             <input name="itemCode" ng-model="vm.item.code" 
                                  ng-change="vm.item.code = vm.item.code.toUpperCase();"
                                 type="text" required md-maxlength="15" minlength="3">
-                            <md-icon md-svg-src="icons/ic_autorenew_24px.svg" class="icon-on-input" ng-click="vm.generateItemCode()">
-                                 <md-tooltip md-direction="left">
-                                    Generate Item Code
-                                </md-tooltip>
-                            </md-icon>
 
                             <div ng-messages="form.itemCode.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not enter an item code</div>
