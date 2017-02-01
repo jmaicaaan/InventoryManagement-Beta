@@ -67,8 +67,9 @@ namespace app {
     class StocksDialogController extends StocksController {
 
         constructor($mdDialog: angular.material.IDialogService, StocksService: IStocksService, 
-            private ItemsService: IItemsService, private stock: IStock, $timeout: angular.ITimeoutService,) {
+            private ItemsService: IItemsService, private stock: IStock, $timeout: angular.ITimeoutService) {
             super($mdDialog, StocksService, $timeout);
+            this.generateQuantity();
         }
 
         public quantity = [];
@@ -92,10 +93,13 @@ namespace app {
          */
         public generateQuantity() {
             let quantity = [];
-            for (var i = 1; i <= 100; i++) {
-                quantity.push(i);
-            }
-            this.quantity = quantity;
+           
+                for (var i = 1; i <= 1000; i++) {
+                    quantity.push(i);
+                }
+                this.quantity = quantity;
+           
+         
         }
     }
 

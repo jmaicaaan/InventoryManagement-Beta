@@ -1,3 +1,8 @@
+# 1.09
+
+    - Changed rows per page to 10, 20, 30 and 50
+    - Enhanced all dropdown with a search function inside
+
 # 1.08
 
     - Item Module

@@ -17,10 +17,22 @@
             <form name="form" layout="column">
                 <div>
                     <div>
-                        <md-input-container class="md-block">
+                        <md-input-container>
                             <label>Item</label>
-                            <md-select name="item" ng-model="vm.stock.item" md-on-open="vm.loadItems();" required> 
-                                <md-option ng-repeat="item in vm.ItemsService.listItems | orderBy: 'name'" ng-value="item">
+                            <md-select name="item" 
+                                    ng-model="vm.stock.item" 
+                                    data-md-container-class="selectdemoSelectHeader"
+                                    md-on-close="vm.stockItem_query = ''"
+                                    md-on-open="vm.loadItems();" 
+                                    required>
+                                <md-select-header class="demo-select-header">
+                                     <input ng-model="vm.stockItem_query"
+                                        type="search"
+                                        ng-keydown="$event.stopPropagation()"
+                                        placeholder="Select an item.."
+                                        class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-option ng-repeat="item in vm.ItemsService.listItems | filter: vm.stockItem_query | orderBy: 'name'" ng-value="item">
                                     {{item.name}}
                                 </md-option>
                             </md-select>
@@ -36,12 +48,25 @@
                         </md-input-container>
                     </div>
                     <div>
-                        <md-input-container class="md-block">
+                        <md-input-container>
                             <label>Quantity</label>
-                            <md-select name="quantity" ng-model="vm.stock.quantity" md-on-open="vm.generateQuantity();" required>
-                                <md-option ng-repeat="no in vm.quantity" ng-value="no">
-                                    {{no}}
-                                </md-option>
+                            <md-select name="quantity" 
+                                    ng-model="vm.stock.quantity"
+                                    data-md-container-class="selectdemoSelectHeader"
+                                    required>
+                                <md-select-header class="demo-select-header">
+                                     <input ng-model="vm.stockQuantity_query"
+                                        type="search"
+                                        ng-keydown="$event.stopPropagation()"
+                                        placeholder="Select a quantity.."
+                                        class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Quantity">
+                                    <md-option ng-repeat="no in vm.quantity | filter: vm.stockQuantity_query | limitTo: 5" 
+                                        ng-value="no">
+                                        {{no}}
+                                    </md-option>
+                                </md-optgroup>
                             </md-select>
                             <div ng-messages="form.quantity.$error" style="color:maroon" role="alert">
                                 <div ng-message="required">You did not choose a quantity for your item.</div>

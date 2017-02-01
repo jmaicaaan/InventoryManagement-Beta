@@ -897,6 +897,7 @@ var app;
             _this.ItemsService = ItemsService;
             _this.stock = stock;
             _this.quantity = [];
+            _this.generateQuantity();
             return _this;
         }
         /**
@@ -916,7 +917,7 @@ var app;
          */
         StocksDialogController.prototype.generateQuantity = function () {
             var quantity = [];
-            for (var i = 1; i <= 100; i++) {
+            for (var i = 1; i <= 1000; i++) {
                 quantity.push(i);
             }
             this.quantity = quantity;

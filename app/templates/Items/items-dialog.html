@@ -97,12 +97,26 @@
                     </div>
 
                       <div>
-                        <md-input-container class="md-block">
+                        <md-input-container>
                             <label>Brand</label>
-                            <md-select name="brand" ng-model="vm.item.brand.id" required md-on-open="vm.BrandsService.view();">
-                                <md-option ng-repeat="brand in vm.BrandsService.listBrands" ng-value="brand.id">
-                                    {{brand.name}}
-                                </md-option>
+                            <md-select name="brand" 
+                                    ng-model="vm.item.brand.id" 
+                                    required
+                                    data-md-container-class="selectdemoSelectHeader"
+                                    md-on-close="vm.brand_query = ''"
+                                    md-on-open="vm.BrandsService.view();">
+                                <md-select-header class="demo-select-header">
+                                     <input ng-model="vm.brand_query"
+                                        type="search"
+                                        ng-keydown="$event.stopPropagation()"
+                                        placeholder="Search for a brand.."
+                                        class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Brand">
+                                    <md-option ng-repeat="brand in vm.BrandsService.listBrands | filter: vm.brand_query" ng-value="brand.id">
+                                        {{brand.name}}
+                                    </md-option>
+                                </md-optgroup>
                             </md-select>
 
                             <div ng-messages="form.brand.$error" style="color:maroon" role="alert">
@@ -111,12 +125,27 @@
                         </md-input-container>
                     </div>
                     <div>
-                        <md-input-container class="md-block">
+                        <md-input-container>
                             <label>Category</label>
-                            <md-select name="category" ng-model="vm.item.category.id" required md-on-open="vm.CategoriesService.view();">
-                                <md-option ng-repeat="category in vm.CategoriesService.listCategories" ng-value="category.id">
-                                    {{category.name}}
-                                </md-option>
+                            <md-select name="category" 
+                                    ng-model="vm.item.category.id" 
+                                    required 
+                                    data-md-container-class="selectdemoSelectHeader"
+                                    md-on-close="vm.category_query = ''"
+                                    md-on-open="vm.CategoriesService.view();">
+                               <md-select-header class="demo-select-header">
+                                     <input ng-model="vm.category_query"
+                                        type="search"
+                                        ng-keydown="$event.stopPropagation()"
+                                        placeholder="Search for a category.."
+                                        class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Category">
+                                    <md-option ng-repeat="category in vm.CategoriesService.listCategories | filter: vm.category_query" 
+                                        ng-value="category.id">
+                                        {{category.name}}
+                                    </md-option>
+                                </md-optgroup>
                             </md-select>
 
                             <div ng-messages="form.category.$error" style="color:maroon" role="alert">
@@ -125,12 +154,26 @@
                         </md-input-container>
                     </div>
                     <div>
-                        <md-input-container class="md-block">
+                        <md-input-container>
                             <label>Unit</label>
-                            <md-select name="unit" ng-model="vm.item.unit.id" required md-on-open="vm.UnitsService.view();">
-                                <md-option ng-repeat="unit in vm.UnitsService.listUnits" ng-value="unit.id">
-                                    {{unit.name}}
-                                </md-option>
+                            <md-select name="unit" 
+                                    ng-model="vm.item.unit.id" 
+                                    required 
+                                    data-md-container-class="selectdemoSelectHeader"
+                                    md-on-close="vm.unit_query = ''"
+                                    md-on-open="vm.UnitsService.view();">
+                                <md-select-header class="demo-select-header">
+                                     <input ng-model="vm.unit_query"
+                                        type="search"
+                                        ng-keydown="$event.stopPropagation()"
+                                        placeholder="Search for a unit.."
+                                        class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Unit">
+                                    <md-option ng-repeat="unit in vm.UnitsService.listUnits | filter: vm.unit_query" ng-value="unit.id">
+                                        {{unit.name}}
+                                    </md-option>
+                                </md-optgroup>
                             </md-select>
 
                             <div ng-messages="form.unit.$error" style="color:maroon" role="alert">
