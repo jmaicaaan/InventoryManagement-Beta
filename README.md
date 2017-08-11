@@ -1,5 +1,8 @@
 # InventoryManagement-Beta
 
+# Demo:
+    https://jmaicaaan.github.io/InventoryManagement-Beta/
+
 # Note:
     Make sure Tomcat Server is running.
     
