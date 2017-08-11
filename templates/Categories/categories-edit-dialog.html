@@ -1,0 +1,40 @@
+<div>
+    <md-dialog class="dialog">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Edit Category</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.CategoriesService.hideDialog()">
+                    <md-tooltip md-direction="left">
+                        Close Dialog
+                    </md-tooltip>
+                    <md-icon md-svg-src="icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content layout-padding>
+            <form name="form" layout="column">
+                <div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Category Name</label>
+                            <input name="categoryName" ng-model="vm.category.name" type="text" required md-maxlength="30" minlength="2">
+
+                            <div ng-messages="form.categoryName.$error" style="color:maroon" role="alert">
+                                <div ng-message="required">You did not enter a category name</div>
+                                <div ng-message="md-maxlength">The category name has to be less than 30 characters long.</div>
+                                <div ng-message="minlength">The category name has to be more than 2 characters long. </div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div layout="column" layout-align="end end">
+                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-disabled="form.$invalid"
+                    ng-click="vm.editCategory(vm.category)">Edit Category</md-button>
+                </div>
+            </form>
+        </md-dialog-content>
+    </md-dialog>
+</div>

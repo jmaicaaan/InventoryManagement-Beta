@@ -1,0 +1,6 @@
+{
+    "url": "http://127.0.0.1",
+    "port": "8080",
+    "app_context_root": "inventory_management_api",
+    "electron_root": "inventory_management"
+}

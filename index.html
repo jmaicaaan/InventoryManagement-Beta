@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Inventory Management</title>
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />
+
+    <!-- Angular-material -->
+     <link rel="stylesheet" href="libs/angular-material/angular-material.min.css"/>
+     <link rel="stylesheet" href="css/style.css"/>
+     <link rel="stylesheet" href="libs/angular-material-data-table/md-data-table.min.css"/>
+
+     <!-- HighCharts -->
+     <link rel="stylesheet" href="libs/highcharts/highcharts.css"/>
+
+     <!-- Angular loading bar -->
+     <link rel="stylesheet" href="libs/angular-loading-bar/loading-bar.css"/>
+
+     <!-- Roboto Font -->
+     <link rel="stylesheet" href="libs/roboto-fontface/roboto-fontface.css"/>
+
+</head>
+<body ng-app="inventory-management">
+    <div ui-view></div>
+
+    <script>
+        if(typeof module === 'object') window.module = module; module = undefined;
+    </script>
+
+    <script src="scripts/vendor.js"></script>
+
+    <script>
+        if(window.module) module = window.module;
+    </script>
+
+    <script src="scripts/app.js"></script>
+</body>
+</html>

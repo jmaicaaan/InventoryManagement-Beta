@@ -1,0 +1,93 @@
+<div>
+    <md-dialog class="dialog">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add Stock</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.StocksService.hideDialog()">
+                    <md-tooltip md-direction="left">
+                       Close Dialog
+                    </md-tooltip>
+                    <md-icon md-svg-src="icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content layout-padding>
+            <form name="form" layout="column">
+                <div>
+                    <div>
+                        <md-input-container>
+                            <label>Item</label>
+                            <md-select name="item" 
+                                    ng-model="vm.stock.item" 
+                                    data-md-container-class="selectdemoSelectHeader"
+                                    md-on-close="vm.stockItem_query = ''"
+                                    md-on-open="vm.loadItems();" 
+                                    required>
+                                <md-select-header class="demo-select-header">
+                                     <input ng-model="vm.stockItem_query"
+                                        type="search"
+                                        ng-keydown="$event.stopPropagation()"
+                                        placeholder="Select an item.."
+                                        class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-option ng-repeat="item in vm.ItemsService.listItems | filter: vm.stockItem_query | orderBy: 'name'" ng-value="item">
+                                    {{item.name}}
+                                </md-option>
+                            </md-select>
+                            <div ng-messages="form.item.$error" style="color:maroon" role="alert">
+                                <div ng-message="required">You did not choose an item.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container class="md-block">
+                            <label>Current Stocks</label>
+                            <input name="currentStocks" ng-model="vm.stock.item.totalStocks" type="text" disabled>
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-input-container>
+                            <label>Quantity</label>
+                            <md-select name="quantity" 
+                                    ng-model="vm.stock.quantity"
+                                    data-md-container-class="selectdemoSelectHeader"
+                                    required>
+                                <md-select-header class="demo-select-header">
+                                     <input ng-model="vm.stockQuantity_query"
+                                        type="search"
+                                        ng-keydown="$event.stopPropagation()"
+                                        placeholder="Select a quantity.."
+                                        class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup label="Quantity">
+                                    <md-option ng-repeat="no in vm.quantity | filter: vm.stockQuantity_query | limitTo: 5" 
+                                        ng-value="no">
+                                        {{no}}
+                                    </md-option>
+                                </md-optgroup>
+                            </md-select>
+                            <div ng-messages="form.quantity.$error" style="color:maroon" role="alert">
+                                <div ng-message="required">You did not choose a quantity for your item.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                    <div>
+                        <md-radio-group  ng-model="vm.stock.stockIn" ng-required="true">
+
+                            <md-radio-button ng-value="{{true}}">Stock In</md-radio-button>
+                            <md-radio-button ng-value="{{false}}">Stock Out</md-radio-button>
+
+                        </md-radio-group>
+                    </div>
+                </div>
+
+                <div layout="column" layout-align="end end">
+                    <md-button class="md-primary md-raised" aria-label="Open dialog" ng-disabled="form.$invalid"
+                    ng-click="vm.addStock(vm.stock)">Add Stock</md-button>
+                </div>
+            </form>
+        </md-dialog-content>
+    </md-dialog>
+</div>

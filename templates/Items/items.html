@@ -1,0 +1,94 @@
+<md-content layout="column">
+    <md-card>
+        <md-card-content>
+          <div>
+            <div class="md-toolbar-tools">
+              <h4>Manage Items</h4>
+              <span flex></span>
+
+              <div class="toolbar-search" ng-show="vm.isSearchOpen === true">
+                <md-input-container md-no-float class="md-block">
+                  <md-icon md-svg-src="icons/ic_search_24px.svg"></md-icon>
+                  <input ng-model="vm.queryText" type="text" placeholder="Search">
+                </md-input-container>
+              </div>
+
+              <div ng-show="vm.isSearchOpen === true">
+                <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.toggleSearch();">
+                  <md-tooltip md-direction="left">
+                      Close
+                  </md-tooltip>
+                  <md-icon md-svg-src="icons/ic_close_24px.svg"></md-icon>
+                </md-button>
+              </div>
+
+              <div ng-show="vm.isSearchOpen === false">
+                <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.toggleSearch();">
+                  <md-tooltip md-direction="left">
+                      Search Item
+                  </md-tooltip>
+                  <md-icon md-svg-src="icons/ic_search_24px.svg"></md-icon>
+                </md-button>
+                <md-button class="md-icon-button" aria-label="Open dialog" ng-click="vm.showAddDialog();">
+                  <md-tooltip md-direction="left">
+                      Add Item
+                  </md-tooltip>
+                  <md-icon md-svg-src="icons/ic_add_24px.svg"></md-icon>
+                </md-button>
+              </div>
+            </div>
+          </div>
+          <md-table-container>
+              <table md-table md-progress="vm.itemPromise">
+                <thead md-head md-order="vm.md_query.order">
+                    <tr md-row>
+                      <th md-column><span>No.</span></th>
+                      <th md-column md-order-by="name"><span>Item Name</span></th>
+                      <th md-column md-order-by="code"><span>Item Code</span></th>
+                      <th md-column hide-xs hide-ms show-gt-sm><span>Suppliers Name</span></th>
+                      <th md-column md-order-by="category.name" hide-xs hide-ms show-gt-sm><span>Category</span></th>
+                      <th md-column md-order-by="brand.name" hide-xs hide-ms show-gt-sm><span>Brand</span></th>
+                      <th md-column md-order-by="totalStocks"><span>Total Stocks</span></th>
+                      <th md-column><span>Action</span></th>
+                    </tr>
+                </thead>
+                <tbody md-body>
+                    <!-- Implement on-hold for mobile -->
+                    <tr md-row md-select="item" ng-repeat="item in vm.ItemsService.listItems | 
+                      filter: vm.queryText | orderBy: vm.md_query.order | 
+                      limitTo: vm.md_query.limit : (vm.md_query.page - 1) * vm.md_query.limit" md-auto-select>
+                      <td md-cell>{{$index + 1}}</td>
+                      <td md-cell><b>{{item.name}}</b></td>
+                      <td md-cell>{{item.code}}</td>
+                      <td md-cell hide-xs hide-ms show-gt-sm>
+                          <p ng-repeat="itemSupplier in item.itemSupplier">
+                            {{itemSupplier.supplier.name}}
+                          </p>
+                      </td>
+                      <td md-cell hide-xs hide-ms show-gt-sm>{{item.category.name}}</td>
+                      <td md-cell hide-xs hide-ms show-gt-sm>{{item.brand.name}}</td>
+                      <td md-cell>{{item.totalStocks}} {{item.unit.name}}</td>
+                      <td md-cell>
+                          <md-button class="md-icon-button" ng-click="vm.showEditDialog(item)" aria-label="edit">
+                            <md-tooltip md-direction="left">
+                                View Details
+                            </md-tooltip>
+                            <md-icon md-svg-icon="icons/ic_view_module_24px.svg"></md-icon>
+                          </md-button>
+                          <md-button class="md-icon-button" ng-click="vm.deleteItem(item)" aria-label="delete">
+                            <md-tooltip md-direction="left">
+                                Delete Item
+                            </md-tooltip>
+                            <md-icon md-svg-icon="icons/ic_delete_24px.svg"></md-icon>
+                          </md-button>
+                      </td>
+                    </tr>
+                </tbody>
+              </table>
+          </md-table-container>
+          <md-table-pagination md-limit="vm.md_query.limit" md-limit-options="[10, 20, 30, 50]" md-page="vm.md_query.page" md-total="{{vm.ItemsService.listItems.length}}"
+              md-page-select>
+          </md-table-pagination>
+        </md-card-content>
+    </md-card>
+  </md-content>
